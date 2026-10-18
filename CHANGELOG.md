@@ -6,4 +6,5 @@
 - The game stops at three classroom pauses that unlock with codes on the teacher's slide. Pause 1: each group names itself and sets a goal and rules. Pause 2: the screen recaps what each character knows, and the group chooses A–D what the club leader should do; the choice changes how Chapter 3 opens. Pause 3: a spoken goodbye to a teammate. Progress is saved at the start of each chapter, and a code typed on the title screen jumps a new phone to that chapter.
 - Dialogue choices appear in a panel over the map so every option is visible at once. The notebook opens from the end screen.
 - Shared story engine (`games/engine/`) so later weeks can add new chapter games by writing a map and a script (`data.js`) without new code. Touch pad, keyboard and 8BitDo controller; the map scales to fill phones in portrait or landscape.
+- Launch page footer: an "About these games" note on AI-assisted development (same wording as the Death site), plus a short Kenney credit.
 - Pixel art: Tiny Town and Tiny Dungeon by Kenney (kenney.nl), CC0 1.0 (`assets/tiles/`, license files included). Music and sound effects are generated in the browser.
