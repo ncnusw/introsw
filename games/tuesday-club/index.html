@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0c11">
+<title>星期二俱樂部 The Tuesday Club</title>
+<meta name="description" content="A walk-around story game about one girls' club at Hull House, from its first meeting to its goodbye.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%230f0c11'/%3E%3Crect x='1' y='1' width='6' height='2' fill='%23c8553d'/%3E%3Crect x='1' y='3' width='6' height='4' fill='%23b97a4a'/%3E%3Crect x='3' y='5' width='2' height='2' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../engine/engine.css">
+</head>
+<body>
+<div id="app">
+  <div id="bar">
+    <a class="iconbtn" href="../../" aria-label="回到課程首頁 Back to course home">⌂</a>
+    <div id="goal" aria-live="polite"></div>
+    <button class="iconbtn" id="notesBtn" type="button" aria-label="筆記本 Notebook">📖<span class="count">0</span></button>
+    <button class="iconbtn" id="muteBtn" type="button" aria-label="聲音 Sound">🔊</button>
+  </div>
+  <div id="view">
+    <canvas id="map" aria-label="遊戲畫面 Game map"></canvas>
+    <div id="toast" role="status"></div>
+    <div id="chooser" class="hidden" role="dialog" aria-label="選擇 Choose"><p class="ask">你會怎麼說？ Choose one:</p><div class="choices"></div></div>
+  </div>
+  <div id="dlg" class="idle noPor" aria-live="polite">
+    <canvas class="por" aria-hidden="true"></canvas>
+    <div class="txt"><div class="who"></div><div class="say"></div></div>
+    <div class="more hidden">▼</div>
+  </div>
+  <div id="pad">
+    <div class="dpad">
+      <button class="u" data-dir="up" aria-label="上 Up">▲</button>
+      <button class="l" data-dir="left" aria-label="左 Left">◀</button>
+      <button class="r" data-dir="right" aria-label="右 Right">▶</button>
+      <button class="d" data-dir="down" aria-label="下 Down">▼</button>
+    </div>
+    <button id="btnA" type="button">A<small>說話 / 下一句</small></button>
+  </div>
+  <div id="keys">方向鍵或 WASD 走路 · Enter / 空白鍵 說話、下一句 · N 筆記本 · M 聲音　|　Arrows / WASD walk · Enter / Space talk · N notebook · M sound · 8BitDo OK</div>
+</div>
+
+<div class="titlecard" id="titlecard"><div><h1></h1><p></p></div></div>
+
+<div class="ov" id="ovTitle">
+  <div class="card">
+    <div class="logo">THE TUESDAY CLUB</div>
+    <p class="zh">星期二俱樂部</p>
+    <p>芝加哥，1890 年代。一個女孩俱樂部在 Hull House 成立了。跟著蘿莎，從第一次聚會走到最後一次道別。</p>
+    <p class="en">Chicago, the 1890s. Follow Rosa through one girls' club at Hull House, from its first meeting to its goodbye.</p>
+    <p class="small">兩人一支手機：一人操作，一人唸出對話，每一章交換。遊戲會在三個地方暫停，等老師公布密碼。<br>
+      Two players per phone: one taps, one reads aloud; swap every chapter. The game stops three times for a class activity.</p>
+    <button class="big" id="btnStart" type="button">開始 Start</button>
+    <button class="big alt hidden" id="btnContinue" type="button">繼續上次進度 Continue</button>
+    <p class="small" style="margin-top:16px">換了手機？輸入老師給的最新密碼，從那一章繼續。<br>New phone? Enter the latest code from the slide to jump ahead.</p>
+    <div class="code"><input id="jumpInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="密碼 Code" aria-label="密碼 Code"><button id="jumpOk" type="button">跳章</button></div>
+    <div class="fb" id="jumpFb"></div>
+    <p class="small">本遊戲中的珍·亞當斯（Jane Addams）與 Hull House 是真實的；其他角色和故事都是虛構的。<br>
+      Jane Addams and Hull House are real; every other character and event is fictional.</p>
+  </div>
+</div>
+
+<div class="ov" id="ovQuiz" role="dialog" aria-modal="true" aria-labelledby="quizQ">
+  <div class="card">
+    <p class="small" id="quizTag"></p>
+    <h2 id="quizQ"></h2>
+    <div class="opts" id="quizOpts"></div>
+    <div class="fb" id="quizFb" aria-live="polite"></div>
+    <button class="big hidden" id="quizNext" type="button">繼續 Continue</button>
+  </div>
+</div>
+
+<div class="ov" id="ovPause" role="dialog" aria-modal="true" aria-labelledby="pauseHead">
+  <div class="card">
+    <div class="pausehead" id="pauseHead"></div>
+    <div class="task" id="pauseTask"></div>
+    <div class="opts zh" id="pauseOpts"></div>
+    <div class="code" id="pauseCode"><input id="pauseInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="密碼 Code" aria-label="密碼 Code"><button id="pauseOk" type="button">確認</button></div>
+    <div class="fb" id="pauseFb" aria-live="polite"></div>
+    <div class="timer" id="pauseTimer"></div>
+    <button class="big hidden" id="pauseGo" type="button">繼續 Continue</button>
+  </div>
+</div>
+
+<div class="ov" id="ovNotes" role="dialog" aria-modal="true" aria-labelledby="notesHead">
+  <div class="card">
+    <h2 id="notesHead">📖 筆記本 Notebook <span class="small" id="notesCount"></span></h2>
+    <p class="small">遊戲中學到的團體工作名詞。 Group-work terms from the story.</p>
+    <ul class="notes" id="notesList"></ul>
+    <button class="big" id="notesClose" type="button">關閉 Close</button>
+  </div>
+</div>
+
+<div class="ov" id="ovEnd">
+  <div class="card">
+    <div class="logo">THE END</div>
+    <p class="zh">星期二俱樂部 — 完</p>
+    <p id="endStats"></p>
+    <button class="big" id="endNotes" type="button">📖 打開筆記本 Notebook</button>
+    <button class="big alt" id="endAgain" type="button">再玩一次 Play again</button>
+    <a class="big alt" href="../../">回到課程首頁 Back to course home</a>
+    <p class="credit">像素美術 Pixel art by Kenney (kenney.nl)</p>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="../engine/engine.js"></script>
+</body>
+</html>

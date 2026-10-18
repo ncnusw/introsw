@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "tuesday-club",
+    "title": "The Tuesday Club",
+    "zh": "星期二俱樂部",
+    "week": "Week 7",
+    "description": "Walk through 1890s Chicago as Rosa and follow one girls' club at Hull House from its first meeting to its goodbye. The game pauses three times for group activities.",
+    "players": "Groups of 4, one phone per pair",
+    "concept": "Social group work: what makes a group, stages of group development, social goals model (Ch. 3)",
+    "path": "games/tuesday-club/",
+    "thumb": "games/tuesday-club/thumb.png",
+    "added": "2026-10-18"
+  }
+]

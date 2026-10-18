@@ -1,0 +1,9 @@
+# Changelog
+
+## 2026-10-19
+- Set up the site: launch page (`index.html`) built from `games.json`, with a backup game list so it also opens straight from a folder. README, CHANGELOG, `.nojekyll`, and a `.gitignore` that keeps token files and the push scripts out of the repository.
+- Added **The Tuesday Club 星期二俱樂部** (`games/tuesday-club/`) for Week 7 (Social Group Work, Ch. 3): a walk-around story game for groups of 4 with one phone per pair. Students follow Rosa through one girls' club at Hull House in the 1890s, from its first meeting to its goodbye, framed by Rosa looking back in 1935. Each chapter is one stage of group development: convening and formation, then conflict, then maintenance and termination. Dialogue in Traditional Chinese with 21 English key terms collected in a notebook; six chapter-check questions (Chinese question, English answers, hint and retry on a wrong answer).
+- The game stops at three classroom pauses that unlock with codes on the teacher's slide. Pause 1: each group names itself and sets a goal and rules. Pause 2: the screen recaps what each character knows, and the group chooses A–D what the club leader should do; the choice changes how Chapter 3 opens. Pause 3: a spoken goodbye to a teammate. Progress is saved at the start of each chapter, and a code typed on the title screen jumps a new phone to that chapter.
+- Dialogue choices appear in a panel over the map so every option is visible at once. The notebook opens from the end screen.
+- Shared story engine (`games/engine/`) so later weeks can add new chapter games by writing a map and a script (`data.js`) without new code. Touch pad, keyboard and 8BitDo controller; the map scales to fill phones in portrait or landscape.
+- Pixel art: Tiny Town and Tiny Dungeon by Kenney (kenney.nl), CC0 1.0 (`assets/tiles/`, license files included). Music and sound effects are generated in the browser.
