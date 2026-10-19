@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Term Duel</title>
+<meta name="description" content="A whole-class vocabulary game: rock-paper-scissors duels, tick off every term on your own phone.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #140f12; --panel: #1f1719; --panel2: #2a1f22; --line: #3d2d2f;
+    --lo: #e07a5f; --ro: #ffd166; --cream: #f4ead6; --mut: #ad9f90;
+    --tick: #3ddc6a; --tick-dark: #0f3a1d; --warn: #ff5d5d;
+    --pixel: "Press Start 2P", ui-monospace, monospace;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --gutter: max(16px, env(safe-area-inset-left));
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--cream); font: 18px/1.5 var(--body);
+    -webkit-tap-highlight-color: transparent; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 760px; margin: 0 auto;
+    padding: max(18px, env(safe-area-inset-top)) var(--gutter) max(28px, env(safe-area-inset-bottom));
+    min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+
+  .btn { font: 13px/1.4 var(--pixel); background: var(--cream); color: var(--bg); border: 0;
+    padding: 16px 20px 14px; min-height: 52px; box-shadow: 5px 5px 0 #000; border-radius: 2px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 #000; }
+  .btn.ghost { background: var(--panel); color: var(--cream); border: 3px solid var(--line); }
+  .btn.danger { background: var(--warn); color: #000; }
+  .btn:focus-visible { outline: 4px solid var(--ro); outline-offset: 3px; }
+  .rule { display: flex; height: 6px; max-width: 240px; margin: 16px auto; }
+  .rule span { flex: 1; }
+  .rule span:nth-child(1) { background: var(--lo); } .rule span:nth-child(2) { background: #7a2f22; }
+  .rule span:nth-child(3) { background: #8a6a1f; } .rule span:nth-child(4) { background: var(--ro); }
+
+  /* ================= MENU ================= */
+  #menu { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  #menu header { text-align: center; padding-top: 8px; }
+  .logo { display: flex; justify-content: center; gap: 14px; margin-bottom: 14px; }
+  .logo svg { width: 46px; height: 46px; image-rendering: pixelated; }
+  #menu h1 { font: clamp(26px, 7vw, 46px)/1.3 var(--pixel); margin: 0; text-shadow: 4px 4px 0 #000; }
+  #menu .sub { color: var(--mut); margin: 4px auto 0; max-width: 36ch; text-wrap: balance; }
+
+  .how { margin: 8px 0 18px; padding: 16px 18px; background: var(--panel); border: 3px solid var(--line);
+    box-shadow: 5px 5px 0 #000; }
+  .how h2, .label { font: 10px/1.6 var(--pixel); color: var(--ro); margin: 0 0 10px; letter-spacing: .5px; }
+  .how ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 9px; counter-reset: s; font-size: 16.5px; }
+  .how li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: start; counter-increment: s; }
+  .how li::before { content: counter(s); font: 11px/26px var(--pixel); text-align: center; width: 26px; height: 26px;
+    background: var(--lo); color: #000; }
+  .how li.ok::before { background: var(--tick); }
+  .how .tip { margin: 12px 0 0; font-size: 15px; color: var(--mut); border-top: 2px dashed var(--line); padding-top: 10px; }
+
+  .banks { display: grid; gap: 14px; }
+  .bank { text-align: left; display: flex; gap: 16px; align-items: center; width: 100%; min-height: 92px;
+    padding: 16px 18px; background: var(--panel); border: 3px solid var(--line); border-radius: 4px;
+    box-shadow: 5px 5px 0 #000; position: relative; overflow: hidden; }
+  .bank::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--ro); }
+  .bank.done::before { background: var(--tick); }
+  .bank:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 #000; }
+  .bank:focus-visible { outline: none; border-color: var(--ro); }
+  @media (hover: hover) { .bank:hover { border-color: #4a4e68; } }
+  .bank .txt { flex: 1; min-width: 0; padding-left: 4px; }
+  .bank .t { font: clamp(13px, 3.4vw, 16px)/1.5 var(--pixel); display: block; }
+  .bank .zh { color: var(--mut); font-size: 16px; display: block; margin-top: 4px; }
+  .bank .prog { flex: 0 0 auto; text-align: right; font: 11px/1.6 var(--pixel); color: var(--mut); }
+  .bank .prog b { display: block; font-size: 15px; color: var(--cream); }
+  .bank.done .prog b { color: var(--tick); }
+  .bank .go { font: 12px var(--pixel); color: var(--ro); }
+
+  footer.note { margin-top: auto; padding-top: 26px; font-size: 13px; color: var(--mut); text-align: center; }
+  footer.note a { color: var(--mut); }
+
+  /* ================= DUEL ================= */
+  #duel { flex: 1; display: flex; flex-direction: column; gap: 14px; }
+  .topbar { display: flex; align-items: center; gap: 12px; }
+  .back { flex: 0 0 auto; width: 52px; height: 52px; display: grid; place-items: center; background: var(--panel);
+    border: 3px solid var(--line); box-shadow: 4px 4px 0 #000; font: 14px var(--pixel); }
+  .back:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
+  .back:focus-visible { outline: 3px solid var(--ro); }
+  .topbar h1 { flex: 1; min-width: 0; margin: 0; font: clamp(11px, 3.2vw, 15px)/1.5 var(--pixel); }
+  .count { flex: 0 0 auto; font: clamp(16px, 4.6vw, 22px) var(--pixel); color: var(--tick); white-space: nowrap; }
+  .count small { color: var(--mut); font-size: .65em; }
+
+  .bar { display: flex; gap: 4px; }
+  .bar i { flex: 1; height: 12px; background: var(--panel2); border: 2px solid var(--line); transition: background .2s; }
+  .bar i.on { background: var(--tick); border-color: var(--tick); }
+
+  .hint { margin: 0; font-size: 15px; color: var(--mut); display: flex; flex-wrap: wrap; gap: 4px 18px; }
+  .hint b { color: var(--cream); font-weight: 600; }
+
+  .terms { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .term { background: var(--panel); border: 3px solid var(--line); border-radius: 4px; box-shadow: 4px 4px 0 #000;
+    transition: border-color .15s, background .15s; }
+  .term.ticked { border-color: var(--tick); background: linear-gradient(90deg, rgba(61,220,106,.13), rgba(61,220,106,.04)); }
+  .term .row { display: flex; align-items: stretch; }
+  .tickbtn { flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px; text-align: left; background: none;
+    border: 0; padding: 12px 10px 12px 14px; min-height: 68px;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+  .tickbtn:focus-visible { outline: 3px solid var(--ro); outline-offset: -3px; }
+  .box { flex: 0 0 auto; width: 36px; height: 36px; border: 3px solid var(--mut); background: var(--bg);
+    display: grid; place-items: center; position: relative; }
+  .box svg { width: 26px; height: 26px; opacity: 0; transform: scale(.4); transition: opacity .12s, transform .18s; }
+  .term.ticked .box { border-color: var(--tick); background: var(--tick); }
+  .term.ticked .box svg { opacity: 1; transform: scale(1); }
+  .term.pop .box { animation: pop .35s; }
+  @keyframes pop { 40% { transform: scale(1.25); } }
+  .holdring { position: absolute; inset: -6px; border: 3px solid var(--warn); opacity: 0; clip-path: inset(0 100% 0 0); }
+  .term.unholding .holdring { opacity: 1; animation: wipe var(--hold, 700ms) linear forwards; }
+  @keyframes wipe { to { clip-path: inset(0 0 0 0); } }
+  .en { display: block; font-size: clamp(17px, 4.3vw, 21px); font-weight: 650; line-height: 1.3; }
+  .num { font: 10px var(--pixel); color: var(--mut); display: block; margin-bottom: 4px; }
+  .term.ticked .num { color: var(--tick); }
+
+  .ans { flex: 0 0 auto; width: 92px; border: 0; border-left: 3px solid var(--line); background: var(--panel2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 4px;
+    font: 8px/1.4 var(--pixel); color: var(--ro); text-align: center;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: none; }
+  .ans svg { width: 26px; height: 26px; }
+  .ans:focus-visible { outline: 3px solid var(--ro); outline-offset: -3px; }
+  .term.showing .ans { background: var(--ro); color: #000; }
+  .reveal { display: none; border-top: 3px dashed var(--ro); padding: 14px 16px 16px; background: #1a1708; }
+  .term.showing .reveal { display: block; }
+  .reveal .zh { font-size: clamp(24px, 6.4vw, 32px); font-weight: 700; color: var(--ro); line-height: 1.3; margin: 0 0 6px; }
+  .reveal .def { margin: 0; font-size: clamp(16px, 4vw, 18px); color: var(--cream); }
+
+  .toast { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 20px);
+    background: var(--cream); color: var(--bg); padding: 12px 18px; font-size: 15px; font-weight: 600; box-shadow: 4px 4px 0 #000;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; max-width: calc(100% - 32px); text-align: center; z-index: 30; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  .tools { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+  /* ================= FINISH ================= */
+  #finish { position: fixed; inset: 0; z-index: 20; background: #22c55e; color: #000; display: flex; overflow-y: auto; }
+  #finish .in { margin: auto; padding: 32px var(--gutter); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #finish .stars { display: flex; gap: 10px; justify-content: center; }
+  #finish .stars i { width: 16px; height: 16px; background: #000; transform: rotate(45deg); }
+  #finish h2 { font: clamp(34px, 10vw, 84px)/1.2 var(--pixel); margin: 16px 0 0; text-shadow: 5px 5px 0 rgba(0,0,0,.25); }
+  #finish .zhbig { font-size: clamp(44px, 13vw, 104px); font-weight: 900; line-height: 1.1; margin: 0; }
+  #finish .bankname { font: clamp(11px, 3vw, 15px)/1.6 var(--pixel); margin: 10px 0 2px; }
+  #finish .ten { font: clamp(20px, 6vw, 40px) var(--pixel); margin: 4px 0 18px; }
+  #finish .acts { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  #finish .btn { background: #000; color: #fff; box-shadow: 5px 5px 0 rgba(0,0,0,.3); }
+  #finish .btn.ghost { background: transparent; color: #000; border-color: #000; }
+  #finish .btn:focus-visible { outline-color: #fff; }
+
+  /* ================= CONFIRM ================= */
+  #confirm { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.75); display: grid; place-items: center; padding: var(--gutter); }
+  #confirm .box2 { background: var(--panel); border: 3px solid var(--warn); box-shadow: 6px 6px 0 #000; padding: 22px; max-width: 420px; }
+  #confirm h2 { font: 12px/1.6 var(--pixel); color: var(--warn); margin: 0 0 10px; }
+  #confirm p { margin: 0 0 18px; }
+  #confirm .acts { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; transition: none !important; }
+    .term.unholding .holdring { clip-path: none; }
+  }
+  @media (max-width: 420px) {
+    .ans { width: 76px; }
+    .tickbtn { gap: 12px; padding-left: 12px; }
+    .how { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= MENU ================= -->
+  <section id="menu">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <!-- pixel rock / paper / scissors (original) -->
+        <svg viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="#e07a5f" d="M2 1h5v1H2zM1 2h7v5H1zM2 7h5v1H2z"/><path fill="#7a2f22" d="M2 5h2v1H2zM5 3h2v1H5z"/></svg>
+        <svg viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="#f4ead6" d="M1 1h7v7H1z"/><path fill="#ad9f90" d="M2 3h5v1H2zM2 5h5v1H2z"/></svg>
+        <svg viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="#ffd166" d="M1 1h1v1H1zM7 1h1v1H7zM2 2h1v1H2zM6 2h1v1H6zM3 3h1v1H3zM5 3h1v1H5zM4 4h1v1H4z"/><path fill="#c98a24" d="M2 5h2v3H2zM5 5h2v3H5z"/></svg>
+      </div>
+      <h1>TERM DUEL</h1>
+      <p class="sub">Duel your classmates with rock-paper-scissors and tick off every term.</p>
+      <div class="rule" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    </header>
+
+    <div class="how">
+      <h2>HOW TO PLAY</h2>
+      <ol>
+        <li><span>Find a partner and play rock-paper-scissors.</span></li>
+        <li><span>The <b>winner</b> picks any term on the list and says it aloud.</span></li>
+        <li><span>The <b>loser</b> gives the Chinese, or explains it in plain English.</span></li>
+        <li class="ok"><span>The winner holds <b>Answer</b> to check. Right? You <b>both</b> tick that term. Wrong? The winner tells the answer and nobody ticks.</span></li>
+        <li><span>Find a new partner and repeat until all your boxes are ticked.</span></li>
+      </ol>
+      <p class="tip">Same term again? That's fine. Extra practice helps you remember.</p>
+    </div>
+
+    <h2 class="label">CHOOSE A TOPIC</h2>
+    <div class="banks" id="banks"></div>
+
+    <footer class="note">Your ticks are saved on this phone. <a href="../../">All games</a></footer>
+  </section>
+
+  <!-- ================= DUEL ================= -->
+  <section id="duel" hidden>
+    <div class="topbar">
+      <button class="back" id="backBtn" aria-label="Back to topics">◀</button>
+      <h1 id="duelTitle"></h1>
+      <div class="count" id="count" aria-live="polite"></div>
+    </div>
+    <div class="bar" id="bar" aria-hidden="true"></div>
+    <p class="hint"><span><b>Tap</b> a term to tick it.</span><span><b>Hold Answer</b> to check.</span><span><b>Hold</b> a ticked term to untick.</span></p>
+    <ul class="terms" id="terms"></ul>
+    <div class="tools">
+      <button class="btn ghost" id="menuBtn">◀ TOPICS</button>
+      <button class="btn ghost" id="resetBtn">START OVER</button>
+    </div>
+  </section>
+</div>
+
+<!-- ================= FINISH ================= -->
+<section id="finish" hidden aria-live="assertive">
+  <div class="in">
+    <div class="stars" aria-hidden="true"><i></i><i></i><i></i></div>
+    <h2>FINISHED!</h2>
+    <p class="zhbig" lang="zh-Hant">完成！</p>
+    <p class="bankname" id="finName"></p>
+    <p class="ten" id="finCount"></p>
+    <div class="acts">
+      <button class="btn" id="finMenu">◀ TOPICS</button>
+      <button class="btn ghost" id="finKeep">KEEP PRACTISING</button>
+      <button class="btn ghost" id="finReset">START OVER</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONFIRM ================= -->
+<div id="confirm" hidden role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+  <div class="box2">
+    <h2 id="cfTitle">START OVER?</h2>
+    <p>This clears all your ticks for this topic.</p>
+    <div class="acts">
+      <button class="btn ghost" id="cfNo">CANCEL</button>
+      <button class="btn danger" id="cfYes">CLEAR TICKS</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* =====================================================================
+   WORD BANKS — edit here to add or change topics.
+   ---------------------------------------------------------------------
+   Copy a whole { ... } block, give it a new short "id" (letters, numbers,
+   dashes; used in the link, e.g. .../games/term-duel/#group-basics), a "title",
+   an optional "zh" subtitle, and its "terms". Each term needs:
+     en  – the English term students say aloud
+     zh  – the Chinese term (hidden until "Answer" is held)
+     def – a short plain-English explanation (also hidden until held)
+   Any number of terms works; 10 fits one round well.
+   Changing a term's English wording resets that one tick on students'
+   phones (ticks are remembered by the English term).
+   ===================================================================== */
+const WORD_BANKS = [
+  {
+    id: "group-basics",
+    title: "What Makes a Group",
+    zh: "團體的組成",
+    terms: [
+      { en: "Collectivity", zh: "集合體",
+        def: "People who just happen to be in the same place, with no interaction and no shared goal, like strangers waiting in a line." },
+      { en: "Formed group", zh: "組成團體",
+        def: "A group that a worker or agency puts together on purpose, unlike a natural group that forms by itself." },
+      { en: "Closed group", zh: "封閉式團體",
+        def: "A group that stops taking new members after it starts, so members have time to build trust." },
+      { en: "Screening", zh: "篩選",
+        def: "Talking with each person before the group starts, to learn what they need and whether the group fits them." },
+      { en: "Homogeneity", zh: "同質性",
+        def: "How similar the members are. Too similar and they learn little that is new; too different and it is hard to understand each other." },
+      { en: "Common goal", zh: "共同目標",
+        def: "Something all the members want to achieve together. One of the signs of a real group." },
+      { en: "Interaction", zh: "互動",
+        def: "Members talk, respond and influence one another. Another sign of a real group." },
+      { en: "Identification", zh: "認同",
+        def: "Members feel \"I belong to this group.\" Another sign of a real group." },
+      { en: "Confidentiality", zh: "保密",
+        def: "Private things that members share in the group stay in the group." },
+      { en: "Self-determination", zh: "自決",
+        def: "Members have the right to make decisions for themselves and their group. The worker does not decide for them." }
+    ]
+  },
+  {
+    id: "group-stages",
+    title: "Group Stages & Social Goals",
+    zh: "團體發展與社會目標",
+    terms: [
+      { en: "Convening", zh: "聚集期",
+        def: "The first stage: members are strangers, careful, and checking whether the group is safe." },
+      { en: "Formation", zh: "形成期",
+        def: "Members start to take roles and agree on rules and ways of working together." },
+      { en: "Conflict", zh: "衝突期",
+        def: "Members argue, compete for power and disagree. This is normal, not a sign that the group has failed." },
+      { en: "Maintenance", zh: "維持期",
+        def: "Members trust each other, work well together and support one another." },
+      { en: "Termination", zh: "結束期",
+        def: "The group ends: members look back, say goodbye and take what they learned with them." },
+      { en: "Socialization", zh: "社會化",
+        def: "Learning in a group how to get along with others, express yourself and follow shared rules." },
+      { en: "Problem-solving", zh: "問題解決",
+        def: "The group works out what causes a problem and finds ways to solve it together." },
+      { en: "Social action", zh: "社會行動",
+        def: "People act together to change the policies or systems that cause a problem." },
+      { en: "Social goals model", zh: "社會目標模式",
+        def: "A model of group work in which members learn democracy and civic responsibility and work together for social change (Papell & Rothman)." },
+      { en: "Enabler", zh: "使能者",
+        def: "The worker's role in the social goals model: helping members find their own strength instead of deciding for them." }
+    ]
+  }
+];
+/* ===================== end of word banks ===================== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const HOLD_MS = 700;
+document.documentElement.style.setProperty('--hold', HOLD_MS + 'ms');
+
+/* ---------- saved ticks (per topic, on this device only) ---------- */
+const KEY = id => 'introsw-termduel:' + id;
+function loadTicks(bank) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY(bank.id)) || '[]');
+    const valid = new Set(bank.terms.map(t => t.en));
+    return new Set(Array.isArray(saved) ? saved.filter(en => valid.has(en)) : []);
+  } catch (e) { return new Set(); }
+}
+function saveTicks(bank, set) {
+  try { localStorage.setItem(KEY(bank.id), JSON.stringify([...set])); } catch (e) {}
+}
+
+/* ---------- sounds: generated in the browser (no audio files); browsers allow them after the first tap ---------- */
+let AC = null;
+function audio() {
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
+  if (AC && AC.state === 'suspended') AC.resume();
+  return AC;
+}
+document.addEventListener('pointerdown', audio, { once: true });
+function tone(freq, at, dur, vol, type) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type || 'square'; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol, at + .01); g.gain.exponentialRampToValueAtTime(.0005, at + dur);
+  o.connect(g); g.connect(AC.destination); o.start(at); o.stop(at + dur + .05);
+}
+function play(name) {
+  if (!audio()) return;
+  const t = AC.currentTime + .02;
+  if (name === 'wow') { tone(784, t, .09, .06); tone(1175, t + .07, .16, .06); }
+  if (name === 'win') { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, t + i * .11, i === 5 ? .5 : .16, .06)); tone(262, t, .7, .05, 'triangle'); }
+}
+function stopSounds() { /* generated sounds are short; nothing to stop */ }
+
+function buzz(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} }
+
+let toastTimer;
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('on'), 1800);
+}
+
+/* ================= MENU ================= */
+function renderMenu() {
+  const wrap = $('banks'); wrap.innerHTML = '';
+  for (const bank of WORD_BANKS) {
+    const n = loadTicks(bank).size, total = bank.terms.length, done = n >= total;
+    const b = document.createElement('button');
+    b.className = 'bank' + (done ? ' done' : '');
+    b.innerHTML = `<span class="txt"><span class="t">${esc(bank.title)}</span>${bank.zh ? `<span class="zh" lang="zh-Hant">${esc(bank.zh)}</span>` : ''}</span>
+      <span class="prog"><b>${n}/${total}</b>${done ? 'DONE' : 'TICKED'}</span><span class="go" aria-hidden="true">▶</span>`;
+    b.setAttribute('aria-label', `${bank.title}: ${n} of ${total} ticked`);
+    b.addEventListener('click', () => go(bank.id));
+    wrap.appendChild(b);
+  }
+}
+
+/* ================= DUEL ================= */
+let cur = null, ticks = new Set();
+
+function openBank(bank) {
+  cur = bank; ticks = loadTicks(bank);
+  $('duelTitle').textContent = bank.title;
+  const list = $('terms'); list.innerHTML = '';
+  $('bar').innerHTML = bank.terms.map(() => '<i></i>').join('');
+  bank.terms.forEach((t, i) => {
+    const li = document.createElement('li');
+    li.className = 'term';
+    li.innerHTML = `
+      <div class="row">
+        <button class="tickbtn" aria-pressed="false">
+          <span class="box" aria-hidden="true"><span class="holdring"></span>
+            <svg viewBox="0 0 24 24"><path d="M3.5 12.5l5.5 5.5L21 6" fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="square"/></svg></span>
+          <span><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="en">${esc(t.en)}</span></span>
+        </button>
+        <button class="ans" aria-label="Hold to show the answer for ${esc(t.en)}">
+          <svg viewBox="0 0 9 9" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M3 2h3v1H3zM1 3h2v1H1zM6 3h2v1H6zM0 4h1v1H0zM8 4h1v1H8zM1 5h2v1H1zM6 5h2v1H6zM3 6h3v1H3zM4 4h1v1H4z"/></svg>
+          <span>HOLD<br>ANSWER</span>
+        </button>
+      </div>
+      <div class="reveal" aria-live="polite">
+        <p class="zh" lang="zh-Hant">${esc(t.zh)}</p>
+        <p class="def">${esc(t.def)}</p>
+      </div>`;
+    wireTick(li, t);
+    wireAnswer(li);
+    list.appendChild(li);
+  });
+  refresh();
+  $('menu').hidden = true; $('duel').hidden = false; $('finish').hidden = true;
+  window.scrollTo(0, 0);
+}
+
+function refresh() {
+  const total = cur.terms.length;
+  [...$('terms').children].forEach((li, i) => {
+    const on = ticks.has(cur.terms[i].en);
+    li.classList.toggle('ticked', on);
+    li.querySelector('.tickbtn').setAttribute('aria-pressed', on);
+  });
+  [...$('bar').children].forEach((el, i) => el.classList.toggle('on', i < ticks.size));
+  $('count').innerHTML = `${ticks.size}<small>/${total}</small>`;
+}
+
+/* Tap an unticked term = tick it. Hold a ticked term = untick (prevents accidental unticks). */
+function wireTick(li, term) {
+  const btn = li.querySelector('.tickbtn');
+  let timer = null, held = false;
+  const cancelHold = () => { clearTimeout(timer); timer = null; li.classList.remove('unholding'); };
+
+  btn.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    held = false;
+    if (ticks.has(term.en)) {
+      li.classList.add('unholding');
+      timer = setTimeout(() => {
+        held = true; cancelHold();
+        ticks.delete(term.en); saveTicks(cur, ticks); refresh(); buzz(30);
+        toast('Unticked');
+      }, HOLD_MS);
+    }
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, cancelHold));
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+
+  btn.addEventListener('click', () => {
+    if (held) { held = false; return; }
+    if (ticks.has(term.en)) { toast('Hold to untick'); return; }
+    ticks.add(term.en); saveTicks(cur, ticks); refresh(); buzz(20);
+    li.classList.remove('pop'); void li.offsetWidth; li.classList.add('pop');
+    if (ticks.size >= cur.terms.length) { finish(); } else play('wow');
+  });
+
+  /* keyboard: Enter/Space ticks; Delete or Backspace unticks */
+  btn.addEventListener('keydown', e => {
+    if ((e.key === 'Delete' || e.key === 'Backspace') && ticks.has(term.en)) {
+      e.preventDefault(); ticks.delete(term.en); saveTicks(cur, ticks); refresh(); toast('Unticked');
+    }
+  });
+}
+
+/* Answer shows only while held (like peeking at the folded column). */
+function wireAnswer(li) {
+  const btn = li.querySelector('.ans');
+  const show = () => { hideAllAnswers(); li.classList.add('showing'); };
+  const hide = () => li.classList.remove('showing');
+  btn.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    e.preventDefault();
+    try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+    show();
+  });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(ev => btn.addEventListener(ev, hide));
+  btn.addEventListener('contextmenu', e => e.preventDefault());
+  btn.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (!e.repeat) show(); } });
+  btn.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') hide(); });
+  btn.addEventListener('blur', hide);
+}
+function hideAllAnswers() { document.querySelectorAll('.term.showing').forEach(el => el.classList.remove('showing')); }
+
+/* ================= FINISH ================= */
+function finish() {
+  hideAllAnswers();
+  $('finName').textContent = cur.title.toUpperCase();
+  $('finCount').textContent = `${cur.terms.length}/${cur.terms.length}`;
+  $('finish').hidden = false;
+  play('win'); buzz([60, 60, 120]);
+  setTimeout(() => $('finMenu').focus({ preventScroll: true }), 50);
+}
+$('finKeep').addEventListener('click', () => { $('finish').hidden = true; });
+$('finMenu').addEventListener('click', () => go(''));
+$('finReset').addEventListener('click', () => askReset());
+
+/* ================= START OVER ================= */
+function askReset() { $('confirm').hidden = false; $('cfNo').focus(); }
+$('resetBtn').addEventListener('click', askReset);
+$('cfNo').addEventListener('click', () => { $('confirm').hidden = true; });
+$('cfYes').addEventListener('click', () => {
+  ticks = new Set(); saveTicks(cur, ticks);
+  $('confirm').hidden = true; $('finish').hidden = true; refresh(); window.scrollTo(0, 0);
+  toast('All ticks cleared');
+});
+
+/* ================= NAVIGATION (#topic-id links; phone Back button returns to the menu) ================= */
+function go(id) {
+  const target = id ? '#' + id : location.pathname + location.search;
+  if ((location.hash || '') !== (id ? '#' + id : '')) history.pushState(null, '', target);
+  route();
+}
+function route() {
+  stopSounds();
+  $('confirm').hidden = true;
+  const id = decodeURIComponent(location.hash.slice(1));
+  const bank = WORD_BANKS.find(b => b.id === id);
+  if (bank) { openBank(bank); }
+  else { cur = null; $('finish').hidden = true; $('duel').hidden = true; $('menu').hidden = false; renderMenu(); window.scrollTo(0, 0); }
+}
+window.addEventListener('popstate', route);
+$('backBtn').addEventListener('click', () => go(''));
+$('menuBtn').addEventListener('click', () => go(''));
+
+/* Esc closes the confirm box / finish screen, or goes back to the topics. */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('confirm').hidden) $('confirm').hidden = true;
+  else if (!$('finish').hidden) $('finish').hidden = true;
+  else if (cur) go('');
+});
+
+/* Slide hidden (Quarto deck) or tab hidden: hide any open answer and stop sounds. */
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (d && d.type === 'slideVisibility' && d.visible === false) { hideAllAnswers(); stopSounds(); }
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) { hideAllAnswers(); stopSounds(); } });
+
+route();
+</script>
+</body>
+</html>
