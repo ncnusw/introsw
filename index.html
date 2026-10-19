@@ -65,7 +65,6 @@
   .thumb { aspect-ratio: 16 / 9; background: #0f0c11 center / cover no-repeat; image-rendering: pixelated;
     border-bottom: 3px solid var(--line); display: block; width: 100%; }
   .body { padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-  .week { font: 9px var(--pixel); color: var(--bg); background: var(--gold); padding: 6px 8px 5px; align-self: flex-start; }
   .card h2 { font: clamp(15px, 2.4vw, 19px)/1.4 var(--pixel); margin: 0; color: var(--cream); }
   .card h2 small { display: block; font: 600 17px/1.4 var(--body); color: var(--gold); margin-top: 6px; letter-spacing: 1px; }
   .desc { margin: 0; color: #e2d6c3; font-size: 16.5px; }
@@ -159,7 +158,6 @@
     "slug": "tuesday-club",
     "title": "The Tuesday Club",
     "zh": "星期二俱樂部",
-    "week": "Week 7",
     "description": "Walk through 1890s Chicago as Rosa and follow one girls' club at Hull House from its first meeting to its goodbye. The game pauses three times for group activities.",
     "players": "Groups of 4, one phone per pair",
     "concept": "Social group work: what makes a group, stages of group development, social goals model (Ch. 3)",
@@ -192,7 +190,6 @@ function render(games) {
     a.innerHTML = `
       ${gm.thumb ? `<span class="thumb" style="background-image:url('${esc(gm.thumb)}')" role="img" aria-label="Screenshot of ${esc(gm.title)}"></span>` : ''}
       <span class="body">
-        ${gm.week ? `<span class="week">${esc(gm.week.toUpperCase())}</span>` : ''}
         <h2>${esc(gm.title)}${gm.zh ? `<small>${esc(gm.zh)}</small>` : ''}</h2>
         <p class="desc">${esc(gm.description)}</p>
         <ul class="meta">
