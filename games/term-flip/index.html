@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#140f12">
+<title>Term Flip 名詞翻翻卡</title>
+<meta name="description" content="Flashcards for Introduction to Social Work: see the English term, say the Chinese and explain it, then flip to check.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%23140f12'/%3E%3Crect x='1' y='1' width='4' height='6' fill='%23f4ead6'/%3E%3Crect x='3' y='2' width='4' height='5' fill='%23ffd166'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #140f12; --panel: #1f1719; --panel2: #2a1f22; --line: #3d2d2f;
+    --lo: #e07a5f; --ro: #ffd166; --cream: #f4ead6; --mut: #ad9f90;
+    --ok: #3ddc6a; --again: #ff8a5d;
+    --pixel: "Press Start 2P", ui-monospace, monospace;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --gutter: max(16px, env(safe-area-inset-left));
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--bg); color: var(--cream); font: 18px/1.5 var(--body); -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: max(18px, env(safe-area-inset-top)) var(--gutter) max(24px, env(safe-area-inset-bottom));
+    min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+  .btn { font: 12px/1.4 var(--pixel); background: var(--cream); color: var(--bg); border: 0; padding: 15px 18px 13px; min-height: 52px;
+    box-shadow: 5px 5px 0 #000; border-radius: 2px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+  .btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 #000; }
+  .btn.ghost { background: var(--panel); color: var(--cream); border: 3px solid var(--line); }
+  .btn:focus-visible, .deck:focus-visible { outline: 4px solid var(--ro); outline-offset: 3px; }
+  .rule { display: flex; height: 6px; max-width: 240px; margin: 14px auto; }
+  .rule span { flex: 1; } .rule span:nth-child(1) { background: var(--lo); } .rule span:nth-child(2) { background: #7a2f22; }
+  .rule span:nth-child(3) { background: #8a6a1f; } .rule span:nth-child(4) { background: var(--ro); }
+
+  /* menu */
+  #menu header { text-align: center; padding-top: 6px; }
+  #menu h1 { font: clamp(24px, 7vw, 44px)/1.3 var(--pixel); margin: 0; text-shadow: 4px 4px 0 #000; }
+  #menu .zhT { font-size: clamp(20px, 5vw, 26px); font-weight: 800; color: var(--ro); margin: 6px 0 0; }
+  #menu .sub { color: var(--mut); margin: 6px auto 0; max-width: 40ch; text-wrap: balance; font-size: 16px; }
+  .how { margin: 6px 0 16px; padding: 14px 16px; background: var(--panel); border: 3px solid var(--line); box-shadow: 5px 5px 0 #000; font-size: 15.5px; }
+  .how h2 { font: 10px/1.6 var(--pixel); color: var(--ro); margin: 0 0 8px; }
+  .how ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+  .how .zh { color: var(--mut); display: block; font-size: 14.5px; }
+  .ctl { margin-top: 10px; border-top: 2px dashed var(--line); padding-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px 16px; font-size: 14px; color: var(--mut); }
+  .ctl b { color: var(--cream); display: block; font: 9px/1.8 var(--pixel); }
+  kbd { font: 11px var(--pixel); background: var(--panel2); border: 2px solid var(--line); padding: 1px 5px; color: var(--cream); }
+  .decks { display: grid; gap: 12px; }
+  .deck { text-align: left; display: flex; gap: 14px; align-items: center; width: 100%; min-height: 78px; padding: 12px 16px;
+    background: var(--panel); border: 3px solid var(--line); border-radius: 4px; box-shadow: 5px 5px 0 #000; position: relative; overflow: hidden; }
+  .deck::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--ro); }
+  .deck.done::before { background: var(--ok); }
+  .deck.sel { border-color: var(--ro); }
+  .deck:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 #000; }
+  .deck .txt { flex: 1; min-width: 0; padding-left: 4px; }
+  .deck .t { font: clamp(11px, 3vw, 14px)/1.6 var(--pixel); display: block; }
+  .deck .zh { color: var(--mut); font-size: 15.5px; display: block; }
+  .deck .prog { flex: 0 0 auto; text-align: right; font: 10px/1.6 var(--pixel); color: var(--mut); }
+  .deck .prog b { display: block; font-size: 14px; color: var(--cream); }
+  .deck.done .prog b { color: var(--ok); }
+  .deck.all::before { background: var(--lo); }
+  footer.note { margin-top: auto; padding-top: 22px; font-size: 13px; color: var(--mut); text-align: center; }
+  footer.note a { color: var(--mut); }
+
+  /* play */
+  #play { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .topbar { display: flex; align-items: center; gap: 12px; }
+  .back { flex: 0 0 auto; width: 50px; height: 50px; display: grid; place-items: center; background: var(--panel); border: 3px solid var(--line); box-shadow: 4px 4px 0 #000; font: 13px var(--pixel); }
+  .back:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 #000; }
+  .topbar h1 { flex: 1; min-width: 0; margin: 0; font: clamp(10px, 3vw, 14px)/1.5 var(--pixel); }
+  .count { font: clamp(13px, 4vw, 18px) var(--pixel); color: var(--ok); white-space: nowrap; }
+  .count small { color: var(--mut); font-size: .7em; }
+  .bar { height: 12px; background: var(--panel2); border: 2px solid var(--line); position: relative; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok); transition: width .25s; }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; perspective: 1400px; min-height: 340px; touch-action: pan-y; }
+  .card { width: min(100%, 560px); aspect-ratio: 5 / 3.6; min-height: 300px; position: relative; transform-style: preserve-3d;
+    transition: transform .45s cubic-bezier(.3,1.3,.5,1); cursor: pointer; }
+  .card.flipped { transform: rotateY(180deg); }
+  .card.out-r { animation: outR .28s forwards; } .card.out-l { animation: outL .28s forwards; } .card.in { animation: cin .3s; }
+  @keyframes outR { to { transform: translateX(120%) rotate(12deg); opacity: 0; } }
+  @keyframes outL { to { transform: translateX(-120%) rotate(-12deg); opacity: 0; } }
+  @keyframes cin { from { transform: translateY(24px) scale(.94); opacity: 0; } }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border: 4px solid #000; box-shadow: 8px 8px 0 #000;
+    border-radius: 6px; display: flex; flex-direction: column; padding: 18px 20px; }
+  .front { background: var(--cream); color: var(--bg); }
+  .back2 { background: #2b2108; color: var(--cream); transform: rotateY(180deg); border-color: var(--ro); }
+  .chip { align-self: flex-start; font: 9px/1.6 var(--pixel); background: var(--bg); color: var(--ro); padding: 4px 8px; }
+  .back2 .chip { background: var(--ro); color: #000; }
+  .face .mid { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 8px; }
+  .enT { font-size: clamp(26px, 7vw, 44px); font-weight: 800; line-height: 1.15; text-wrap: balance; }
+  .front .enT { color: #140f12; }
+  .back2 .enS { font-size: clamp(15px, 3.8vw, 18px); color: var(--mut); }
+  .zhT { font-size: clamp(34px, 10vw, 60px); font-weight: 900; color: var(--ro); line-height: 1.15; text-wrap: balance; }
+  .alt { font-size: clamp(15px, 3.8vw, 18px); color: var(--cream); }
+  .task { font-size: clamp(14px, 3.6vw, 16px); text-align: center; color: #5b4a3f; }
+  .back2 .task { color: var(--mut); }
+  .task b { color: inherit; }
+  .marks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mark { font: clamp(10px, 2.8vw, 12px)/1.5 var(--pixel); border: 3px solid #000; box-shadow: 5px 5px 0 #000; padding: 14px 8px 12px; min-height: 62px; border-radius: 2px; }
+  .mark small { display: block; font: 600 14px var(--body); margin-top: 2px; }
+  .mark.again { background: var(--again); color: #000; }
+  .mark.ok { background: var(--ok); color: #000; }
+  .mark:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 #000; }
+  .mark:disabled { opacity: .35; }
+  .flipbtn { width: 100%; }
+  .keyhint { font-size: 13px; color: var(--mut); text-align: center; margin: 0; }
+
+  /* finish */
+  #finish { position: fixed; inset: 0; z-index: 20; background: #22c55e; color: #000; display: flex; overflow-y: auto; }
+  #finish .in { margin: auto; padding: 28px var(--gutter); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 640px; }
+  #finish h2 { font: clamp(28px, 9vw, 64px)/1.25 var(--pixel); margin: 6px 0 0; }
+  #finish .zhbig { font-size: clamp(36px, 11vw, 80px); font-weight: 900; margin: 0; }
+  #finish p { margin: 0; font-size: 17px; }
+  #finish .row { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+  #finish .btn { background: #000; color: #fff; }
+  .toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); transform: translate(-50%, 20px); background: var(--cream); color: var(--bg);
+    padding: 11px 16px; font-size: 15px; font-weight: 600; box-shadow: 4px 4px 0 #000; opacity: 0; pointer-events: none; transition: .2s; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+  @media (max-height: 700px) { .stage { min-height: 280px; } .card { min-height: 250px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="menu">
+  <header>
+    <h1>TERM FLIP</h1>
+    <p class="zhT">名詞翻翻卡</p>
+    <p class="sub">See the English term. Say the Chinese and explain it. Then flip to check.</p>
+    <div class="rule"><span></span><span></span><span></span><span></span></div>
+  </header>
+  <div class="how">
+    <h2>HOW TO PLAY 玩法</h2>
+    <ol>
+      <li>Look at the English term. <span class="zh">看英文名詞。</span></li>
+      <li>Out loud (or to a partner): say the <b>Chinese</b>, then <b>explain it in one sentence</b> or <b>give an example</b>. <span class="zh">說出中文，再用一句話解釋，或舉一個例子。</span></li>
+      <li>Flip the card. Were you right? <b>Got it</b> or <b>Again</b>. "Again" cards come back later. <span class="zh">翻卡檢查。答對按「會了」，不會按「再一次」，稍後會再出現。</span></li>
+    </ol>
+    <div class="ctl">
+      <div><b>📱 PHONE</b>Tap the card to flip. Swipe right = got it, left = again.</div>
+      <div><b>⌨️ KEYBOARD</b><kbd>Space</kbd> flip · <kbd>→</kbd> got it · <kbd>←</kbd> again · <kbd>Esc</kbd> menu</div>
+      <div><b>🎮 8BITDO</b><kbd>A</kbd> flip / got it · <kbd>B</kbd> again · <kbd>←</kbd><kbd>→</kbd> too · <kbd>Y</kbd> menu</div>
+    </div>
+  </div>
+  <div class="decks" id="decks"></div>
+  <footer class="note">Terms and Chinese translations are checked against the course textbook (黃源協、莊俐昕主編《社會工作概論》第 3 版). Your progress is saved on this device only.<br><a href="../../">← Back to all games 回到所有遊戲</a></footer>
+</section>
+
+<section id="play" hidden>
+  <div class="topbar">
+    <button class="back" id="btnBack" type="button" aria-label="Back to decks 回到牌組">◀</button>
+    <h1 id="deckName"></h1>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="bar"><i id="barFill"></i></div>
+  <div class="stage" id="stage">
+    <div class="card" id="card" role="button" tabindex="0" aria-label="Flashcard. Tap to flip. 點一下翻卡">
+      <div class="face front">
+        <span class="chip" id="chipF"></span>
+        <div class="mid"><div class="enT" id="enF"></div></div>
+        <div class="task">Say the <b>Chinese</b> + <b>explain</b> or <b>give an example</b>.<br>說出中文，並解釋或舉例。</div>
+      </div>
+      <div class="face back2">
+        <span class="chip" id="chipB"></span>
+        <div class="mid"><div class="zhT" id="zhB"></div><div class="alt" id="altB"></div><div class="enS" id="enB"></div></div>
+        <div class="task">Did you say it <b>and</b> explain it? 你說對也解釋了嗎？</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn flipbtn" id="btnFlip" type="button">FLIP 翻卡</button>
+  <div class="marks" id="marks" hidden>
+    <button class="mark again" id="btnAgain" type="button">◀ AGAIN<small>再一次</small></button>
+    <button class="mark ok" id="btnOk" type="button">GOT IT ▶<small>會了</small></button>
+  </div>
+  <p class="keyhint">Space = flip · → got it · ← again　|　8BitDo: A flip / got it · B again</p>
+</section>
+
+</div>
+
+<div id="finish" hidden>
+  <div class="in">
+    <h2>DECK CLEAR!</h2>
+    <p class="zhbig">全部會了！</p>
+    <p id="finishMsg"></p>
+    <div class="row">
+      <button class="btn" id="btnRestart" type="button">PLAY AGAIN 再玩一次</button>
+      <button class="btn" id="btnMenu" type="button">DECKS 牌組</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  'use strict';
+  /* Every English–Chinese pair below was checked against photos of the textbook
+     (黃源協、莊俐昕主編《社會工作概論》第3版，雙葉書廊，2026). Terms whose English the book
+     never prints next to the Chinese are left out on purpose. alt = another name the book also uses. */
+  const DECKS = [
+    { id: 'ch1', t: 'Ch. 1 · What Is Social Work?', zh: '第 1 章　社會工作的意涵', cards: [
+      ['Social work', '社會工作'],
+      ['Three areas of social work', '三大工作面向'],
+      ['Intervention work', '介入的工作'],
+      ['Creative work', '創造的工作'],
+      ['Empowering work', '賦權的工作'],
+      ['Empowerment', '賦權']]},
+    { id: 'ch2', t: 'Ch. 2 · History', zh: '第 2 章　發展歷史', cards: [
+      ['Poor Law (1601)', '《濟貧法》'],
+      ['New Poor Law (1834)', '《新濟貧法》'],
+      ['Means test', '資產調查'],
+      ['Deserving (worthy) poor', '值得救濟的貧民'],
+      ['Undeserving (unworthy) poor', '不值得救濟的貧民'],
+      ['Charity Organization Society (COS)', '慈善組織會社'],
+      ['Friendly visitor', '友善訪問員'],
+      ['Social Diagnosis (1917)', '《社會診斷》'],
+      ['Settlement House Movement', '睦鄰運動'],
+      ['Toynbee Hall', '湯恩比館'],
+      ['Hull House', '霍爾館']]},
+    { id: 'ch3', t: 'Ch. 3 · Theory', zh: '第 3 章　理論觀點', cards: [
+      ['Systems perspective', '系統觀點'],
+      ['Ecosystems perspective', '生態系統觀點'],
+      ['Ecology', '生態學'],
+      ['Person-in-environment (PIE)', '人在環境中'],
+      ['Transaction', '交易'],
+      ['Micro system', '微視系統'],
+      ['Mezzo system', '中介系統'],
+      ['Macro system', '鉅視系統']]},
+    { id: 'ch4', t: 'Ch. 4 · Casework', zh: '第 4 章　社會個案工作', cards: [
+      ['Self-determination', '自決', '案主自決']]},
+    { id: 'ch5', t: 'Ch. 5 · Group Work', zh: '第 5 章　社會團體工作', cards: [
+      ['Social group work', '社會團體工作'],
+      ['Self-help group', '自助性團體', '支持性團體 supportive group'],
+      ['Social goals model', '社會目標模式'],
+      ['Remedial model', '治療模式'],
+      ['Reciprocal model', '互惠模式'],
+      ['Initial phase / Pre-group', '團體啟動期', '團體前期'],
+      ['Convening phase', '團體聚集期'],
+      ['Formation phase', '團體形成期'],
+      ['Conflict phase', '團體衝突期', '風暴期'],
+      ['Maintenance phase', '團體維持期'],
+      ['Termination (group)', '團體結束期'],
+      ['Enabler', '使能者']]},
+    { id: 'ch6', t: 'Ch. 6 · Community Work', zh: '第 6 章　社區工作', cards: [
+      ['Community', '社區'],
+      ['Community work', '社區工作'],
+      ['Virtual community', '虛擬社區'],
+      ['Community organization', '社區組織'],
+      ['Community development', '社區發展'],
+      ['Community building', '社區營造', '社區建設'],
+      ['Community care', '社區照顧'],
+      ['Community empowerment', '社區賦權'],
+      ['Community self-determination', '社區自決'],
+      ['Community inclusion', '社區包容'],
+      ['Community participation', '社區參與'],
+      ['Community strengthening', '社區強化'],
+      ['Sense of community', '社區意識'],
+      ['Community capacity building', '社區能力建構'],
+      ['Locality development', '地方發展'],
+      ['Social planning', '社會計畫'],
+      ['Social action', '社會行動'],
+      ['Need-based community development (NBCD)', '以需求為基礎的社區發展'],
+      ['Asset-based community development (ABCD)', '以資產為基礎的社區發展'],
+      ['Problem / needs path', '問題／需求途徑'],
+      ['Asset / capacity path', '資產／能力途徑']]},
+    { id: 'ch7', t: 'Ch. 7 · Case Management', zh: '第 7 章　個案／照顧管理', cards: [
+      ['Case management', '個案管理'],
+      ['Care management', '照顧管理'],
+      ['Case manager', '個案管理者'],
+      ['Intake', '接案'],
+      ['Engagement', '建立關係'],
+      ['Assessment', '評量'],
+      ['Goal setting', '目標設定'],
+      ['Intervention planning', '介入計畫'],
+      ['Service planning', '服務計畫'],
+      ['Monitoring', '監測'],
+      ['Reassessment', '再評量'],
+      ['Termination (case)', '結案'],
+      ['Coordination', '協調'],
+      ['Collaboration', '協力'],
+      ['Resource network', '資源網絡'],
+      ['Multi-professional team', '多專業團隊'],
+      ['Inter-professional team', '專業間團隊'],
+      ['Trans-professional team', '跨專業團隊']]}
+  ];
+  const ALL = { id: 'all', t: 'ALL TERMS · Mixed', zh: '全部名詞（混合）', cards: DECKS.flatMap(d => d.cards.map(c => [...c.slice(0, 2), c[2] || '', d.t.split(' · ')[0]])) };
+  DECKS.forEach(d => d.cards = d.cards.map(c => [c[0], c[1], c[2] || '', d.t.split(' · ')[0]]));
+  const LIST = [ALL, ...DECKS];
+
+  const $ = s => document.querySelector(s);
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem('termflip:' + k)); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem('termflip:' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* ---------- sound (generated, no files) ---------- */
+  let AC = null, muted = false;
+  function beep(f, d, type = 'square', v = .05, slide = 0) {
+    if (muted) return;
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime;
+      o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.linearRampToValueAtTime(f + slide, t + d);
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d);
+    } catch (e) {}
+  }
+  const sfx = { flip: () => beep(520, .08, 'triangle', .06, 200), ok: () => { beep(660, .09); setTimeout(() => beep(990, .12), 80); },
+    again: () => beep(220, .15, 'sawtooth', .04, -60), win: () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, .16, 'square', .05), i * 110)) };
+
+  /* ---------- menu ---------- */
+  let menuSel = 0;
+  function bestOf(id) { return store.get('best:' + id) || 0; }
+  function drawMenu() {
+    const box = $('#decks'); box.innerHTML = '';
+    LIST.forEach((d, i) => {
+      const b = document.createElement('button');
+      const best = bestOf(d.id), n = d.cards.length;
+      b.className = 'deck' + (d.id === 'all' ? ' all' : '') + (best >= n ? ' done' : '') + (i === menuSel ? ' sel' : '');
+      b.type = 'button';
+      b.innerHTML = `<span class="txt"><span class="t">${d.t}</span><span class="zh">${d.zh}</span></span>
+        <span class="prog"><b>${best >= n ? '★ ' : ''}${n}</b>cards 張</span>`;
+      b.addEventListener('click', () => start(i));
+      box.appendChild(b);
+    });
+  }
+
+  /* ---------- play ---------- */
+  let deck = null, queue = [], total = 0, done = 0, flipped = false, busy = false, deckIndex = 0, rounds = 0;
+  function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function start(i) {
+    deckIndex = i; deck = LIST[i]; queue = shuffle(deck.cards); total = queue.length; done = 0; rounds = 0;
+    $('#menu').hidden = true; $('#finish').hidden = true; $('#play').hidden = false;
+    $('#deckName').textContent = deck.t;
+    show(); $('#card').focus({ preventScroll: true });
+  }
+  function show() {
+    const c = queue[0]; flipped = false;
+    const card = $('#card'); card.classList.remove('flipped', 'out-r', 'out-l'); void card.offsetWidth; card.classList.add('in');
+    $('#enF').textContent = c[0]; $('#enB').textContent = c[0]; $('#zhB').textContent = c[1];
+    $('#altB').textContent = c[2] ? 'also 亦稱：' + c[2] : ''; $('#chipF').textContent = $('#chipB').textContent = c[3];
+    $('#count').innerHTML = `${done}<small>/${total}</small>`; $('#barFill').style.width = (100 * done / total) + '%';
+    $('#marks').hidden = true; $('#btnFlip').hidden = false;
+  }
+  function flip() {
+    if (busy || !deck) return;
+    flipped = !flipped; $('#card').classList.toggle('flipped', flipped); sfx.flip();
+    $('#marks').hidden = !flipped; $('#btnFlip').hidden = flipped;
+  }
+  function mark(ok) {
+    if (busy || !deck) return;
+    if (!flipped) { flip(); return; }
+    busy = true; rounds++;
+    const card = $('#card'); card.classList.remove('in'); card.classList.add(ok ? 'out-r' : 'out-l');
+    ok ? sfx.ok() : sfx.again();
+    const c = queue.shift();
+    if (ok) done++; else queue.splice(Math.min(queue.length, 3 + Math.floor(Math.random() * 3)), 0, c);
+    setTimeout(() => {
+      busy = false;
+      if (!queue.length) return finish();
+      show();
+    }, 260);
+  }
+  function finish() {
+    sfx.win();
+    store.set('best:' + deck.id, total);
+    const extra = rounds - total;
+    $('#finishMsg').innerHTML = `${total} cards in ${rounds} flips${extra ? ` (${extra} “again”)` : ' — perfect!'}<br>共 ${total} 張，翻了 ${rounds} 次`;
+    $('#play').hidden = true; $('#finish').hidden = false; $('#btnRestart').focus();
+  }
+  function toMenu() { deck = null; $('#play').hidden = true; $('#finish').hidden = true; $('#menu').hidden = false; drawMenu(); }
+
+  $('#card').addEventListener('click', () => { if (!swiped) flip(); });
+  $('#btnFlip').addEventListener('click', flip);
+  $('#btnOk').addEventListener('click', () => mark(true));
+  $('#btnAgain').addEventListener('click', () => mark(false));
+  $('#btnBack').addEventListener('click', toMenu);
+  $('#btnMenu').addEventListener('click', toMenu);
+  $('#btnRestart').addEventListener('click', () => start(deckIndex));
+
+  /* swipe */
+  let sx = 0, sy = 0, swiped = false;
+  const stage = $('#stage');
+  stage.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiped = false; }, { passive: true });
+  stage.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      swiped = true; setTimeout(() => swiped = false, 350);
+      if (!flipped) { toast('Flip first! 先翻卡'); return; }
+      mark(dx > 0);
+    }
+  });
+
+  /* keyboard */
+  addEventListener('keydown', e => {
+    const k = e.key;
+    if (!$('#menu').hidden) {
+      if (k === 'ArrowDown' || k === 'ArrowRight') { menuSel = (menuSel + 1) % LIST.length; drawMenu(); e.preventDefault(); }
+      else if (k === 'ArrowUp' || k === 'ArrowLeft') { menuSel = (menuSel - 1 + LIST.length) % LIST.length; drawMenu(); e.preventDefault(); }
+      else if (k === 'Enter' && !(document.activeElement && document.activeElement.classList.contains('deck'))) { start(menuSel); e.preventDefault(); }
+      return;
+    }
+    if (!$('#finish').hidden) { if (k === 'Escape') toMenu(); return; }
+    if ($('#play').hidden) return;
+    if (k === ' ' || k === 'Enter' || k === 'ArrowUp' || k === 'ArrowDown') { if (document.activeElement && /^(btnOk|btnAgain|btnBack)$/.test(document.activeElement.id)) return; flip(); e.preventDefault(); }
+    else if (k === 'ArrowRight') { mark(true); e.preventDefault(); }
+    else if (k === 'ArrowLeft') { mark(false); e.preventDefault(); }
+    else if (k === 'Escape') toMenu();
+    else if (k === 'm' || k === 'M') { muted = !muted; toast(muted ? 'Sound off 靜音' : 'Sound on 有聲'); }
+  });
+
+  /* 8BitDo / gamepad: A=1, B=0, Y=2, X=3; D-pad on axes or buttons 12-15 */
+  const prev = {};
+  function edge(name, on) { const was = prev[name]; prev[name] = on; return on && !was; }
+  function poll() {
+    const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
+    for (const gp of pads) {
+      const b = j => !!(gp.buttons[j] && (gp.buttons[j].pressed || gp.buttons[j].value > .5));
+      const ax = gp.axes || [], x = ax[0] || 0, y = ax[1] || 0;
+      const L = x < -.5 || b(14), R = x > .5 || b(15), U = y < -.5 || b(12), D = y > .5 || b(13);
+      const A = b(1), B = b(0), Y = b(2), X = b(3), S = b(9);
+      const tag = gp.index + ':';
+      const eA = edge(tag + 'A', A), eB = edge(tag + 'B', B), eY = edge(tag + 'Y', Y), eX = edge(tag + 'X', X), eS = edge(tag + 'S', S);
+      const eL = edge(tag + 'L', L), eR = edge(tag + 'R', R), eU = edge(tag + 'U', U), eD = edge(tag + 'D', D);
+      if (!$('#menu').hidden) {
+        if (eD || eR) { menuSel = (menuSel + 1) % LIST.length; drawMenu(); }
+        if (eU || eL) { menuSel = (menuSel - 1 + LIST.length) % LIST.length; drawMenu(); }
+        if (eA || eX || eS) start(menuSel);
+      } else if (!$('#finish').hidden) {
+        if (eA || eX || eS) start(deckIndex);
+        if (eY || eB) toMenu();
+      } else if (!$('#play').hidden) {
+        if (eA) { flipped ? mark(true) : flip(); }
+        if (eB) { flipped ? mark(false) : flip(); }
+        if (eX || eU || eD) flip();
+        if (eR) mark(true);
+        if (eL) mark(false);
+        if (eY) toMenu();
+      }
+    }
+    requestAnimationFrame(poll);
+  }
+  addEventListener('gamepadconnected', () => toast('🎮 Controller connected 已連接手把'));
+
+  let tt;
+  function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600); }
+
+  drawMenu(); requestAnimationFrame(poll);
+  const want = location.hash.slice(1); const wi = LIST.findIndex(d => d.id === want); if (wi >= 0) start(wi);
+})();
+</script>
+</body>
+</html>

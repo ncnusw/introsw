@@ -5,7 +5,7 @@
     "zh": "星期二俱樂部",
     "description": "Walk through 1890s Chicago as Rosa and follow one girls' club at Hull House from its first meeting to its goodbye. The game pauses three times for group activities.",
     "players": "Groups of 4, one phone per pair",
-    "concept": "Social group work: what makes a group, stages of group development, social goals model (Ch. 3)",
+    "concept": "Social group work: what makes a group, stages of group development, social goals model (Ch. 5)",
     "path": "games/tuesday-club/",
     "thumb": "games/tuesday-club/thumb.png",
     "added": "2026-10-18"
@@ -20,5 +20,27 @@
     "path": "games/term-duel/",
     "thumb": "games/term-duel/thumb.png",
     "added": "2026-10-19"
+  },
+  {
+    "slug": "storm-creek",
+    "title": "Storm Over Clear Creek",
+    "zh": "青溪颱風夜",
+    "description": "A typhoon is coming and the county wants to close the village. Map Clear Creek's hidden assets, lead a rescue through an old tunnel on typhoon night, then win over the county official at the town hall.",
+    "players": "Solo on a phone, a pair on one phone, or a pair on the projector with an 8BitDo",
+    "concept": "Community work: what makes a community, NBCD vs. ABCD, community principles, Rothman's three models, PARK, practice steps (Ch. 6)",
+    "path": "games/storm-creek/",
+    "thumb": "games/storm-creek/thumb.png",
+    "added": "2026-10-23"
+  },
+  {
+    "slug": "term-flip",
+    "title": "Term Flip",
+    "zh": "名詞翻翻卡",
+    "description": "Flashcards for exam review: see the English term, say the Chinese and explain it, then flip to check. Cards you miss come back until you know them all.",
+    "players": "Solo or in pairs, on a phone, keyboard, or 8BitDo",
+    "concept": "Course vocabulary, Ch. 1–7 (every English–Chinese pair checked against the textbook)",
+    "path": "games/term-flip/",
+    "thumb": "games/term-flip/thumb.png",
+    "added": "2026-10-23"
   }
 ]

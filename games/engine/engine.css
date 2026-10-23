@@ -29,6 +29,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 #view { position: relative; flex: 1 1 auto; min-height: 0; background: #000; line-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 #map { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }   /* size is set by engine.js to fill #view */
 #map.sepia { filter: sepia(.65) saturate(.75) brightness(.95); }
+#map.night { filter: brightness(.5) saturate(.6) contrast(1.1); }
+#map.dusk { filter: brightness(.82) saturate(1.15) sepia(.28); }
+#map.storm { filter: brightness(.62) saturate(.45) contrast(1.06); }
+#rain { position: absolute; inset: 0; pointer-events: none; display: none; background-color: rgba(30, 55, 100, .22); background-image: repeating-linear-gradient(105deg, rgba(200,225,255,0) 0 13px, rgba(200,225,255,.55) 13px 15px, rgba(200,225,255,0) 15px 31px); background-size: 62px 62px; animation: rain .35s linear infinite; }
+#map.storm ~ #rain { display: block; }
+@keyframes rain { to { background-position: -14px 62px; } }
+@media (prefers-reduced-motion: reduce) { #rain { animation: none; } }
 #toast { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: rgba(15,12,17,.92);
   border: 2px solid var(--gold); color: var(--cream); padding: 6px 12px; border-radius: 6px; font-size: 14px; line-height: 1.4;
   pointer-events: none; opacity: 0; transition: opacity .25s; white-space: nowrap; max-width: 94%; overflow: hidden; text-overflow: ellipsis; }
@@ -134,3 +141,6 @@ a.big { display: flex; align-items: center; justify-content: center; text-decora
 .hidden { display: none !important; }
 .recap { list-style: none; padding: 0; margin: 8px 0 4px; display: grid; gap: 6px; }
 .recap li { background: var(--panel2); border-left: 4px solid var(--gold); padding: 6px 10px; border-radius: 4px; font-size: 15.5px; line-height: 1.5; }
+
+/* D-pad / arrow-key focus inside overlays */
+.ov button.padfocus, .ov a.big.padfocus, .ov button:focus-visible, .ov a.big:focus-visible { outline: 4px solid #ffd166; outline-offset: 3px; }

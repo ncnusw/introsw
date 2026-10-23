@@ -9,7 +9,7 @@
  *   **term**              shown highlighted
  *   // comment
  *   @map id x y [dir]     go to a map            @pos x y [dir]          move the player
- *   @player sprite        player's sprite        @tint sepia|none
+ *   @player sprite        player's sprite        @tint sepia|night|storm|dusk|none
  *   @put id sprite map x y label|- [!]           place a person or object (! = show a marker)
  *   @label id label|- [!]                        change what talking to it does
  *   @del id   @move id x y   @clear              remove / slide / remove everything
@@ -168,11 +168,11 @@
     if (overlayOpen()) {
       if (e.key === 'Escape' || ((e.key === 'n' || e.key === 'N') && $('#ovNotes').classList.contains('show'))) closeNotes();
       else if ((e.key === 'Enter' || e.key === ' ') && $('#titlecard').classList.contains('show')) $('#titlecard').click();
-      else if ($('#ovQuiz').classList.contains('show')) {
-        const k = '1234abcdABCD'.indexOf(e.key);
-        if (k >= 0) $('#quizOpts').children[k % 4]?.click();
-        else if (e.key === 'Enter' && !$('#quizNext').classList.contains('hidden')) $('#quizNext').click();
+      else if ($('#ovQuiz').classList.contains('show') && '1234abcdABCD'.includes(e.key) && e.key.length === 1) {
+        $('#quizOpts').children['1234abcdABCD'.indexOf(e.key) % 4]?.click();
       }
+      else if ($('#ovQuiz').classList.contains('show') && e.key === 'Enter' && !$('#quizNext').classList.contains('hidden') && document.activeElement !== $('#quizNext')) $('#quizNext').click();
+      else if (['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(e.key)) { ovFocus(e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 1); e.preventDefault(); }
       return;
     }
     if (KEYMAP[e.key]) { if (choiceKeys(e.key)) { e.preventDefault(); return; } press(KEYMAP[e.key], true); e.preventDefault(); return; }
@@ -204,6 +204,10 @@
       const ax = gp.axes[0] || 0, ay = gp.axes[1] || 0;
       const now = { up: b(12) || ay < -.5, down: b(13) || ay > .5, left: b(14) || ax < -.5, right: b(15) || ax > .5, act: b(0) || b(1), book: b(2) || b(3) };
       const p = padPrev[gp.index] || {};
+      if (overlayOpen() && !$('#titlecard').classList.contains('show')) {
+        if ((now.up && !p.up) || (now.left && !p.left)) ovFocus(-1);
+        if ((now.down && !p.down) || (now.right && !p.right)) ovFocus(1);
+      }
       for (const d of ['up', 'down', 'left', 'right']) if (now[d] !== !!p[d]) {
         if (now[d] && choiceKeys({ up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' }[d])) continue;
         press(d, now[d]);
@@ -214,9 +218,23 @@
     }
   }
   function padOverlayAct() {
-    if ($('#titlecard').classList.contains('show')) $('#titlecard').click();
-    else if ($('#ovNotes').classList.contains('show')) closeNotes();
+    if ($('#titlecard').classList.contains('show')) { $('#titlecard').click(); return; }
+    if ($('#ovNotes').classList.contains('show')) { closeNotes(); return; }
+    const list = ovButtons(), a = document.activeElement;
+    if (a && list.includes(a)) a.click();
     else if ($('#ovQuiz').classList.contains('show') && !$('#quizNext').classList.contains('hidden')) $('#quizNext').click();
+    else ovFocus(1);
+  }
+  // buttons in the open overlay (title, quiz, pause, end) can be reached with the D-pad / arrow keys
+  function ovButtons() {
+    const ov = document.querySelector('.ov.show'); if (!ov) return [];
+    return [...ov.querySelectorAll('button, a.big')].filter(b => b.offsetParent !== null && !b.classList.contains('hidden') && !b.disabled);
+  }
+  function ovFocus(step) {
+    const list = ovButtons(); if (!list.length) return;
+    const i = list.indexOf(document.activeElement);
+    const n = i < 0 ? (step > 0 ? 0 : list.length - 1) : (i + step + list.length) % list.length;
+    list[n].focus(); list.forEach(b => b.classList.toggle('padfocus', b === list[n]));
   }
 
   /* ---------------- movement loop ---------------- */
@@ -591,7 +609,7 @@
       case 'map': goMap(a[0], a[1], a[2], a[3]); return;
       case 'pos': st.px = +a[0]; st.py = +a[1]; st.mv = null; if (a[2]) st.dir = a[2]; return;
       case 'player': st.sprite = a[0]; spriteRef(a[0]); return;
-      case 'tint': st.tint = a[0] === 'sepia'; canvas.classList.toggle('sepia', st.tint); return;
+      case 'tint': st.tint = a[0] && a[0] !== 'none' ? a[0] : false; ['sepia', 'night', 'storm', 'dusk'].forEach(c => canvas.classList.toggle(c, st.tint === c)); return;
       case 'put': {
         spriteRef(a[1]); if (!MAPS[a[2]]) throw new Error('Unknown map: ' + a[2]);
         st.ents[a[0]] = { id: a[0], sprite: a[1], map: a[2], x: +a[3], y: +a[4], label: a[5] && a[5] !== '-' ? a[5] : null, mark: a[6] === '!', flip: false };
