@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-26 (Key Term Tycoon, update)
+- The board now fills the whole screen with larger text. Team cash, the clock and the last roll sit in a small bar inside the board; the event list is a pop-up (L).
+- Dice fix: the dice faces were blank (their padding was sized from the whole centre area). The last roll now also stays visible in the top bar.
+- Each team gets a random shape (circle, triangle, square, diamond, star or hexagon). Tokens are the team's shape, and the shape appears just inside the board next to every term the team owns.
+- Correct / Incorrect can only be chosen on the teacher's keyboard (Enter / Backspace) or mouse; the 8BitDo is ignored on those screens. The controller still rolls, buys, passes and continues.
+- Controller loop made robust (an error can no longer stop it); controller status and button setup (C) are in the small toolbar.
+
 ## 2026-10-26 (Key Term Tycoon)
 - New game: **Key Term Tycoon 關鍵詞大亨** (`games/term-tycoon/`), a midterm review board game played on the projector by 2–4 teams. 28-square board with 20 key terms from the study sheet in six districts (Basics, History, Systems, Group Work, Community Work, Case Management), 4 Pop Quiz squares, Start, Detention, Coffee Break and Go to Detention.
 - Buying a term = explaining it (exam prompt 1). Landing on another team's term = answer a question within a countdown (default 10 s) or pay rent; a whole district doubles the rent. Pop Quiz cards draw from all six exam prompts and every study-sheet term. The teacher judges every answer with Correct / Incorrect (Ⓐ / Ⓑ); the game handles cash, rent, Start money, doubles, Detention, bankruptcy and the winner.
