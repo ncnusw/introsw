@@ -20,6 +20,8 @@
  *   @goto label   @note termId   @item text   @quiz id   @pause id   @title Big|small   @wait ms
  *   @choice  followed by  ? option text [-> label]   lines     (sets var "choice" to 1, 2, 3...)
  *   @music quiet|warm|bright|tick|stop   @save   @end
+ *   @follow id | @follow off   that person walks one step behind the player (and comes along through doors)
+ *   pauses: { code, alt, html, head, choices, var, unlockAfter, ready (show the button at once), go (button label) }
  */
 (() => {
   'use strict';
@@ -91,7 +93,7 @@
   /* ---------------- state ---------------- */
   const st = {
     map: null, px: 0, py: 0, dir: 'down', sprite: G.player || 'rosa', tint: false,
-    ents: {}, zones: {}, doorOv: {}, vars: {}, notes: [], firstTry: {}, goal: '', busy: false, mv: null, inZone: {}
+    ents: {}, zones: {}, doorOv: {}, vars: {}, notes: [], firstTry: {}, goal: '', busy: false, mv: null, inZone: {}, follow: null
   };
   const M = () => MAPS[st.map];
 
@@ -267,7 +269,24 @@
     if (door) { useDoor(door); return; }
     if (!passable(nx, ny)) return;
     st.mv = { x0: st.px, y0: st.py, fx: st.px, fy: st.py, t: 0 };
+    const f = st.follow && st.ents[st.follow];
+    if (f && f.map === st.map && !f.tw) {
+      const fx = f.x, fy = f.y;
+      if (fx !== st.px || fy !== st.py) { f.flip = st.px < fx; f.x = st.px; f.y = st.py; f.tw = { x0: fx, y0: fy, t: 0, d: STEP_MS, done: () => {} }; }
+    } else if (f) placeFollower();
     st.px = nx; st.py = ny;
+  }
+  function placeFollower() {
+    const f = st.follow && st.ents[st.follow]; if (!f || !st.map) return;
+    f.map = st.map; f.tw = null; f.fx = f.fy = undefined; f.solid = false;
+    const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[st.dir] || [0, 1];
+    for (const [dx, dy] of [back, [0, 1], [-1, 0], [1, 0], [0, -1]]) {
+      const x = st.px + dx, y = st.py + dy, m = M();
+      if (x < 0 || y < 0 || x >= m.w || y >= m.h) continue;
+      const g = gTile(m, x, y), o = oTile(m, x, y), e = entAt(x, y);
+      if (g && !g[2] && !(o && o[2]) && !(e && e !== f) && !doorAt(x, y)) { f.x = x; f.y = y; return; }
+    }
+    f.x = st.px; f.y = st.py;
   }
   function arrived() { checkZones(); }
   function checkZones() {
@@ -289,6 +308,7 @@
   function goMap(id, x, y, dir) {
     if (!MAPS[id]) throw new Error('Unknown map: ' + id);
     st.map = id; st.px = +x; st.py = +y; st.mv = null; if (dir) st.dir = dir;
+    placeFollower();
     for (const z of Object.values(st.zones)) st.inZone[z.id] = false;   // stepping into a zone through a door counts as entering it
   }
 
@@ -468,6 +488,10 @@
     task.innerHTML = p.html; opts.innerHTML = ''; fb.textContent = ''; fb.className = 'fb'; inp.value = '';
     let picked = p.choices ? null : true;
     code.classList.toggle('hidden', !p.code); go.classList.add('hidden');
+    if (!go.dataset.label) go.dataset.label = go.textContent;
+    go.textContent = p.go || go.dataset.label;
+    $('#ovPause').classList.toggle('over', !!p.over);
+    if (p.ready) go.classList.remove('hidden');
     p.choices && p.choices.forEach((t, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.textContent = t;
       b.addEventListener('click', () => {
@@ -607,12 +631,18 @@
   async function command(cmd, a, rest, block, i) {
     switch (cmd) {
       case 'map': goMap(a[0], a[1], a[2], a[3]); return;
-      case 'pos': st.px = +a[0]; st.py = +a[1]; st.mv = null; if (a[2]) st.dir = a[2]; return;
+      case 'pos': st.px = +a[0]; st.py = +a[1]; st.mv = null; if (a[2]) st.dir = a[2]; placeFollower(); return;
+      case 'follow': {
+        if (!a[0] || a[0] === 'off') { if (st.follow && st.ents[st.follow]) st.ents[st.follow].solid = true; st.follow = null; return; }
+        if (!st.ents[a[0]]) throw new Error('No such thing: ' + a[0]);
+        st.follow = a[0]; placeFollower(); return;
+      }
       case 'player': st.sprite = a[0]; spriteRef(a[0]); return;
       case 'tint': st.tint = a[0] && a[0] !== 'none' ? a[0] : false; ['sepia', 'night', 'storm', 'dusk'].forEach(c => canvas.classList.toggle(c, st.tint === c)); return;
       case 'put': {
         spriteRef(a[1]); if (!MAPS[a[2]]) throw new Error('Unknown map: ' + a[2]);
         st.ents[a[0]] = { id: a[0], sprite: a[1], map: a[2], x: +a[3], y: +a[4], label: a[5] && a[5] !== '-' ? a[5] : null, mark: a[6] === '!', flip: false };
+        if (st.follow === a[0]) st.ents[a[0]].solid = false;
         return;
       }
       case 'label': { const e = st.ents[a[0]]; if (!e) throw new Error('No such thing: ' + a[0]); e.label = a[1] && a[1] !== '-' ? a[1] : null; e.mark = a[2] === '!'; return; }
@@ -624,7 +654,7 @@
         await new Promise(res => { e.tw = { x0: e.x, y0: e.y, t: 0, d: fast ? 1 : d, done: res }; e.x = +a[1]; e.y = +a[2]; });
         return;
       }
-      case 'clear': st.ents = {}; st.zones = {}; st.doorOv = {}; st.inZone = {}; return;
+      case 'clear': st.ents = {}; st.zones = {}; st.doorOv = {}; st.inZone = {}; st.follow = null; return;
       case 'zone': st.zones[a[0]] = { id: a[0], map: a[1], x: +a[2], y: +a[3], w: +a[4], h: +a[5], label: a[6] }; st.inZone[a[0]] = false; return;
       case 'unzone': delete st.zones[a[0]]; return;
       case 'door': {

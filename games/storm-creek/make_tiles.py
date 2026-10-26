@@ -61,5 +61,20 @@ tile(7, lambda x, y: (G if x < 3 else (INK if x == 3 else water(x, y))))
 # 8: water edge right
 tile(8, lambda x, y: (G if x > 12 else (INK if x == 12 else water(x, y))))
 
+# 9-11: blackboard (left, middle, right) hung on a wall
+BB, BBL, CH, FR = (46, 84, 66), (60, 104, 82), (225, 232, 220), (140, 92, 58)
+def board(part):
+    def f(x, y):
+        if y < 2 or y > 13: return None
+        if y in (2, 13): return FR
+        if part == 0 and x < 2: return FR
+        if part == 2 and x > 13: return FR
+        if y == 12 and x % 5 == 1: return CH
+        if part == 1 and y in (5, 8) and 2 < x < 13 and (x * 3 + y) % 4: return CH
+        if part == 0 and y == 6 and 4 < x < 13: return CH
+        return BBL if (x + y) % 7 == 0 else BB
+    return f
+tile(9, board(0)); tile(10, board(1)); tile(11, board(2))
+
 img.save(OUT)
 print('wrote', OUT)
