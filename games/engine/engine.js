@@ -19,7 +19,7 @@
  *   @set var value   @inc var   @if var=value label   @if var>=n label
  *   @goto label   @note termId   @item text   @quiz id   @pause id   @title Big|small   @wait ms
  *   @choice  followed by  ? option text [-> label]   lines     (sets var "choice" to 1, 2, 3...)
- *   @music quiet|warm|bright|tick|stop   @save   @end
+ *   @music quiet|warm|bright|tick|danger|stop   @save   @end
  *   @follow id | @follow off   that person walks one step behind the player (and comes along through doors)
  *   @light r | @light off       darkness everywhere except a lantern circle of r tiles around the player
  *   @timer seconds label | @timer off   countdown clock; runs label when it reaches 0 (paused during dialogue and quizzes)
@@ -589,6 +589,7 @@
     if (mood === 'tick') {
       musicT = setInterval(() => { if (!muted) note(1600, AC.currentTime, .03, .02, 'square'); }, 1000); return;
     }
+    if (mood === 'danger') { danger(); return; }
     const m = MOODS[mood]; if (!m) return;
     let beat = 0; const spb = 60 / m.bpm;
     const play = () => {
@@ -600,6 +601,41 @@
       beat++;
     };
     play(); musicT = setInterval(play, spb * 1000);
+  }
+  // 'danger': a fast minor-key chase (A minor, harmonic-minor E chord for tension), played in 16th notes
+  let noiseBuf = null;
+  function thump(at, vol) {          // low drum: a sine that drops in pitch
+    const o = AC.createOscillator(), g = AC.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(140, at); o.frequency.exponentialRampToValueAtTime(42, at + .16);
+    g.gain.setValueAtTime(vol, at); g.gain.exponentialRampToValueAtTime(.0005, at + .2);
+    o.connect(g); g.connect(master); o.start(at); o.stop(at + .25);
+  }
+  function hiss(at, dur, vol, hp) {  // noise: hi-hat (short) or thunder/wind (long, low)
+    if (!noiseBuf) { noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    const src = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
+    src.buffer = noiseBuf; src.loop = true; f.type = hp ? 'highpass' : 'lowpass'; f.frequency.value = hp ? 7000 : 260;
+    g.gain.setValueAtTime(.0001, at); g.gain.linearRampToValueAtTime(vol, at + (hp ? .002 : dur * .3)); g.gain.exponentialRampToValueAtTime(.0005, at + dur);
+    src.connect(f); f.connect(g); g.connect(master); src.start(at); src.stop(at + dur + .05);
+  }
+  function danger() {
+    const bpm = 150, s16 = 60 / bpm / 4;
+    // bars: Am, F, Dm, E (E major = the tense harmonic-minor chord)
+    const BARS = [[45, 57, 60, 64], [41, 57, 60, 65], [38, 57, 62, 65], [40, 56, 59, 64]];
+    const ARP = [0, 1, 2, 1, 3, 2, 1, 2, 0, 1, 2, 3, 2, 1, 3, 2];
+    let step = 0;
+    const play = () => {
+      if (muted) { step++; return; }
+      const t = AC.currentTime + .05, i = step % 16, bar = BARS[Math.floor(step / 16) % 4];
+      const root = bar[0];
+      if (i % 2 === 0) note(mf(root - (i % 8 === 6 ? -12 : 0)), t, s16 * 1.6, .05, 'sawtooth');      // driving bass in 8ths
+      note(mf(bar[1 + ARP[i] % 3] + 12), t, s16 * .9, .018, 'square');                              // fast arpeggio
+      if (i % 4 === 0) thump(t, .16);                                                                // drum on every beat
+      if (i % 4 === 2) hiss(t, .04, .03, true);                                                      // off-beat hi-hat
+      if (i === 12 && Math.floor(step / 16) % 4 === 3) note(mf(bar[3] + 24), t, s16 * 4, .03, 'square'); // alarm note on the E bar
+      if (i === 0 && step % 128 === 64) hiss(t, 2.6, .12, false);                                    // distant thunder
+      step++;
+    };
+    play(); musicT = setInterval(play, s16 * 1000);
   }
   function toggleMute() {
     muted = !muted; store.set('story:muted', muted);

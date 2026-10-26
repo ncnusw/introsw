@@ -569,7 +569,7 @@ Chief: 颱風要來了，大家小心！
 :: ch2
 @clear
 @tint storm
-@music tick
+@music danger
 @player an
 @title 颱風夜（第二條路）|Typhoon Night · Path 2
 @set team 0
@@ -809,6 +809,7 @@ Chen: 青溪里……還是青溪里啊。
 
 :: c2_back
 @label chief -
+@music warm
 Chief: 回來了！陳奶奶平安回來了！
 Everyone: 太好了！
 @if kid=1 c2_back_kid
