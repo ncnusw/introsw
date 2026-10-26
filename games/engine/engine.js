@@ -750,6 +750,14 @@
     $('#btnContinue').classList.toggle('hidden', !(s && s.cp));
     $('#ovTitle').classList.add('show');
   }
+  // full screen on phones and tablets when the game starts (needs a tap; iPhones do not allow it, so this quietly does nothing there)
+  function goFullscreen() {
+    if (!matchMedia('(pointer: coarse)').matches || document.fullscreenElement) return;
+    const el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (!req) return;
+    try { const p = req.call(el, { navigationUI: 'hide' }); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+  }
+  ['#btnStart', '#btnContinue', '#jumpOk'].forEach(s => $(s).addEventListener('click', goFullscreen));
   $('#btnStart').addEventListener('click', () => {
     unlockAudio(); store.del(KEY); st.vars = {}; st.notes = []; st.firstTry = {}; updateNoteCount(); startAt(G.start);
   });

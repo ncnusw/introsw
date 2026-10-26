@@ -38,7 +38,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { #rain { animation: none; } }
 #toast { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); background: rgba(15,12,17,.92);
   border: 2px solid var(--gold); color: var(--cream); padding: 6px 12px; border-radius: 6px; font-size: 14px; line-height: 1.4;
-  pointer-events: none; opacity: 0; transition: opacity .25s; white-space: nowrap; max-width: 94%; overflow: hidden; text-overflow: ellipsis; }
+  pointer-events: none; opacity: 0; transition: opacity .25s; white-space: normal; overflow-wrap: anywhere; width: max-content; max-width: 92%; text-align: center; z-index: 6; }
 #toast.show { opacity: 1; }
 
 /* ---------- dialogue ---------- */
