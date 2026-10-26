@@ -3,7 +3,7 @@ Change the passwords and the discussion questions here, then run build_data.py.
 (The opening password is in ../index.html, look for GATE_PASSWORD.)"""
 
 # Password that unlocks Path 2 after the discussion (also works as a jump code on the title screen).
-DISCUSS_PASSWORD = 'ABCD'
+DISCUSS_PASSWORD = 'ABCD-EFGH'
 
 DISCUSS_QUESTION = '''<p><b>需求為本的做法帶來了哪些好處？為什麼一年以後，青溪里反而什麼都沒有留下？</b></p>
 <p class="en">What did the need-based approach do well? Why, one year later, was nothing left in Clear Creek?</p>'''
