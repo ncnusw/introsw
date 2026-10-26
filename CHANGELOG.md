@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-26 (Key Term Tycoon)
+- New game: **Key Term Tycoon 關鍵詞大亨** (`games/term-tycoon/`), a midterm review board game played on the projector by 2–4 teams. 28-square board with 20 key terms from the study sheet in six districts (Basics, History, Systems, Group Work, Community Work, Case Management), 4 Pop Quiz squares, Start, Detention, Coffee Break and Go to Detention.
+- Buying a term = explaining it (exam prompt 1). Landing on another team's term = answer a question within a countdown (default 10 s) or pay rent; a whole district doubles the rent. Pop Quiz cards draw from all six exam prompts and every study-sheet term. The teacher judges every answer with Correct / Incorrect (Ⓐ / Ⓑ); the game handles cash, rent, Start money, doubles, Detention, bankruptcy and the winner.
+- Time limit (default 35 min): when time runs out the round finishes and the highest total (cash + terms) wins. Undo, pause, resume after a page reload, keyboard and one 8BitDo (A = button 1, B = button 0; changeable on the setup screen).
+- The whole page is **encrypted** (AES-GCM, PBKDF2-SHA256): without the password the published file can't be read. The readable source, password and `build.py` are in the teacher folder, not in this repo.
+
 ## 2026-10-26 (later)
 - Term Duel: added a **Community Work 社區工作** topic (10 terms: community, NBCD, ABCD, cycle of dependency, community participation, community self-determination, community capacity building, locality development, social planning, social action). Direct link: `games/term-duel/#community-work`.
 - Removed **Term Flip** from the site.
