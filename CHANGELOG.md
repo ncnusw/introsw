@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-26 (later)
+- Term Duel: added a **Community Work 社區工作** topic (10 terms: community, NBCD, ABCD, cycle of dependency, community participation, community self-determination, community capacity building, locality development, social planning, social action). Direct link: `games/term-duel/#community-work`.
+- Removed **Term Flip** from the site.
+
 ## 2026-10-26
 - **Storm Over Clear Creek, update.** Only Xiao An walks around now (no second figure following the player): the student meets her at the bus stop, she says "follow me," and the view switches to hers. The tunnel on typhoon night (Path 2) is now a timed maze in the dark: only a lantern circle around the player is lit, and rising water gives a time limit (about 32 s; the fastest route takes about 16 s). Students must find the boy and leave by the far exit; if time runs out, the maze restarts from the entrance (after two failures, Mrs. Lin gives a small hint). The maze is the same every time, so students learn it. Change `MAZE_SLACK` in `tools/story.py` to make it easier or harder. After Grandma Chen is found, the group returns to the activity center automatically. The NBCD quiz no longer refers to the textbook.
 - Shared engine: `@light r | off` (lantern circle in the dark) and `@timer seconds label | off` (countdown clock, paused during dialogue).
