@@ -30,6 +30,12 @@ Put your phone down and discuss with your classmates. Enter the password from yo
 
 JUMPS = {DISCUSS_PASSWORD: 'abcd'}
 
+# Tunnel maze time limit. The fastest route (entrance -> boy -> exit) takes `steps` moves of 0.14 s each.
+# Darkness means students explore first, so most should need 2-3 tries. Raise MAZE_SLACK to make it easier.
+MAZE_SLACK = 1.9
+def maze_seconds(steps):
+    return int(round(steps * 0.14 * MAZE_SLACK + 6))
+
 SCRIPT = r'''
 // ======================= OPENING: THE LECTURE HALL =======================
 :: intro
@@ -98,25 +104,23 @@ Teacher: Everyone, stay calm, the power will be back in a—
 @clear
 @tint none
 @music warm
-@player me
+@player an
 @title 第一條路：從「需求」開始|Path 1 · Starting from needs
 @door village/tunnelN lock 隧道口用木板封著。
 @door village/tunnelS lock 隧道口用木板封著。
 @put driver D:86 village 32 7 n_driver !
 @put zhou D:85 village 29 7 -
 @put stop T:83 village 33 5 c1_stop
-@put an an village 33 7 an_hint
-@map village 33 8 up
-@follow an
+@put me me village 33 9 -
+@map village 33 8 down
 > 你睜開眼睛。眼前不是教室，而是一個山裡的公車站。
 An: 欸？你是誰？剛剛明明只有我一個人下車……
 > 你結結巴巴地解釋：你在上社會工作概論，教室停電了，然後……
 An: 然後你就掉進來了？……好吧，好像只有我看得到你。司機完全沒看到你。
-An: 我是小安，今天第一天來青溪里當社區社工。你就跟著我吧。
-@goal 跟著小安，和公車司機說話。
-
-:: an_hint
-An: 頭上有 ! 的人或東西，我們去看看。
+An: 我是小安，今天第一天來青溪里當社區社工。跟我來吧！
+@del me
+> （從現在起，你會跟在小安身邊，從她的眼睛看這個村子。你操作的是小安。）
+@goal 和公車司機說話。
 
 :: n_driver
 @label driver n_driver2
@@ -145,7 +149,7 @@ An: 走吧，我們去做需求調查。
 @put lin lin lin 5 3 n_lin !
 @put li li coop 5 3 n_li !
 @put chen chen chen 5 3 n_chen !
-@goal 跟著小安做需求調查（{survey}/3）：林阿姨家（左上）、茶農合作社（右上）、陳奶奶家（過橋）。
+@goal 做需求調查（{survey}/3）：林阿姨家（左上）、茶農合作社（右上）、陳奶奶家（過橋）。
 
 :: c1_stop
 > 公車站牌：「青溪里　每日 7:10、16:40」。下面貼著一張紙：「本路線將於下月停駛」。
@@ -187,7 +191,7 @@ Chen: 城裡的機構啊……
 
 :: n_count
 @inc survey
-@goal 跟著小安做需求調查（{survey}/3）：林阿姨家、茶農合作社、陳奶奶家。
+@goal 做需求調查（{survey}/3）：林阿姨家、茶農合作社、陳奶奶家。
 @if survey>=3 n_survey_done
 
 :: n_survey_done
@@ -201,7 +205,7 @@ Phone: 【颱風警報】強烈颱風今晚登陸，中部山區將有豪雨，�
 @clear
 @tint storm
 @music tick
-@player me
+@player an
 @title 颱風夜|Typhoon Night
 @zone in1 school 0 0 15 10 c2_indoor
 @zone storm village 0 0 36 26 c2_out
@@ -209,14 +213,25 @@ Phone: 【颱風警報】強烈颱風今晚登陸，中部山區將有豪雨，�
 @put mei mei school 3 6 -
 @put lin lin school 10 4 -
 @put hao hao school 4 4 -
-@put an an school 6 6 an_hint
 @map school 7 7 up
-@follow an
 > 晚上九點，停電了。村民陸續來到活動中心避難。
 @goal 和黃里長說話。
 
 :: c2_out
 @tint storm
+@light off
+@timer off
+@if kid=1 c2_out_kid
+
+:: c2_out_kid
+@if maze=1 c2_noop
+@set maze 1
+> 你們衝出隧道。回頭一看，隧道口已經開始冒出水來。
+Li: 好險！陳奶奶家就在前面！
+@goal 去陳奶奶家（溪對岸的灰色房子）。
+
+:: c2_noop
+> 雨還在下。
 
 :: c2_indoor
 @tint night
@@ -241,12 +256,10 @@ Chief: 還好救援隊來了。專業的，就是不一樣。
 @clear
 @tint none
 @music bright
-@player me
+@player an
 @title 救援物資湧進青溪里|The aid pours in
 @put zhou D:85 village 21 5 n_zhou2 !
-@put an an village 22 7 an_hint
 @map village 21 8 up
-@follow an
 @goal 和周專員說話。
 
 :: n_zhou2
@@ -305,17 +318,15 @@ An: 你看，外部的資源又快、又專業、又充足。這就是需求為�
 @clear
 @tint sepia
 @music quiet
-@player me
+@player an
 @title 一年後|One year later
 @set yr 0
-@put an an village 22 7 an_hint
 @put chief chief village 21 5 n_y_chief !
 @put lin lin village 7 7 n_y_lin !
 @put wu wu village 13 6 n_y_wu !
 @put li li village 30 7 n_y_li !
 @put mei mei village 16 8 n_y_mei !
 @map village 21 8 up
-@follow an
 > 一年過去了。
 @goal 看看青溪里現在怎麼樣了（{yr}/5）。
 
@@ -372,7 +383,7 @@ An: （小安轉過頭看著你。）你說……我是不是從一開始，就�
 @clear
 @tint sepia
 @music quiet
-@player me
+@player an
 @title 時間倒轉，回到三天前|Rewind · three days earlier
 @tint none
 @music warm
@@ -381,9 +392,7 @@ An: （小安轉過頭看著你。）你說……我是不是從一開始，就�
 @door village/tunnelS lock 隧道口用木板封著。
 @put zhou D:85 village 29 7 a_zhou !
 @put stop T:83 village 33 5 c1_stop
-@put an an village 33 7 an_hint
 @map village 33 8 up
-@follow an
 An: 你也記得，對吧？那一年……
 An: 這一次，我需要你的幫忙。每到重要的時候，告訴我該怎麼做。
 @goal 和周專員說話。
@@ -561,7 +570,7 @@ Chief: 颱風要來了，大家小心！
 @clear
 @tint storm
 @music tick
-@player me
+@player an
 @title 颱風夜（第二條路）|Typhoon Night · Path 2
 @set team 0
 @set kid 0
@@ -578,9 +587,11 @@ Chief: 颱風要來了，大家小心！
 @put mei mei school 3 6 c2_mei
 @put li li coop 5 3 c2_li_wait
 @put wu wu wu 5 3 c2_wu_wait
-@put kid kid tunnel 13 6 c2_kid !
+@put kid kid tunnel {{KIDX}} {{KIDY}} c2_kid !
+@set maze 0
+@set fails 0
+@door tunnel/bottom lock 阿弟還在隧道裡！先找到他。
 @put chen chen chen 5 3 c2_chen !
-@put an an school 6 6 an_hint
 @zone storm village 0 0 36 26 c2_out
 @zone dark tunnel 0 0 18 9 c2_in
 @zone in1 school 0 0 15 10 c2_indoor
@@ -589,20 +600,43 @@ Chief: 颱風要來了，大家小心！
 @zone in4 lin 0 0 11 8 c2_indoor
 @zone in5 chen 0 0 11 8 c2_indoor
 @map school 7 7 up
-@follow an
 > 晚上九點。狂風暴雨打在活動中心的窗戶上。
 > 停電了。村民拿著手電筒，陸續來到活動中心避難。
 @goal 和黃里長說話。
 
 :: c2_in
-@tint night
-@if tun=1 c2_in_done
+@if maze=1 c2_in_done
+@tint none
+@light 2.6
+@if tun=1 c2_maze_go
 @set tun 1
-> 竹燈籠照亮了潮濕的石壁。水從頭上一滴一滴落下來。
-Lin: 小心腳下，地很滑。
+> 竹燈籠只照得亮身邊一小圈。隧道又黑又長，到處都是岔路。
+Lin: 聽！溪水正從後面灌進隧道……水位越來越高了！
+Li: 阿弟可能就在裡面！找到他，再從隧道另一頭的出口出去。要快！
+@goto c2_maze_go
+
+:: c2_maze_go
+@goal 水淹滿隧道之前：找到阿弟，再從另一頭的出口（右下角）出去！
+@timer {{MAZE_SECONDS}} c2_maze_fail
+
+:: c2_maze_fail
+@inc fails
+> 水已經淹到膝蓋了！再不出去就來不及了！
+> 大家只好退回隧道口，喘口氣，再試一次。
+@set kid 0
+@put kid kid tunnel {{KIDX}} {{KIDY}} c2_kid !
+@label mei c2_mei
+@door tunnel/bottom lock 阿弟還在隧道裡！先找到他。
+@map tunnel 1 1 down
+@if fails>=2 c2_maze_hint
+
+:: c2_maze_hint
+Lin: 別急。路是固定的，每走一次，我們就更熟悉這個隧道。
+Lin: 記住剛剛走過的岔路。阿弟常常躲在隧道最深、最裡面的角落。
 
 :: c2_in_done
 @tint night
+@light off
 
 :: c2_bridge
 > 溪水變成了咖啡色，轟隆隆地衝過來。橋被沖壞了，到處都是石頭和斷木。
@@ -743,21 +777,19 @@ Li: 我們平常一起採茶，今天一起救人！
 @goal 走進舊水圳隧道，找到通往溪對岸的出口。
 
 :: c2_kid
-@label kid c2_kid2
 Kid: 嗚……誰？有燈！
 An: 阿弟？你怎麼會在這裡？
 Kid: 我的小狗跑掉了，我一直追到這裡，雨好大，我不敢出去……
 Lin: 沒事了，沒事了。你媽媽在活動中心等你。
-Kid: 姊姊，你們要去陳奶奶家嗎？我知道路！往前走，右轉，再一直走，就到陳奶奶家旁邊了！
+Kid: 姊姊，你們要去陳奶奶家嗎？我跟你們走！出口在隧道的另一頭！
 @set kid 1
-@item 找到阿弟了！
+@del kid
+@item 找到阿弟了！他緊緊拉著你的袖子。
+@door tunnel/bottom reset
+@goal 快！從隧道另一頭的出口（右下角）出去！
 @label mei c2_mei2
 
-:: c2_kid2
-Kid: 往前走，右轉，再一直走！
-
 :: c2_chen
-@label chen c2_chen2
 Chen: ……是誰？
 An: 陳奶奶！我們來接您了！
 Chen: 你們……怎麼過來的？橋不是斷了嗎？
@@ -768,13 +800,12 @@ Chen: 我還以為……今天晚上就要一個人待在這裡了。
 An: 不會的。這個村子不會丟下任何一個人。
 Chen: 青溪里……還是青溪里啊。
 @note sense
+> 李大哥背起陳奶奶，林阿姨提著燈籠，阿弟走在中間。大家慢慢沿著原路走回活動中心。
 @put chen chen school 9 3 -
 @put lin lin school 10 4 -
-@label chief c2_back !
-@goal 護送陳奶奶，從隧道回到社區活動中心。
-
-:: c2_chen2
-> 李大哥背著陳奶奶，林阿姨提著燈籠走在旁邊。
+@tint night
+@map school 7 6 up
+@goto c2_back
 
 :: c2_back
 @label chief -
@@ -801,7 +832,7 @@ An: 每個人都發揮了自己的能力，整個社區解決問題的能力也�
 @clear
 @tint none
 @music warm
-@player me
+@player an
 @title 村民大會|The Town Hall
 @put zhou D:85 school 7 2 c3_start !
 @put chief chief school 5 3 c3_wait
@@ -811,9 +842,7 @@ An: 每個人都發揮了自己的能力，整個社區解決問題的能力也�
 @put chen chen school 9 3 c3_wait
 @put wu wu school 4 3 c3_wait
 @put mei mei school 2 6 c3_wait
-@put an an school 6 7 an_hint
 @map school 7 7 up
-@follow an
 > 颱風過後的早上。周專員提早來了。
 @goal 和周專員說話，開始村民大會。
 
@@ -878,7 +907,7 @@ Chief: 今天晚上的燈籠夜，照常舉行！
 @clear
 @tint dusk
 @music bright
-@player me
+@player an
 @title 燈籠夜|Lantern Night
 @put l1 T:94 village 5 5 -
 @put l2 T:94 village 11 5 -
@@ -894,9 +923,7 @@ Chief: 今天晚上的燈籠夜，照常舉行！
 @put mei mei village 16 6 ep_mei
 @put kid kid village 17 6 ep_kid
 @put stop T:83 village 33 5 c1_stop
-@put an an village 22 7 ep_an
 @map village 21 8 up
-@follow an
 > 天黑了。上百盞竹燈籠沿著村子的道路亮了起來。
 @goal 和黃里長說話。
 
@@ -913,9 +940,6 @@ Everyone: 謝謝小安！
 
 :: ep_chief2
 Chief: 明年的燈籠夜，一定更熱鬧！
-
-:: ep_an
-An: 謝謝你。如果沒有你，我大概又會走回那條老路。
 
 :: ep_wu
 Wu: 今年的燈籠，是全村一起做的。連阿弟都做了一個，歪歪的，可是很好看。
@@ -944,7 +968,8 @@ Kid: 我的小狗也找到了！牠自己跑回家了！
 Driver: 嘿！社工！好消息！
 Driver: 客運公司說，只要村裡的接送小組幫忙接駁，這條路線先不停，再試半年！
 An: 太好了！
-An: （小安轉過來，對你笑了笑。）你該回去了吧？你的同學們還在等你。
+An: 謝謝你。如果沒有你，我大概又會走回那條老路。
+An: 你該回去了吧？你的同學們還在等你。
 > 燈籠的光越來越亮……亮到你睜不開眼睛。
 @goto outro
 

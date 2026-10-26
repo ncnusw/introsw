@@ -144,3 +144,9 @@ a.big { display: flex; align-items: center; justify-content: center; text-decora
 
 /* D-pad / arrow-key focus inside overlays */
 .ov button.padfocus, .ov a.big.padfocus, .ov button:focus-visible, .ov a.big:focus-visible { outline: 4px solid #ffd166; outline-offset: 3px; }
+
+/* countdown clock (@timer) */
+#clock { position: absolute; top: 8px; right: 8px; z-index: 5; display: none; font: 14px/1 'Press Start 2P', monospace; color: #ffd166; background: rgba(15,12,17,.85); border: 3px solid #ffd166; padding: 8px 10px 6px; box-shadow: 4px 4px 0 #000; }
+#clock.on { display: block; }
+#clock.low { color: #ff5d5d; border-color: #ff5d5d; animation: clockpulse .5s ease-in-out infinite alternate; }
+@keyframes clockpulse { to { transform: scale(1.08); } }

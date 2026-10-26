@@ -94,21 +94,51 @@ village = {
     }}
 
 # ---------------------------------------------------------------- tunnel 18 x 9
-tun_g = [
-    'WW+WWWWWWWWWWWWWWW',
-    'WWuWWWWWWWWWWWWWWW',
-    'WWuuuuuuuWWWuuuuWW',
-    'WWuWWWWWuWWWuWWuWW',
-    'WuuuuuWWuuuuuWWuWW',
-    'WuWWWuWWWWWWuWWuWW',
-    'WuWuuuWWWWWWuuuuWW',
-    'WuuuWWWWWWWWWWWuWW',
-    'WWWWWWWWWWWWWWW+WW',
-]
-tun_o = ['.' * 18 for _ in tun_g]
+# Fixed maze (same every time, so students learn it across tries). 13 x 9 cells -> 27 x 19 tiles.
+import random
+MZ_W, MZ_H = 13, 9
+_rng = random.Random(20261027)
+_tw, _th = MZ_W * 2 + 1, MZ_H * 2 + 1
+_t = [['W'] * _tw for _ in range(_th)]
+_seen = {(0, 0)}; _stack = [(0, 0)]; _t[1][1] = 'u'
+while _stack:
+    cx, cy = _stack[-1]
+    nb = [(cx + dx, cy + dy, dx, dy) for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))
+          if 0 <= cx + dx < MZ_W and 0 <= cy + dy < MZ_H and (cx + dx, cy + dy) not in _seen]
+    if not nb: _stack.pop(); continue
+    nx, ny, dx, dy = _rng.choice(nb)
+    _t[cy * 2 + 1 + dy][cx * 2 + 1 + dx] = 'u'; _t[ny * 2 + 1][nx * 2 + 1] = 'u'
+    _seen.add((nx, ny)); _stack.append((nx, ny))
+# a few extra openings so there is more than one way through
+for _ in range(7):
+    while True:
+        x, y = _rng.randrange(1, _tw - 1), _rng.randrange(1, _th - 1)
+        if _t[y][x] == 'W' and ((_t[y][x - 1] == 'u' and _t[y][x + 1] == 'u' and _t[y - 1][x] == 'W' and _t[y + 1][x] == 'W') or
+                                (_t[y - 1][x] == 'u' and _t[y + 1][x] == 'u' and _t[y][x - 1] == 'W' and _t[y][x + 1] == 'W')):
+            _t[y][x] = 'u'; break
+TUN_IN, TUN_OUT = (1, 1), (_tw - 2, _th - 2)
+_t[0][1] = '+'; _t[_th - 1][_tw - 2] = '+'
+tun_g = [''.join(r) for r in _t]
+tun_o = ['.' * _tw for _ in tun_g]
+def _bfs(start):
+    d = {start: 0}; q = collections.deque([start])
+    while q:
+        x, y = q.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (x + dx, y + dy)
+            if 0 < n[0] < _tw - 1 and 0 < n[1] < _th - 1 and _t[n[1]][n[0]] == 'u' and n not in d: d[n] = d[(x, y)] + 1; q.append(n)
+    return d
+_din, _dout = _bfs(TUN_IN), _bfs(TUN_OUT)
+# the boy waits in a dead end that is a real detour from the shortest route
+_dead = [c for c in _din if sum(_t[c[1] + b][c[0] + a] == 'u' for a, b in ((1, 0), (-1, 0), (0, 1), (0, -1))) == 1 and c not in (TUN_IN, TUN_OUT)]
+_direct = _din[TUN_OUT]
+KID_POS = max(_dead, key=lambda c: (min(_din[c], _dout[c]), _din[c] + _dout[c]))
+MAZE_STEPS = _din[KID_POS] + _dout[KID_POS]
 tunnel = {'ground': tun_g, 'obj': tun_o, 'doors': {
-    'top': {'x': 2, 'y': 0, 'to': 'village', 'tx': 4, 'ty': 11, 'dir': 'up'},
-    'bottom': {'x': 15, 'y': 8, 'to': 'village', 'tx': 4, 'ty': 20, 'dir': 'down'}}}
+    'top': {'x': 1, 'y': 0, 'to': 'village', 'tx': 4, 'ty': 11, 'dir': 'up'},
+    'bottom': {'x': TUN_OUT[0], 'y': _th - 1, 'to': 'village', 'tx': 4, 'ty': 20, 'dir': 'down'}}}
+village['doors']['tunnelN'].update({'tx': TUN_IN[0], 'ty': TUN_IN[1]})
+village['doors']['tunnelS'].update({'tx': TUN_OUT[0], 'ty': TUN_OUT[1]})
 
 # ---------------------------------------------------------------- interiors
 def room(w, h, floor, out_to, ox, oy, obj_rows, door_x=None):
@@ -228,22 +258,22 @@ SPEAKERS = {
 
 # Definitions follow the textbook (黃源協、莊俐昕主編，第3版，2026), Ch. 6, pp. 139-171.
 TERMS = {
-    'nbcd': {'en': 'need-based community development (NBCD)', 'zh': '以需求為基礎的社區發展', 'def': '從社區的問題、缺陷與不足出發，靠外部專家調查分析，由上而下、由外而內解決。居民容易變成受助者（課本 pp. 163–165）。'},
-    'community': {'en': 'community', 'zh': '社區', 'def': '具備四項基本要素：(1) 個人、團體或組織；(2) 地方；(3) 社會互動；(4) 心理認同或歸屬（p. 141）。'},
-    'community_work': {'en': 'community work', 'zh': '社區工作', 'def': '社會工作的三大方法之一。比個案工作和團體工作更關心外在環境與社會結構對人的影響（p. 142）。'},
-    'abcd': {'en': 'asset-based community development (ABCD)', 'zh': '以資產為基礎的社區發展', 'def': '從社區既有的資產、優勢和能力出發（例如具備技能的個人、社區組織、文化團體），由下而上、由內而外；居民是貢獻者（pp. 163–165）。'},
-    'self_det': {'en': 'community self-determination', 'zh': '社區自決', 'def': '社區工作的原則之一：由社區自己做決定，社區工作者是諮詢者，不是決定者（p. 158）。'},
-    'participation': {'en': 'community participation', 'zh': '社區參與', 'def': '社區工作的原則之一：居民一起投入社區事務的討論、決定與行動（pp. 155, 158）。'},
-    'sense': {'en': 'sense of community', 'zh': '社區意識', 'def': '社區成員之間的連結程度，以及他們對環境相互關係的認知（p. 159）。'},
-    'capacity': {'en': 'community capacity building', 'zh': '社區能力建構', 'def': '幫助社區成員、團體或組織發展技能和能力，以增強社區解決問題、適應挑戰、提供服務及實現目標的能力（p. 170）。'},
-    'committee': {'en': 'steering committee', 'zh': '指導委員會', 'def': '社區工作實務過程的第一步：由社區中各方代表組成，負責指導整個社區發展的推動與執行（p. 166）。'},
-    'social_planning': {'en': 'social planning', 'zh': '社會計畫', 'def': 'Rothman 模式之一：透過科學理性的方法與技術（蒐集並分析資料）解決具體的社會問題；工作者像專家（pp. 161–162）。'},
-    'social_action': {'en': 'social action', 'zh': '社會行動', 'def': 'Rothman 模式之一：主要起因於受壓迫，目標是改變權力結構、重新分配資源；動員群眾、直接行動、談判協商（pp. 161–163）。'},
-    'locality': {'en': 'locality development', 'zh': '地方發展', 'def': 'Rothman 模式之一：擴大社區參與、共同決策，提升社區能力與自助（過程導向）；工作者是使能者、協調者（pp. 161–162）。'},
-    'mixed': {'en': 'mixed model', 'zh': '混合模式', 'def': 'Rothman (2001) 指出，實務上常常需要同時混合使用不同的模式（課本圖 6.2，pp. 163–164）。'},
-    'park': {'en': 'PARK', 'zh': '保留、增加、移除、避免', 'def': '資料分析後選擇行動的方法：保留 Preserve 重要特色、增加 Add 關鍵資產、移除 Remove 降低生活品質的因素、避免 Keep out 威脅（p. 167）。'},
-    'dependency': {'en': 'cycle of dependency', 'zh': '依賴循環', 'def': '以需求為基礎的發展前景：居民是受助者、依賴外部援助，援助一停，社區什麼都沒有留下（課本表 6.2，p. 164；p. 166）。'},
-    'celebrate': {'en': 'celebrating results', 'zh': '慶祝成果與表彰成就', 'def': '社區工作實務過程的第七步：慶祝和表彰可以提高知名度、認可參與者的貢獻，並鼓勵更多人投入（p. 169）。'},
+    'nbcd': {'en': 'need-based community development (NBCD)', 'zh': '以需求為基礎的社區發展', 'def': '從社區的問題、缺陷與不足出發，靠外部專家調查分析，由上而下、由外而內解決。居民容易變成受助者。'},
+    'community': {'en': 'community', 'zh': '社區', 'def': '具備四項基本要素：(1) 個人、團體或組織；(2) 地方；(3) 社會互動；(4) 心理認同或歸屬。'},
+    'community_work': {'en': 'community work', 'zh': '社區工作', 'def': '社會工作的三大方法之一。比個案工作和團體工作更關心外在環境與社會結構對人的影響。'},
+    'abcd': {'en': 'asset-based community development (ABCD)', 'zh': '以資產為基礎的社區發展', 'def': '從社區既有的資產、優勢和能力出發（例如具備技能的個人、社區組織、文化團體），由下而上、由內而外；居民是貢獻者。'},
+    'self_det': {'en': 'community self-determination', 'zh': '社區自決', 'def': '社區工作的原則之一：由社區自己做決定，社區工作者是諮詢者，不是決定者。'},
+    'participation': {'en': 'community participation', 'zh': '社區參與', 'def': '社區工作的原則之一：居民一起投入社區事務的討論、決定與行動。'},
+    'sense': {'en': 'sense of community', 'zh': '社區意識', 'def': '社區成員之間的連結程度，以及他們對環境相互關係的認知。'},
+    'capacity': {'en': 'community capacity building', 'zh': '社區能力建構', 'def': '幫助社區成員、團體或組織發展技能和能力，以增強社區解決問題、適應挑戰、提供服務及實現目標的能力。'},
+    'committee': {'en': 'steering committee', 'zh': '指導委員會', 'def': '社區工作實務過程的第一步：由社區中各方代表組成，負責指導整個社區發展的推動與執行。'},
+    'social_planning': {'en': 'social planning', 'zh': '社會計畫', 'def': 'Rothman 模式之一：透過科學理性的方法與技術（蒐集並分析資料）解決具體的社會問題；工作者像專家。'},
+    'social_action': {'en': 'social action', 'zh': '社會行動', 'def': 'Rothman 模式之一：主要起因於受壓迫，目標是改變權力結構、重新分配資源；動員群眾、直接行動、談判協商。'},
+    'locality': {'en': 'locality development', 'zh': '地方發展', 'def': 'Rothman 模式之一：擴大社區參與、共同決策，提升社區能力與自助（過程導向）；工作者是使能者、協調者。'},
+    'mixed': {'en': 'mixed model', 'zh': '混合模式', 'def': 'Rothman (2001) 指出，實務上常常需要同時混合使用不同的模式。'},
+    'park': {'en': 'PARK', 'zh': '保留、增加、移除、避免', 'def': '資料分析後選擇行動的方法：保留 Preserve 重要特色、增加 Add 關鍵資產、移除 Remove 降低生活品質的因素、避免 Keep out 威脅。'},
+    'dependency': {'en': 'cycle of dependency', 'zh': '依賴循環', 'def': '以需求為基礎的發展前景：居民是受助者、依賴外部援助，援助一停，社區什麼都沒有留下。'},
+    'celebrate': {'en': 'celebrating results', 'zh': '慶祝成果與表彰成就', 'def': '社區工作實務過程的第七步：慶祝和表彰可以提高知名度、認可參與者的貢獻，並鼓勵更多人投入。'},
 }
 
 QUIZZES = {
@@ -263,7 +293,7 @@ QUIZZES = {
            'options': ['locality development', 'social planning', 'social action', 'reciprocal model'], 'answer': 0, 'hint': '擴大參與、共同決策、提升社區自己的能力。'},
     'q8': {'tag': '第三章 · PARK', 'q': '計畫中「在舊學校開一個新的茶葉體驗教室」屬於 PARK 的哪一項？',
            'options': ['Preserve 保留', 'Add 增加', 'Remove 移除', 'Keep out 避免'], 'answer': 1, 'hint': '原本沒有，現在要多一個。'},
-    'qn': {'tag': '第一條路 · 小測驗', 'q': '縣府的外部援助一停，青溪里什麼都不會了。依照課本表 6.2，這是 NBCD 的哪一種發展前景？',
+    'qn': {'tag': '第一條路 · 小測驗', 'q': '縣府的外部援助一停，青溪里什麼都不會了。以需求為基礎的社區發展（NBCD）做到最後，常常會帶來哪一種結果？',
            'options': ['hopeful, sustainable development', 'a cycle of dependency', 'community capacity building', 'community self-determination'], 'answer': 1, 'hint': '居民一直是「受助者」，最後只能「依賴」。'},
     'q9': {'tag': '第三章 · 實務過程', 'q': '社區工作實務過程的第一步是什麼？',
            'options': ['form a steering committee', 'celebrate results', 'evaluate and revise the plan', 'propose a new vision'], 'answer': 0, 'hint': '先找出各方代表，組成一個帶頭的團隊。'},
@@ -290,6 +320,7 @@ for line in classroom_puts().split('\n'):
     parts = line.split()
     if parts[6] != '-': _ids[parts[6]] = parts[1]
 SCRIPT = (story.SCRIPT.replace('{{CLASSROOM}}', classroom_puts()).replace('{{CLASSROOM_PLAIN}}', classroom_puts(False))
+          .replace('{{KIDX}}', str(KID_POS[0])).replace('{{KIDY}}', str(KID_POS[1])).replace('{{MAZE_SECONDS}}', str(story.maze_seconds(MAZE_STEPS)))
           .replace('{{A}}', _ids['cls_a'][1:]).replace('{{B}}', _ids['cls_b'][1:]).replace('{{C}}', _ids['cls_c'][1:]))
 PAUSES = story.PAUSES
 
@@ -314,7 +345,7 @@ def adj(seen, x, y): return any((x + a, y + b) in seen for a, b in ((1, 0), (-1,
 for did in ('lin', 'wu', 'school', 'coop', 'grocery', 'tunnelN'): assert adj(north, village['doors'][did]['x'], village['doors'][did]['y']), did
 for did in ('chen', 'tunnelS'): assert adj(south, village['doors'][did]['x'], village['doors'][did]['y']), did
 assert (24, 18) in north, 'bridge must connect north and south'
-t = reach(tunnel, 2, 1); assert (15, 7) in t, 'tunnel must connect'
+t = reach(tunnel, *TUN_IN); assert TUN_OUT in t and KID_POS in t, 'tunnel must connect'
 # check: every @put lands on a walkable, unblocked tile; labels exist; notes/quizzes exist
 import re
 labels = set(re.findall(r'^:: (\S+)', SCRIPT, re.M))
@@ -323,7 +354,7 @@ for m in re.finditer(r'^@put (\S+) (\S+) (\S+) (\d+) (\d+) (\S+)', SCRIPT, re.M)
     assert walkable(MAPS[mp], int(x), int(y)), f'@put {_id} on a blocked tile {mp} {x},{y}'
     assert lab == '-' or lab in labels, f'@put {_id}: unknown label {lab}'
     assert spr in CHARS or re.match(r'^[TD]:\d+$', spr), spr
-STARTS = {'village': [(33, 7), (4, 20)], 'tunnel': [(2, 1)], 'school': [(7, 8)], 'lin': [(5, 6)], 'wu': [(5, 6)], 'coop': [(5, 6)], 'chen': [(5, 6)], 'classroom': [PLAYER_SEAT]}
+STARTS = {'village': [(33, 7), (4, 20)], 'tunnel': [TUN_IN], 'school': [(7, 8)], 'lin': [(5, 6)], 'wu': [(5, 6)], 'coop': [(5, 6)], 'chen': [(5, 6)], 'classroom': [PLAYER_SEAT]}
 for m in re.finditer(r'^@put (\S+) (\S+) (\S+) (\d+) (\d+) (\S+)', SCRIPT, re.M):
     _id, spr, mp, x, y, lab = m.groups()
     if lab == '-' or _id == 'an': continue
@@ -348,4 +379,5 @@ js = ('/* 青溪颱風夜 Storm Over Clear Creek — chapter data for the story-
       'window.GAME = ' + json.dumps({k: v for k, v in data.items()}, ensure_ascii=False, indent=1) + ';\n'
       'window.GAME.script = ' + json.dumps(SCRIPT, ensure_ascii=False) + ';\n')
 OUT.write_text(js, encoding='utf-8')
+print('maze: route via the boy =', MAZE_STEPS, 'steps; direct route =', _direct, '; time limit =', story.maze_seconds(MAZE_STEPS), 's; boy at', KID_POS)
 print('wrote', OUT, len(js), 'bytes;', len(labels), 'labels,', len(TERMS), 'terms,', len(QUIZZES), 'quizzes')

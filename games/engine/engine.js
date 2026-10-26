@@ -21,6 +21,8 @@
  *   @choice  followed by  ? option text [-> label]   lines     (sets var "choice" to 1, 2, 3...)
  *   @music quiet|warm|bright|tick|stop   @save   @end
  *   @follow id | @follow off   that person walks one step behind the player (and comes along through doors)
+ *   @light r | @light off       darkness everywhere except a lantern circle of r tiles around the player
+ *   @timer seconds label | @timer off   countdown clock; runs label when it reaches 0 (paused during dialogue and quizzes)
  *   pauses: { code, alt, html, head, choices, var, unlockAfter, ready (show the button at once), go (button label) }
  */
 (() => {
@@ -93,7 +95,7 @@
   /* ---------------- state ---------------- */
   const st = {
     map: null, px: 0, py: 0, dir: 'down', sprite: G.player || 'rosa', tint: false,
-    ents: {}, zones: {}, doorOv: {}, vars: {}, notes: [], firstTry: {}, goal: '', busy: false, mv: null, inZone: {}, follow: null
+    ents: {}, zones: {}, doorOv: {}, vars: {}, notes: [], firstTry: {}, goal: '', busy: false, mv: null, inZone: {}, follow: null, light: 0, timer: null
   };
   const M = () => MAPS[st.map];
 
@@ -151,6 +153,12 @@
       const ex = Math.round((e.fx ?? e.x) * TS - cx), ey = Math.round((e.fy ?? e.y) * TS - cy) - 9 - bob;
       ctx.fillStyle = '#0f0c11'; ctx.fillRect(ex + 5, ey - 1, 6, 10);
       ctx.fillStyle = '#ffd166'; ctx.fillRect(ex + 6, ey, 4, 5); ctx.fillRect(ex + 6, ey + 6, 4, 2);
+    }
+    if (st.light) {
+      const lx = fx * TS + 8 - cx, ly = fy * TS + 8 - cy, r = st.light * TS, flick = 1 + Math.sin(markT / 90) * .025 + Math.sin(markT / 37) * .015;
+      const grad = ctx.createRadialGradient(lx, ly, r * .25, lx, ly, r * flick);
+      grad.addColorStop(0, 'rgba(255,190,90,0.10)'); grad.addColorStop(.55, 'rgba(10,6,4,0.35)'); grad.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   }
 
@@ -258,6 +266,11 @@
     if (!st.mv && !st.busy && !overlayOpen() && st.map) {
       const d = curDir(); if (d) tryStep(d);
     }
+    if (st.timer && !st.busy && !overlayOpen()) {
+      st.timer.left -= dt;
+      if (st.timer.left <= 0) { const lab = st.timer.label; st.timer = null; showClock(); press(st.dir, false); run(lab); }
+      else showClock();
+    }
     draw();
     requestAnimationFrame(frame);
   }
@@ -310,6 +323,19 @@
     st.map = id; st.px = +x; st.py = +y; st.mv = null; if (dir) st.dir = dir;
     placeFollower();
     for (const z of Object.values(st.zones)) st.inZone[z.id] = false;   // stepping into a zone through a door counts as entering it
+  }
+
+  /* ---------------- countdown clock ---------------- */
+  let clockEl = null, lastSec = -1;
+  function showClock() {
+    if (!clockEl) { clockEl = document.createElement('div'); clockEl.id = 'clock'; clockEl.setAttribute('aria-live', 'off'); $('#view').appendChild(clockEl); }
+    if (!st.timer) { clockEl.classList.remove('on'); lastSec = -1; return; }
+    const sec = Math.ceil(st.timer.left / 1000);
+    if (sec !== lastSec) {
+      lastSec = sec; clockEl.textContent = '⏱ ' + Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+      clockEl.classList.add('on'); clockEl.classList.toggle('low', sec <= 10);
+      if (sec <= 10 && AC && !muted) note(1400, AC.currentTime, .05, .03, 'square');
+    }
   }
 
   /* ---------------- talking to things ---------------- */
@@ -654,7 +680,9 @@
         await new Promise(res => { e.tw = { x0: e.x, y0: e.y, t: 0, d: fast ? 1 : d, done: res }; e.x = +a[1]; e.y = +a[2]; });
         return;
       }
-      case 'clear': st.ents = {}; st.zones = {}; st.doorOv = {}; st.inZone = {}; st.follow = null; return;
+      case 'clear': st.ents = {}; st.zones = {}; st.doorOv = {}; st.inZone = {}; st.follow = null; st.light = 0; st.timer = null; showClock(); return;
+      case 'light': st.light = a[0] === 'off' ? 0 : +a[0]; return;
+      case 'timer': st.timer = a[0] === 'off' ? null : { left: +a[0] * 1000, label: a[1] }; if (st.timer && !BLOCKS[a[1]]) throw new Error('Unknown label: ' + a[1]); showClock(); return;
       case 'zone': st.zones[a[0]] = { id: a[0], map: a[1], x: +a[2], y: +a[3], w: +a[4], h: +a[5], label: a[6] }; st.inZone[a[0]] = false; return;
       case 'unzone': delete st.zones[a[0]]; return;
       case 'door': {
