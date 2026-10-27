@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-27 (story games on phones)
+- Shared story engine (Storm Over Clear Creek and The Tuesday Club), phones and tablets only; computers, the projector and the 8BitDo are unchanged.
+- Sideways only: in portrait, a "please turn your phone sideways" screen covers the game. Android goes full screen and locks to landscape when Start is pressed; iPhones can't lock, so they rely on the turn-sideways screen.
+- New controls: hold anywhere on the left half of the screen and slide to walk (a faint joystick appears under the thumb and disappears when lifted). A faint round **A** button at the bottom right talks / continues. A quick tap on the left half also moves the dialogue on, and during a choice the joystick moves the highlight. The old arrow pad is hidden on phones.
+- In landscape the dialogue box and choices float over the map instead of taking half the screen; title and quiz cards are more compact.
+- A one-time hint ("hold and slide on the left to walk / tap here to talk") appears the first time the player can walk, and disappears after the first walk.
+- Messages at the top now wrap instead of being cut off.
+
 ## 2026-10-26 (Key Term Tycoon, update)
 - The board now fills the whole screen with larger text. Team cash, the clock and the last roll sit in a small bar inside the board; the event list is a pop-up (L).
 - Dice fix: the dice faces were blank (their padding was sized from the whole centre area). The last roll now also stays visible in the top bar.

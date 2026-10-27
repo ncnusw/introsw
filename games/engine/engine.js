@@ -205,6 +205,61 @@
   document.addEventListener('gesturestart', e => e.preventDefault());
   document.addEventListener('dblclick', e => e.preventDefault());
 
+  /* ---- phones and tablets: floating joystick on the left half, faint A button on the right ---- */
+  const TOUCH = matchMedia('(pointer: coarse)').matches;
+  let touchHint = null;
+  if (TOUCH) (() => {
+    document.documentElement.classList.add('touch');
+    const view = $('#view');
+    const zone = document.createElement('div'); zone.id = 'stickZone';
+    const ring = document.createElement('div'); ring.id = 'stick'; ring.innerHTML = '<i></i>';
+    const btn = document.createElement('button'); btn.id = 'touchA'; btn.type = 'button'; btn.textContent = 'A'; btn.setAttribute('aria-label', '說話 / 下一句 Talk');
+    touchHint = document.createElement('div'); touchHint.id = 'touchHint';
+    touchHint.innerHTML = '<div class="l">◀ 左半邊按住、滑動來走路<br><small>Hold and slide on the left to walk</small></div><div class="r">點這裡說話 ▶<br><small>Tap here to talk</small></div>';
+    const rot = document.createElement('div'); rot.id = 'rotate';
+    rot.innerHTML = '<div class="ic">📱↻</div><p>請把手機轉成橫向<br><span>Please turn your phone sideways</span></p>';
+    view.append(zone, ring, btn, touchHint); document.body.appendChild(rot);
+    const R = 46, DEAD = 12, ARROW = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
+    let pid = null, ox = 0, oy = 0, cur = null, moved = false, t0 = 0;
+    const setDir = d => {
+      if (d === cur) return;
+      if (cur) press(cur, false);
+      cur = d;
+      if (d && !choiceKeys(ARROW[d])) press(d, true);
+    };
+    zone.addEventListener('pointerdown', e => {
+      if (pid !== null) return;
+      e.preventDefault(); unlockAudio(); hideHint();
+      pid = e.pointerId; zone.setPointerCapture?.(pid);
+      const r = view.getBoundingClientRect(); ox = e.clientX; oy = e.clientY; t0 = performance.now(); moved = false;
+      ring.style.left = (ox - r.left) + 'px'; ring.style.top = (oy - r.top) + 'px'; ring.firstChild.style.transform = 'translate(-50%,-50%)';
+      ring.classList.add('on');
+    });
+    zone.addEventListener('pointermove', e => {
+      if (e.pointerId !== pid) return;
+      const dx = e.clientX - ox, dy = e.clientY - oy, dist = Math.hypot(dx, dy), k = dist > R ? R / dist : 1;
+      ring.firstChild.style.transform = `translate(calc(-50% + ${dx * k}px), calc(-50% + ${dy * k}px))`;
+      if (dist > DEAD) { moved = true; setDir(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up')); }
+      else setDir(null);
+    });
+    const end = e => {
+      if (e.pointerId !== pid) return;
+      setDir(null); ring.classList.remove('on'); pid = null;
+      if (!moved && performance.now() - t0 < 300 && (dlgWait || choiceState)) action();   // a quick tap also moves the dialogue on
+    };
+    zone.addEventListener('pointerup', end); zone.addEventListener('pointercancel', end); zone.addEventListener('lostpointercapture', end);
+    btn.addEventListener('pointerdown', e => { e.preventDefault(); unlockAudio(); btn.classList.add('on'); action(); });
+    const off = () => btn.classList.remove('on');
+    btn.addEventListener('pointerup', off); btn.addEventListener('pointercancel', off); btn.addEventListener('pointerleave', off);
+    btn.addEventListener('contextmenu', e => e.preventDefault()); zone.addEventListener('contextmenu', e => e.preventDefault());
+  })();
+  let hintArmed = false;
+  function showHint() {   // the first time the player is free to walk
+    if (!touchHint || !hintArmed || store.get('story:touchhint') || touchHint.classList.contains('on')) return;
+    hintArmed = false; touchHint.classList.add('on'); setTimeout(hideHint, 8000);
+  }
+  function hideHint() { if (touchHint && touchHint.classList.contains('on')) { touchHint.classList.remove('on'); store.set('story:touchhint', 1); } }
+
   // gamepad (8BitDo etc.): D-pad / stick to walk, A or B to talk
   let padPrev = {};
   function pollPad() {
@@ -667,7 +722,7 @@
     try { await exec(label); }
     catch (err) { console.error(err); showLine('', esc('⚠ ' + err.message), 'narr', null); }
     st.busy = false;
-    if (!dlgWait) setIdle();
+    if (!dlgWait) { setIdle(); if (!overlayOpen()) showHint(); }
     checkZones();
   }
   async function exec(label) {
@@ -788,11 +843,16 @@
   }
   // full screen on phones and tablets when the game starts (needs a tap; iPhones do not allow it, so this quietly does nothing there)
   function goFullscreen() {
-    if (!matchMedia('(pointer: coarse)').matches || document.fullscreenElement) return;
+    if (!TOUCH || document.fullscreenElement) return;
     const el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
     if (!req) return;
-    try { const p = req.call(el, { navigationUI: 'hide' }); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+    try {
+      const p = req.call(el, { navigationUI: 'hide' });
+      const lock = () => { try { const q = screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape'); if (q && q.catch) q.catch(() => {}); } catch (e) {} };
+      if (p && p.then) p.then(lock, () => {}); else lock();
+    } catch (e) {}
   }
+  ['#btnStart', '#btnContinue', '#jumpOk'].forEach(s => $(s).addEventListener('click', () => { hintArmed = true; }));
   ['#btnStart', '#btnContinue', '#jumpOk'].forEach(s => $(s).addEventListener('click', goFullscreen));
   $('#btnStart').addEventListener('click', () => {
     unlockAudio(); store.del(KEY); st.vars = {}; st.notes = []; st.firstTry = {}; updateNoteCount(); startAt(G.start);
