@@ -368,7 +368,7 @@
     if (st.busy) return;
     if (d.locked || !d.to) {
       press(st.dir, false);
-      st.busy = true; await say(null, d.msg || G.text.locked); st.busy = false; return;
+      st.busy = true; await say(null, d.msg || G.text.locked); st.busy = false; setIdle(); return;
     }
     goMap(d.to, d.tx, d.ty, d.dir || (d.ty > (MAPS[d.to].h / 2) ? 'up' : 'down'));
     checkZones();

@@ -7,6 +7,7 @@
 - In landscape the dialogue box and choices float over the map instead of taking half the screen; title and quiz cards are more compact.
 - A one-time hint ("hold and slide on the left to walk / tap here to talk") appears the first time the player can walk, and disappears after the first walk.
 - Messages at the top now wrap instead of being cut off.
+- Fix: after a locked-door message (e.g. the closed grocery, or the tunnel exit before the boy is found) the box now closes when A is pressed instead of staying over the map.
 
 ## 2026-10-26 (Key Term Tycoon, update)
 - The board now fills the whole screen with larger text. Team cash, the clock and the last roll sit in a small bar inside the board; the event list is a pop-up (L).
