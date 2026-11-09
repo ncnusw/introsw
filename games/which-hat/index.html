@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff7ea">
+<title>Which Hat? 哪一頂帽子？</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --edu:#12a4a0; --edu-d:#0b7a77;
+  --adm:#f28c28; --adm-d:#c96b10;
+  --sup:#2fb36d; --sup-d:#1f8a50;
+  --med:#8e5bd6; --med-d:#6a3fb0;
+  --ink:#1f2433; --muted:#6b7385; --bg:#fff7ea; --card:#ffffff; --line:#eadfcb;
+  --pink:#ef4b7c; --gold:#ffc83d;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Noto Sans TC',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);
+  touch-action:manipulation;overflow-x:hidden;
+  background-image:radial-gradient(circle at 8% 12%,#ffe3b8 0 60px,transparent 61px),
+    radial-gradient(circle at 92% 18%,#d6f3ef 0 80px,transparent 81px),
+    radial-gradient(circle at 85% 92%,#ead9ff 0 90px,transparent 91px),
+    radial-gradient(circle at 10% 88%,#d9f5e4 0 70px,transparent 71px);
+  background-attachment:fixed}
+#app{max-width:860px;margin:0 auto;min-height:100%;padding:max(16px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;min-height:40px}
+.brand{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:20px;letter-spacing:.5px}
+.brand span{color:var(--pink)}
+.iconbtn{border:2px solid var(--line);background:#fff;border-radius:12px;height:40px;min-width:40px;padding:0 10px;font-size:18px;cursor:pointer;color:var(--ink)}
+.screen{flex:1;display:flex;flex-direction:column;gap:14px;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h1{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(34px,8vw,60px);line-height:1.05;text-align:center}
+h2{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(24px,5.5vw,36px);line-height:1.15;text-align:center}
+.zh{color:var(--muted);font-weight:700}
+p.lead{font-size:clamp(16px,3.8vw,20px);text-align:center;line-height:1.45}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 6px 0 var(--line)}
+.btn{display:block;width:100%;border:none;border-radius:18px;padding:16px 18px;font:900 clamp(18px,4.4vw,22px) 'Noto Sans TC',sans-serif;
+  color:#fff;background:var(--pink);box-shadow:0 6px 0 #b8325a;cursor:pointer;transition:transform .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 #b8325a}
+.btn.alt{background:#fff;color:var(--ink);border:3px solid var(--line);box-shadow:0 5px 0 var(--line)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn small{display:block;font-size:.7em;font-weight:700;opacity:.9}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.spacer{flex:1}
+.kbd{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.kbd b{border:1.5px solid #cfc5b2;border-radius:6px;padding:0 5px;background:#fff;font-weight:700}
+
+/* hats */
+.hatgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:680px){.hatgrid.four{grid-template-columns:repeat(4,1fr)}}
+.hat{border-radius:20px;padding:12px 10px;color:#fff;text-align:center;position:relative;border:none;font-family:inherit;cursor:default}
+.hat svg{width:100%;max-width:120px;height:auto;display:block;margin:0 auto}
+.hat .nm{font-weight:900;font-size:clamp(16px,4vw,20px);line-height:1.15}
+.hat .hk{font-weight:700;font-size:13px;opacity:.95}
+.hat.edu{background:var(--edu);box-shadow:0 6px 0 var(--edu-d)}
+.hat.adm{background:var(--adm);box-shadow:0 6px 0 var(--adm-d)}
+.hat.sup{background:var(--sup);box-shadow:0 6px 0 var(--sup-d)}
+.hat.med{background:var(--med);box-shadow:0 6px 0 var(--med-d)}
+.hat.small svg{max-width:70px}
+.hat.toggle{cursor:pointer;transition:transform .1s,opacity .15s,filter .15s}
+.hat.toggle.off{filter:grayscale(.85);opacity:.45}
+.hat.toggle .tick{position:absolute;top:8px;right:10px;width:30px;height:30px;border-radius:50%;background:#fff;color:var(--ink);font-weight:900;line-height:30px;display:none}
+.hat.toggle.on .tick{display:block}
+.hat.toggle.on{transform:scale(1.03)}
+.hat .num{position:absolute;top:8px;left:10px;font-size:12px;font-weight:900;opacity:.8}
+
+/* big intro hat */
+.bighat{border-radius:28px;color:#fff;padding:22px 18px;text-align:center}
+.bighat svg{width:min(56vw,230px);height:auto;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.4) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
+.bighat .nm{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(30px,8vw,46px);line-height:1.05}
+.bighat .hook{display:inline-block;background:rgba(255,255,255,.25);border-radius:999px;padding:4px 16px;font-weight:900;margin:8px 0;font-size:18px}
+.bighat .def{font-size:clamp(16px,4vw,19px);line-height:1.45;margin-top:6px}
+.bighat .q{margin-top:12px;background:#fff;color:var(--ink);border-radius:16px;padding:10px 12px;font-weight:900;font-size:clamp(17px,4.2vw,21px)}
+.dots{display:flex;gap:8px;justify-content:center}
+.dots i{width:12px;height:12px;border-radius:50%;background:#e4d8c2}
+.dots i.on{background:var(--ink)}
+
+/* roles */
+.roles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.role{border-radius:18px;padding:12px;background:#fff;border:3px solid var(--line);text-align:center}
+.role .rn{font-weight:900;font-size:15px;color:var(--muted)}
+.role .who{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(20px,5vw,26px);word-break:break-word}
+.role.r0{border-color:var(--pink);background:#fff0f4}
+.role.r1{border-color:#3b82f6;background:#eef4ff}
+.role .ic{font-size:26px}
+.swap{animation:swap .6s ease}
+@keyframes swap{0%{transform:rotateY(90deg)}100%{transform:none}}
+
+/* inputs */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:900}
+.field input{font:700 20px 'Noto Sans TC',sans-serif;padding:14px;border-radius:14px;border:3px solid var(--line);background:#fff;width:100%}
+.field input:focus{outline:none;border-color:var(--pink)}
+.confirmrow{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid var(--line);border-radius:16px;padding:10px 12px}
+.confirmrow.ok{border-color:var(--sup);background:#effaf3}
+.confirmrow .lab{font-size:13px;font-weight:900;color:var(--muted)}
+.confirmrow .val{font-weight:900;font-size:20px;word-break:break-word}
+.confirmrow .grow{flex:1}
+.confirmrow input{font:700 18px 'Noto Sans TC',sans-serif;padding:8px;border-radius:10px;border:2px solid var(--pink);width:100%}
+.mini{border:none;border-radius:12px;padding:10px 12px;font:900 15px 'Noto Sans TC',sans-serif;cursor:pointer;white-space:nowrap}
+.mini.edit{background:#fff;border:2px solid var(--line);color:var(--ink)}
+.mini.acc{background:var(--sup);color:#fff}
+.mini.done{background:transparent;color:var(--sup-d)}
+
+/* scenario + timer */
+.scenario{background:#fff;border:4px dashed #3b82f6;border-radius:22px;padding:18px;font-size:clamp(19px,4.8vw,26px);line-height:1.45;font-weight:700}
+.scenario .zh{display:block;margin-top:8px;font-size:.82em}
+.pill{display:inline-block;border-radius:999px;padding:4px 14px;font-weight:900;font-size:14px;background:var(--ink);color:#fff}
+.timer{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(64px,20vw,120px);text-align:center;line-height:1}
+.timer.low{color:var(--pink);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.bar{height:14px;border-radius:999px;background:#efe4cf;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--edu),var(--adm),var(--sup),var(--med));transition:width .25s linear}
+.opener{background:#fff;border:4px solid var(--pink);border-radius:22px;padding:18px;text-align:center}
+.opener .en{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(24px,6vw,34px);line-height:1.15}
+.opener .zh{font-size:clamp(17px,4.2vw,21px);margin-top:6px}
+
+/* reveal */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;font-size:13px;font-weight:700;color:var(--muted)}
+.res{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:680px){.res{grid-template-columns:repeat(4,1fr)}}
+.resitem{border-radius:18px;padding:10px;text-align:center;color:#fff;position:relative}
+.resitem.dim{filter:grayscale(.9);opacity:.35}
+.resitem .tag{display:inline-block;background:#fff;color:var(--ink);border-radius:999px;padding:2px 10px;font-weight:900;font-size:13px;margin-top:4px}
+.why{background:#fff;border-radius:18px;border:3px solid var(--line);padding:14px;font-size:17px;line-height:1.45}
+
+/* summary */
+.sumrow{background:#fff;border:3px solid var(--line);border-radius:18px;padding:12px 14px}
+.sumrow .h{display:flex;justify-content:space-between;gap:8px;font-weight:900}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{border-radius:999px;padding:3px 10px;color:#fff;font-weight:900;font-size:13px}
+.chip.ghost{background:#fff !important;border:2px dashed currentColor}
+.confetti{position:fixed;top:-20px;width:10px;height:16px;z-index:50;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============================================================
+   Which Hat? — supervision role-play game (4 players, 4 rounds)
+   Touch-first; keyboard: Enter/Space = main button, ← → = browse hats,
+   1–4 = toggle hats, P = pause timer, M = mute.
+   ============================================================ */
+
+const HATS = {
+  edu:{en:"Educational",zh:"教育性",hook:"Learn 學習",
+       def:"Teaches knowledge and skills. Helps the worker grow as a professional.",
+       defzh:"教導知識與技巧，協助社工專業成長。",
+       q:"“What can you learn from this?”",qzh:"「你可以從中學到什麼？」"},
+  adm:{en:"Administrative",zh:"行政性",hook:"Rules 規範",
+       def:"Makes sure the work follows agency rules, policies and deadlines.",
+       defzh:"確保工作符合機構規定、政策與期限。",
+       q:"“Is the work done right and on time?”",qzh:"「工作有沒有做對、準時完成？」"},
+  sup:{en:"Supportive",zh:"支持性",hook:"Feelings 情緒",
+       def:"Cares for the worker's feelings and stress. Builds morale and helps prevent burnout.",
+       defzh:"關心社工的情緒與壓力，提升士氣、預防職業倦怠。",
+       q:"“How are you doing?”",qzh:"「你還好嗎？」"},
+  med:{en:"Mediating",zh:"調解性",hook:"Bridge 橋樑",
+       def:"Builds a bridge between the worker and the agency, other professionals or the community. Helps solve conflicts.",
+       defzh:"在社工與機構、其他專業或社區之間搭起橋樑，協助化解衝突。",
+       q:"“Let's solve this together.”",qzh:"「我們一起來解決。」"}
+};
+const HAT_KEYS = ["edu","adm","sup","med"];
+const COLORS = {edu:"#12a4a0",adm:"#f28c28",sup:"#2fb36d",med:"#8e5bd6"};
+
+const ROLES = [
+  {en:"Supervisor",zh:"督導",ic:"🧑‍💼",job:"Listen, ask, help. Try to wear the right hats.",jobzh:"傾聽、提問、協助，試著戴上合適的帽子。"},
+  {en:"Worker",zh:"社工",ic:"🗣️",job:"Read the scenario aloud and act as the worker with the problem.",jobzh:"念出情境，扮演遇到問題的社工。"},
+  {en:"Observer 1",zh:"觀察員一",ic:"👀",job:"Watch quietly. Then decide with Observer 2 which hats were used.",jobzh:"安靜觀察，最後和觀察員二一起決定用了哪些帽子。"},
+  {en:"Observer 2",zh:"觀察員二",ic:"👀",job:"Watch quietly. Then decide with Observer 1 which hats were used.",jobzh:"安靜觀察，最後和觀察員一一起決定用了哪些帽子。"}
+];
+
+const OPENERS = [
+  ["Tell me what happened.","告訴我發生了什麼事。"],
+  ["What have you tried so far?","你目前試過哪些方法？"],
+  ["How are you feeling right now?","你現在感覺怎麼樣？"],
+  ["Thanks for coming to me. Where should we start?","謝謝你來找我。我們從哪裡開始？"],
+  ["What do you need from me today?","你今天需要我幫你什麼？"],
+  ["Take your time. I'm listening.","慢慢說，我在聽。"]
+];
+
+/* id, worker's words (EN/中), suggested hats, why (EN/中) */
+const SCENARIOS = [
+ [1,"I'm new. The agency evaluation is next month, and I don't know how to write a good case record.","我是新人。下個月機構要評鑑，我不知道怎麼寫好個案紀錄。",["edu","adm"],"Teach the recording skill (educational) and meet the evaluation standard (administrative).","教導紀錄技巧（教育性），並符合評鑑標準（行政性）。"],
+ [2,"I visited a family today about child abuse. I can't stop thinking about it. I cried in the car.","今天我去訪視一個兒虐家庭，我一直忘不了，在車上哭了。",["sup"],"The worker first needs care for their feelings.","社工最需要的是情緒上的關心與支持。"],
+ [3,"The hospital nurse and I disagree about Grandma Lin's discharge plan. Now the nurse won't talk to me.","我和醫院護理師對林奶奶的出院計畫意見不同，現在護理師不跟我說話。",["med"],"The supervisor can build a bridge between the worker and the hospital.","督導可以在社工與醫院之間搭起橋樑。"],
+ [4,"I still have six reports for the government contract. They were due last Friday.","政府委託案還有六份報告沒交，上週五就到期了。",["adm"],"Deadlines and contract rules: plan and prioritize the work.","期限與契約規定：規劃並排定工作的優先順序。"],
+ [5,"I want to try a new group activity for caregivers, but I'm not sure how to run it.","我想為照顧者辦一個新的團體活動，但不確定怎麼帶。",["edu"],"The worker wants to learn a new skill.","社工想學習新的技巧。"],
+ [6,"The agency made a new rule that I think is unfair to clients. My client is angry, and so am I.","機構訂了一條我覺得對案主不公平的新規定。案主很生氣，我也是。",["med","sup"],"Carry the concern to the agency (mediating) and acknowledge the worker's anger (supportive).","把意見向機構反映（調解性），並接住社工的情緒（支持性）。"],
+ [7,"A client's son shouted at me on the phone and said he will complain to the city councilor. I'm still shaking.","案主的兒子在電話裡對我大吼，說要去找議員投訴。我現在還在發抖。",["sup","med"],"Calm and support the worker first, then help handle the conflict with the family.","先安撫、支持社工，再協助處理與家屬的衝突。"],
+ [8,"Tomorrow is my first home safety check for an older adult who lives alone. I've never done one.","明天是我第一次為獨居長者做居家安全評估，我從來沒做過。",["edu"],"Teach the steps before the visit.","在訪視前教導評估的步驟。"],
+ [9,"A family had no food, so I gave emergency cash without my manager's signature. Now accounting says I broke the rule.","有個家庭沒有東西吃，我沒等主管簽名就先發了急難救助金。現在會計說我違反規定。",["adm","med"],"Explain the procedure and why it matters, and help sort it out with accounting.","說明程序和它的重要性，並協助與會計溝通處理。"],
+ [10,"Two workers quit, so my caseload went from 25 to 40. I've worked every weekend this month.","兩位同事離職後，我的個案量從25件增加到40件，這個月每個週末都在工作。",["sup","adm"],"Care for the worker's stress and share out the workload fairly.","關心社工的壓力，並公平地重新分配工作量。"],
+ [11,"The school counselor and I both think we are in charge of the same teenager. We keep giving the family different advice.","學校輔導老師和我都認為自己負責同一位青少年，我們一直給家長不同的建議。",["med"],"Bring both professionals together and agree on who does what.","讓雙方專業坐下來，釐清彼此的分工。"],
+ [12,"I don't understand the new long-term care service codes, and my billing keeps getting rejected.","我看不懂新的長照服務碼，核銷一直被退件。",["edu","adm"],"Teach the codes and make sure the paperwork follows the rules.","教導服務碼，並確保文件符合規定。"],
+ [13,"A client gave me a red envelope (紅包) to say thank you. I didn't know what to say, so I took it.","案主包了紅包謝謝我，我不知道該怎麼回應，就收下了。",["adm","edu"],"Agency ethics rules apply, and the worker can learn how to say no politely next time.","涉及機構的倫理規範，也可以教社工下次如何婉拒。"],
+ [14,"I feel like I'm not good enough for this job. Everyone else seems to know what they're doing.","我覺得自己不適任這份工作，好像大家都知道自己在做什麼，只有我不會。",["sup"],"Rebuild the worker's confidence.","重建社工的信心。"],
+ [15,"The village chief wants his relative to get home care before everyone else on the waiting list.","村長希望他的親戚可以插隊，比排隊名單上的其他人先得到居家服務。",["med","adm"],"Handle the outside pressure and keep the waiting-list rules fair.","處理外部壓力，並維持公平的排序規則。"],
+ [16,"Our funder wants outcome data, but I only counted how many people came to our activities.","補助單位要成效資料，但我只統計了參加人數。",["edu","adm"],"Teach the difference between output and outcome, and meet the funder's reporting rules.","教導產出與成效的差別，並符合補助單位的報告要求。"],
+ [17,"My volunteers argue every week about who has to drive. Two of them want to quit.","我的志工每週都在吵誰要負責開車，有兩位想退出。",["med"],"Help the volunteers solve the conflict together.","協助志工們一起化解衝突。"],
+ [18,"I forgot to call a client back, and she missed her hospital appointment. I feel terrible.","我忘了回電給一位案主，害她錯過醫院門診。我覺得很糟。",["sup","adm"],"Support the worker, then set up a system so it doesn't happen again.","先支持社工，再建立制度避免再發生。"],
+ [19,"I want to learn a new counseling method, but I don't know if the agency will pay for the training.","我想學一種新的會談方法，但不知道機構會不會補助訓練費用。",["edu","adm"],"Encourage professional growth and check the agency's training budget and rules.","鼓勵專業成長，並確認機構的訓練經費與規定。"],
+ [20,"My client died last week. Since then, I can't focus on my other cases.","我的案主上週過世了，從那之後我無法專心處理其他個案。",["sup"],"Grief needs support before anything else.","失落與哀傷需要先被支持。"],
+ [21,"The hospital sent a client home without telling us. Now nobody is caring for him at home.","醫院沒通知我們就讓案主出院，現在家裡沒有人照顧他。",["med"],"Connect quickly with the hospital and other services to close the gap.","迅速與醫院及其他單位聯繫，補上服務缺口。"],
+ [22,"I'm not sure if this family's situation must be reported (通報) by law.","我不確定這個家庭的狀況依法是否需要通報。",["edu","adm"],"Teach the law and the agency's reporting procedure.","教導相關法規與機構的通報程序。"],
+ [23,"A coworker keeps taking credit for my work in team meetings.","有位同事在團隊會議上一直把我的功勞說成是他的。",["med","sup"],"Listen first, then help the two coworkers talk it through.","先傾聽，再協助兩位同事溝通。"],
+ [24,"The government changed the home-visit form again. I have to redo all my records this month.","政府又改了家訪表格，這個月我得重做所有紀錄。",["adm","sup"],"Plan the paperwork realistically and acknowledge the frustration.","務實規劃文書工作，並同理社工的挫折。"]
+];
+
+const ROUND_SECONDS = 180;
+const SAVE_KEY = "whichhat_state_v1", USED_KEY = "whichhat_used_v1";
+
+/* ---------------- sound (Web Audio, no files) ---------------- */
+let actx = null, muted = false;
+try { muted = localStorage.getItem("whichhat_muted") === "1"; } catch (e) {}
+function ac(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx && actx.state==="suspended") actx.resume(); return actx; }
+function tone(freq, dur=0.12, type="triangle", vol=0.18, delay=0){
+  if(muted) return; const a = ac(); if(!a) return;
+  const t = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+0.05);
+}
+const SFX = {
+  tap(){ tone(660,.07,"triangle",.12); },
+  ok(){ tone(523,.1); tone(784,.16,"triangle",.18,.08); },
+  hat(k){ const f={edu:523,adm:587,sup:659,med:784}[k]||600; tone(f,.12,"sine",.2); tone(f*1.5,.18,"sine",.12,.09); },
+  untick(){ tone(330,.08,"sine",.12); },
+  tick(){ tone(1200,.04,"square",.05); },
+  start(){ [392,523,659].forEach((f,i)=>tone(f,.15,"triangle",.16,i*.09)); },
+  bell(){ [880,1175,880,1175].forEach((f,i)=>tone(f,.35,"sine",.22,i*.18)); },
+  swap(){ for(let i=0;i<6;i++) tone(300+i*90,.06,"sawtooth",.05,i*.04); },
+  fanfare(){ [523,659,784,1047].forEach((f,i)=>tone(f,.25,"triangle",.18,i*.11)); tone(1047,.6,"sine",.12,.5); }
+};
+
+/* ---------------- state ---------------- */
+let S = fresh();
+function fresh(){ return {screen:"title", introIdx:0, names:["","","",""], accepted:[false,false,false,false], editing:-1,
+  round:0, order:[], openerIdx:0, picked:[], log:[], endAt:0, remaining:ROUND_SECONDS, paused:false}; }
+function save(){ try{ const c = {...S}; localStorage.setItem(SAVE_KEY, JSON.stringify(c)); }catch(e){} }
+function loadSaved(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); }catch(e){ return null; } }
+function clearSaved(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function usedIds(){ try{ return JSON.parse(localStorage.getItem(USED_KEY)||"[]"); }catch(e){ return []; } }
+function setUsed(a){ try{ localStorage.setItem(USED_KEY, JSON.stringify(a)); }catch(e){} }
+
+/* pick 4 scenarios not used before on this device; reset the pool when it runs low */
+function pickScenarios(){
+  let used = usedIds(); let pool = SCENARIOS.filter(s => !used.includes(s[0]));
+  if(pool.length < 4){ used = []; pool = SCENARIOS.slice(); }
+  pool.sort(() => Math.random() - .5);
+  const chosen = pool.slice(0,4).map(s => s[0]);
+  setUsed(used.concat(chosen)); return chosen;
+}
+const scen = id => SCENARIOS.find(s => s[0] === id);
+/* role i is held by player (i - round) mod 4: everyone moves one seat each round */
+const holder = (role, r=S.round) => (((role - r) % 4) + 4) % 4;
+const nm = (role, r) => esc(S.names[holder(role, r)]);
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ---------------- hat art ---------------- */
+function symbol(k){
+  const w = 'stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  if(k==="edu") return `<circle cx="0" cy="-5" r="11" fill="#fff"/><rect x="-6" y="5" width="12" height="9" rx="2" fill="#fff"/>
+     <line x1="-21" y1="-5" x2="-16" y2="-5" ${w}/><line x1="16" y1="-5" x2="21" y2="-5" ${w}/><line x1="0" y1="-25" x2="0" y2="-20" ${w}/>
+     <line x1="-14" y1="-19" x2="-11" y2="-16" ${w}/><line x1="14" y1="-19" x2="11" y2="-16" ${w}/>`;
+  if(k==="adm") return `<rect x="-12" y="-15" width="24" height="30" rx="4" ${w}/><rect x="-6" y="-19" width="12" height="7" rx="2" fill="#fff"/>
+     <path d="M-6 1 L-1 6 L7 -5" ${w}/>`;
+  if(k==="sup") return `<path d="M0 15 C-22 0 -16 -20 0 -9 C16 -20 22 0 0 15 Z" fill="#fff"/>`;
+  return `<path d="M-20 12 L-20 -4 L20 -4 L20 12" ${w}/><path d="M-12 12 Q0 -4 12 12" ${w}/><line x1="-24" y1="-4" x2="24" y2="-4" ${w}/>`;
+}
+function hatSVG(k){
+  const c = COLORS[k];
+  return `<svg viewBox="0 0 120 100" aria-hidden="true">
+    <path d="M24 74 L96 74 L86 22 Q60 4 34 22 Z" fill="${c}" stroke="rgba(0,0,0,.18)" stroke-width="3"/>
+    <rect x="27" y="58" width="66" height="9" fill="rgba(255,255,255,.35)"/>
+    <rect x="6" y="70" width="108" height="15" rx="7.5" fill="${c}" stroke="rgba(0,0,0,.18)" stroke-width="3"/>
+    <g transform="translate(60,38) scale(.95)">${symbol(k)}</g></svg>`;
+}
+function hatTile(k, extra="", cls=""){
+  return `<div class="hat ${k} ${cls}" data-hat="${k}">${extra}${hatSVG(k)}<div class="nm">${HATS[k].en}<br>${HATS[k].zh}</div><div class="hk">${HATS[k].hook}</div></div>`;
+}
+
+/* ---------------- screens ---------------- */
+const app = document.getElementById("app");
+function shell(inner){
+  return `<div class="top"><div class="brand">Which <span>Hat?</span> 哪一頂帽子？</div>
+    <div class="row" style="flex:0"><button class="iconbtn" data-act="mute" aria-label="sound">${muted?"🔇":"🔊"}</button>
+    ${S.screen!=="title"?'<button class="iconbtn" data-act="home" aria-label="home">⌂</button>':""}</div></div>
+    <div class="screen">${inner}</div>`;
+}
+function kbd(t){ return `<div class="kbd">${t}</div>`; }
+
+const VIEWS = {
+  title(){
+    const saved = loadSaved();
+    const cont = saved && !["title","summary"].includes(saved.screen);
+    return `<div class="spacer"></div>
+      <div class="hatgrid four">${HAT_KEYS.map(k=>hatTile(k,"","small")).join("")}</div>
+      <h1>Which Hat?<br><span style="color:var(--pink)">哪一頂帽子？</span></h1>
+      <p class="lead">A supervisor wears <b>four hats</b>. Practice wearing them, and spot them!<br><span class="zh">督導有四頂帽子。一起練習戴上它們，也學會辨認它們！</span></p>
+      <div class="spacer"></div>
+      ${cont?`<button class="btn" data-act="resume" data-primary>Continue game<small>繼續上次的遊戲</small></button>`:""}
+      <button class="btn ${cont?"alt":""}" data-act="start" ${cont?"":"data-primary"}>Start<small>開始</small></button>
+      ${kbd("<b>Enter</b> next · <b>M</b> sound")}
+      <div class="kbd"><a href="../../" style="color:var(--muted)">← All games 所有遊戲</a></div>`;
+  },
+  intro(){
+    const k = HAT_KEYS[S.introIdx], h = HATS[k];
+    return `<div class="dots">${HAT_KEYS.map((_,i)=>`<i class="${i===S.introIdx?"on":""}"></i>`).join("")}</div>
+      <div class="bighat" style="background:${COLORS[k]};box-shadow:0 8px 0 rgba(0,0,0,.18)">
+        ${hatSVG(k)}<div class="nm">${h.en}<br>${h.zh}</div>
+        <div class="hook">${h.hook}</div>
+        <div class="def">${h.def}<br><span style="opacity:.9">${h.defzh}</span></div>
+        <div class="q">${h.q}<br><span class="zh">${h.qzh}</span></div></div>
+      <div class="spacer"></div>
+      <div class="row">${S.introIdx>0?`<button class="btn alt" data-act="prevhat">← Back<small>上一頂</small></button>`:""}
+      <button class="btn" data-act="nexthat" data-primary>${S.introIdx<3?"Next hat →<small>下一頂帽子</small>":"See all four →<small>看四頂帽子</small>"}</button></div>
+      ${kbd("<b>←</b> <b>→</b> browse · <b>Enter</b> next")}`;
+  },
+  allhats(){
+    return `<h2>Remember the four hats<br><span class="zh">記住四頂帽子</span></h2>
+      <div class="hatgrid four">${HAT_KEYS.map(k=>hatTile(k)).join("")}</div>
+      <p class="lead"><b>💡 Learn · 📋 Rules · 💚 Feelings · 🌉 Bridge</b><br><span class="zh">One problem can need more than one hat. 一個問題可能需要不只一頂帽子。</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="groups" data-primary>Form groups →<small>開始分組</small></button>`;
+  },
+  groups(){
+    return `<h2>Form a group of 4<br><span class="zh">四人一組</span></h2>
+      <div class="roles">${ROLES.map((r,i)=>`<div class="role ${i<2?"r"+i:""}"><div class="ic">${r.ic}</div>
+        <div class="who" style="font-size:20px">${r.en}<br>${r.zh}</div><div style="font-size:14px;margin-top:4px">${r.job}<br><span class="zh">${r.jobzh}</span></div></div>`).join("")}</div>
+      <p class="lead">4 rounds. After each round, <b>everyone switches roles</b>, so everyone is the supervisor once.<br><span class="zh">共四回合，每回合結束後<b>大家交換角色</b>，每個人都會當一次督導。</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="names" data-primary>Enter names →<small>輸入姓名</small></button>`;
+  },
+  names(){
+    return `<h2>Who starts in each role?<br><span class="zh">第一回合誰擔任哪個角色？</span></h2>
+      ${ROLES.map((r,i)=>`<div class="field"><label for="n${i}">${r.ic} ${r.en} ${r.zh}</label>
+        <input id="n${i}" data-idx="${i}" autocomplete="off" maxlength="20" placeholder="Name 姓名" value="${esc(S.names[i])}"></div>`).join("")}
+      <div class="spacer"></div>
+      <button class="btn" data-act="confirmnames" data-primary ${S.names.every(n=>n.trim())?"":"disabled"}>Next →<small>下一步</small></button>
+      ${kbd("<b>Enter</b> moves to the next box")}`;
+  },
+  confirm(){
+    const all = S.accepted.every(Boolean);
+    return `<h2>Check each name<br><span class="zh">確認每個名字</span></h2>
+      ${ROLES.map((r,i)=>{
+        if(S.editing===i) return `<div class="confirmrow"><div class="grow"><div class="lab">${r.en} ${r.zh}</div>
+          <input id="edit" maxlength="20" value="${esc(S.names[i])}"></div><button class="mini acc" data-act="saveedit">Save 儲存</button></div>`;
+        return `<div class="confirmrow ${S.accepted[i]?"ok":""}"><div class="grow"><div class="lab">${r.ic} ${r.en} ${r.zh}</div><div class="val">${esc(S.names[i])}</div></div>
+          ${S.accepted[i]?`<button class="mini done" data-act="edit" data-i="${i}">✓ Edit</button>`:
+          `<button class="mini edit" data-act="edit" data-i="${i}">Edit 修改</button><button class="mini acc" data-act="accept" data-i="${i}">Accept 確認</button>`}</div>`;
+      }).join("")}
+      <div class="spacer"></div>
+      ${all?"":`<button class="btn alt" data-act="acceptall">Accept all<small>全部確認</small></button>`}
+      <button class="btn" data-act="begin" data-primary ${all?"":"disabled"}>Start the game!<small>開始遊戲！</small></button>`;
+  },
+  round(){
+    const r = S.round;
+    return `<div style="text-align:center"><span class="pill">Round ${r+1} of 4 · 第${r+1}回合</span></div>
+      <h2>${r===0?"Your roles":"Switch roles!"}<br><span class="zh">${r===0?"你們的角色":"交換角色！"}</span></h2>
+      <div class="roles">${ROLES.map((ro,i)=>`<div class="role ${i<2?"r"+i:""} ${r>0?"swap":""}"><div class="rn">${ro.ic} ${ro.en} ${ro.zh}</div><div class="who">${nm(i)}</div></div>`).join("")}</div>
+      <p class="lead">${r===0?"Move your seats if you like, so the supervisor and worker face each other.":"Everyone moved one seat: Supervisor → Worker → Observer → Supervisor."}<br>
+        <span class="zh">${r===0?"可以調整座位，讓督導和社工面對面。":"每個人往下一個角色移動：督導→社工→觀察員→督導。"}</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="opener" data-primary>Ready →<small>準備好了</small></button>`;
+  },
+  opener(){
+    const o = OPENERS[S.openerIdx];
+    return `<div style="text-align:center"><span class="pill">Round ${S.round+1} · Step 1</span></div>
+      <h2>🧑‍💼 ${nm(0)}, start as the supervisor<br><span class="zh">${nm(0)}，請以督導身分開場</span></h2>
+      <div class="opener"><div class="en">“${o[0]}”</div><div class="zh">「${o[1]}」</div></div>
+      <button class="btn alt" data-act="shuffle">🔀 Another opener<small>換一句</small></button>
+      <p class="lead">Say it to <b>${nm(1)}</b> (the worker).<br><span class="zh">對社工 <b>${nm(1)}</b> 說這句話。</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="scenario" data-primary>Next: the worker's problem →<small>下一步：社工的問題</small></button>`;
+  },
+  scenario(){
+    const s = scen(S.picked[S.round]);
+    return `<div style="text-align:center"><span class="pill">Round ${S.round+1} · Step 2</span></div>
+      <h2>🗣️ ${nm(1)}, read this aloud<br><span class="zh">${nm(1)}，請大聲念出來</span></h2>
+      <div class="scenario">“${s[1]}”<span class="zh">「${s[2]}」</span></div>
+      <p class="lead">Then keep talking as the worker. The timer starts now.<br><span class="zh">念完後繼續扮演社工，計時開始。</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="talk" data-primary>Start the 3-minute timer ▶<small>開始計時三分鐘</small></button>`;
+  },
+  talk(){
+    const s = scen(S.picked[S.round]);
+    return `<div style="text-align:center"><span class="pill">Round ${S.round+1} · Step 3 · 🧑‍💼 ${nm(0)} &amp; 🗣️ ${nm(1)}</span></div>
+      <div class="timer" id="clock">${fmt(S.remaining)}</div>
+      <div class="bar"><i id="barfill" style="width:${100*S.remaining/ROUND_SECONDS}%"></i></div>
+      <p class="lead" style="font-size:16px"><b>Supervisor, which hat do you need?</b> <span class="zh">督導，你需要哪一頂帽子？</span></p>
+      <div class="hatgrid four">${HAT_KEYS.map(k=>`<div class="hat ${k} small">${hatSVG(k)}<div class="nm">${HATS[k].en} ${HATS[k].zh}</div><div class="hk">${HATS[k].q}</div></div>`).join("")}</div>
+      <div class="scenario" style="font-size:16px;border-width:3px;padding:12px">“${s[1]}”</div>
+      <div class="row"><button class="btn alt" data-act="pause">${S.paused?"▶ Resume 繼續":"⏸ Pause 暫停"}</button>
+        <button class="btn alt" data-act="plus">+30 s</button></div>
+      <button class="btn" data-act="timesup" data-primary>We're done ✓<small>提早結束</small></button>
+      ${kbd("<b>P</b> pause · <b>Enter</b> finish early")}`;
+  },
+  check(){
+    const used = S.log[S.round]?.used || [];
+    return `<div style="text-align:center"><span class="pill">Round ${S.round+1} · Step 4</span></div>
+      <h2>👀 ${nm(2)} &amp; ${nm(3)}:<br>which hats did ${nm(0)} wear?<br><span class="zh">觀察員一起決定：督導用了哪幾頂帽子？</span></h2>
+      <p class="lead" style="font-size:16px">Talk together, then tap <b>all</b> the hats you saw.<br><span class="zh">兩人討論後，點選看到的<b>所有</b>帽子。</span></p>
+      <div class="hatgrid four">${HAT_KEYS.map((k,i)=>hatTile(k,`<span class="num">${i+1}</span><span class="tick">✓</span>`,"toggle "+(used.includes(k)?"on":"off"))).join("")}</div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="reveal" data-primary ${used.length?"":"disabled"}>Check our answer →<small>看參考答案</small></button>
+      ${kbd("<b>1</b>–<b>4</b> toggle hats · <b>Enter</b> check")}`;
+  },
+  reveal(){
+    const s = scen(S.picked[S.round]), used = S.log[S.round].used, key = s[3];
+    const items = HAT_KEYS.map(k=>{
+      const u = used.includes(k), g = key.includes(k);
+      const tag = u&&g?"✓ Match 符合":g?"💡 Also try 也可以用":u?"You saw it 你們看到":"";
+      return `<div class="resitem ${!u&&!g?"dim":""}" style="background:${COLORS[k]}">${hatSVG(k)}<div style="font-weight:900">${HATS[k].en}<br>${HATS[k].zh}</div>${tag?`<span class="tag">${tag}</span>`:""}</div>`;
+    }).join("");
+    const last = S.round===3;
+    return `<div style="text-align:center"><span class="pill">Round ${S.round+1} · Suggested hats 參考答案</span></div>
+      <div class="res">${items}</div>
+      <div class="why"><b>Why?</b> ${s[4]}<br><span class="zh">${s[5]}</span></div>
+      <p class="lead" style="font-size:15px">There is no single right answer. Using an extra hat can still be good supervision.<br><span class="zh">沒有唯一的正確答案，多用一頂帽子也可能是好的督導。</span></p>
+      <div class="spacer"></div>
+      <button class="btn" data-act="${last?"summary":"nextround"}" data-primary>${last?"See our results 🎉<small>看我們的成果</small>":"Switch roles →<small>交換角色</small>"}</button>`;
+  },
+  summary(){
+    const rows = S.log.map((l,r)=>{
+      const s = scen(S.picked[r]);
+      const chips = HAT_KEYS.filter(k=>l.used.includes(k)||s[3].includes(k)).map(k=>
+        `<span class="chip ${l.used.includes(k)?"":"ghost"}" style="background:${COLORS[k]};color:${l.used.includes(k)?"#fff":COLORS[k]}">${HATS[k].en} ${HATS[k].zh}</span>`).join("");
+      return `<div class="sumrow"><div class="h"><span>Round ${r+1} · 🧑‍💼 ${nm(0,r)}</span><span class="zh">🗣️ ${nm(1,r)}</span></div>
+        <div style="font-size:15px;margin-top:4px">“${s[1]}”</div><div class="chips">${chips}</div></div>`;
+    }).join("");
+    return `<h1 style="font-size:clamp(30px,7vw,46px)">Great supervising! 🎉<br><span class="zh" style="font-size:.6em">督導練習完成！</span></h1>
+      <div class="legend"><span>Solid = hats you saw 實心＝你們看到的</span><span>Dashed = also try 虛線＝也可以用</span></div>
+      ${rows}
+      <p class="lead" style="font-size:16px"><b>Talk:</b> Which hat was hardest to wear? Why?<br><span class="zh">討論：哪一頂帽子最難戴？為什麼？</span></p>
+      <button class="btn" data-act="again" data-primary>Play again (new scenarios)<small>再玩一次（新情境）</small></button>
+      <button class="btn alt" data-act="newgroup">New group<small>換一組</small></button>`;
+  }
+};
+
+/* ---------------- timer ---------------- */
+let tick = null, wake = null;
+function fmt(s){ s = Math.max(0, Math.ceil(s)); return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; }
+async function keepAwake(on){ try{ if(on && "wakeLock" in navigator){ wake = await navigator.wakeLock.request("screen"); } else if(!on && wake){ await wake.release(); wake = null; } }catch(e){} }
+function startTimer(){
+  stopTimer(); S.paused = false; S.endAt = Date.now() + S.remaining*1000; keepAwake(true);
+  let lastWhole = Math.ceil(S.remaining);
+  tick = setInterval(()=>{
+    if(S.paused) return;
+    S.remaining = (S.endAt - Date.now())/1000;
+    const c = document.getElementById("clock"), b = document.getElementById("barfill");
+    if(c){ c.textContent = fmt(S.remaining); c.classList.toggle("low", S.remaining <= 10); }
+    if(b) b.style.width = Math.max(0, 100*S.remaining/ROUND_SECONDS) + "%";
+    const whole = Math.ceil(S.remaining);
+    if(whole !== lastWhole){ lastWhole = whole; if(whole <= 10 && whole > 0) SFX.tick(); save(); }
+    if(S.remaining <= 0){ stopTimer(); SFX.bell(); setTimeout(()=>go("check"), 900); }
+  }, 200);
+}
+function stopTimer(){ if(tick){ clearInterval(tick); tick = null; } keepAwake(false); }
+
+/* ---------------- navigation & actions ---------------- */
+function go(screen){ S.screen = screen; save(); render(); }
+function render(){
+  app.innerHTML = shell(VIEWS[S.screen]());
+  if(S.screen === "names"){ const f = document.querySelector("input[data-idx]:placeholder-shown") || document.getElementById("n0"); if(f && matchMedia("(pointer:fine)").matches) f.focus(); }
+  if(S.screen === "confirm" && S.editing >= 0){ const e = document.getElementById("edit"); e.focus(); e.select(); }
+  if(S.screen === "talk" && !S.paused && !tick) startTimer();
+}
+
+const ACT = {
+  mute(){ muted = !muted; try{ localStorage.setItem("whichhat_muted", muted?"1":"0"); }catch(e){} if(!muted) SFX.tap(); render(); },
+  home(){ if(confirm("Leave this game? 確定離開這場遊戲？")){ stopTimer(); go("title"); } },
+  resume(){ const s = loadSaved(); if(s){ S = s; if(S.screen === "talk") S.paused = true; } SFX.ok(); render(); },
+  start(){ S = fresh(); S.screen = "intro"; SFX.hat("edu"); save(); render(); },
+  nexthat(){ if(S.introIdx < 3){ S.introIdx++; SFX.hat(HAT_KEYS[S.introIdx]); go("intro"); } else { SFX.fanfare(); go("allhats"); } },
+  prevhat(){ if(S.introIdx > 0){ S.introIdx--; SFX.hat(HAT_KEYS[S.introIdx]); go("intro"); } },
+  groups(){ SFX.tap(); go("groups"); },
+  names(){ SFX.tap(); go("names"); },
+  confirmnames(){ if(!S.names.every(n=>n.trim())) return; S.names = S.names.map(n=>n.trim()); S.accepted = [false,false,false,false]; S.editing = -1; SFX.ok(); go("confirm"); },
+  edit(el){ S.editing = +el.dataset.i; S.accepted[S.editing] = false; SFX.tap(); render(); },
+  saveedit(){ const v = document.getElementById("edit").value.trim(); if(!v) return; S.names[S.editing] = v; S.accepted[S.editing] = true; S.editing = -1; SFX.ok(); save(); render(); },
+  accept(el){ S.accepted[+el.dataset.i] = true; SFX.ok(); save(); render(); },
+  acceptall(){ S.accepted = [true,true,true,true]; S.editing = -1; SFX.ok(); save(); render(); },
+  begin(){ if(!S.accepted.every(Boolean)) return; S.picked = pickScenarios(); S.round = 0; S.log = []; SFX.start(); go("round"); },
+  opener(){ S.openerIdx = Math.floor(Math.random()*OPENERS.length); SFX.tap(); go("opener"); },
+  shuffle(){ let i; do{ i = Math.floor(Math.random()*OPENERS.length); }while(i === S.openerIdx); S.openerIdx = i; SFX.tap(); render(); },
+  scenario(){ SFX.ok(); go("scenario"); },
+  talk(){ S.remaining = ROUND_SECONDS; S.paused = false; SFX.start(); go("talk"); },
+  pause(){ if(S.paused){ S.paused = false; startTimer(); } else { S.paused = true; S.remaining = (S.endAt - Date.now())/1000; stopTimer(); } SFX.tap(); save(); render(); },
+  plus(){ S.remaining = (S.paused ? S.remaining : (S.endAt - Date.now())/1000) + 30; if(!S.paused) startTimer(); SFX.tap(); render(); },
+  timesup(){ stopTimer(); SFX.bell(); go("check"); },
+  reveal(){ if(!(S.log[S.round]?.used||[]).length) return; SFX.fanfare(); confetti(40); go("reveal"); },
+  nextround(){ S.round++; SFX.swap(); go("round"); },
+  summary(){ SFX.fanfare(); confetti(120); go("summary"); },
+  again(){ const names = S.names; S = fresh(); S.names = names; S.accepted = [true,true,true,true]; S.picked = pickScenarios(); SFX.start(); go("round"); },
+  newgroup(){ S = fresh(); SFX.tap(); go("names"); }
+};
+function toggleHat(k){
+  if(S.screen !== "check") return;
+  const l = S.log[S.round] || (S.log[S.round] = {used:[]});
+  if(l.used.includes(k)){ l.used = l.used.filter(x=>x!==k); SFX.untick(); } else { l.used.push(k); SFX.hat(k); }
+  save(); render();
+}
+
+app.addEventListener("click", e=>{
+  const h = e.target.closest(".hat.toggle"); if(h){ toggleHat(h.dataset.hat); return; }
+  const b = e.target.closest("[data-act]"); if(!b || b.disabled) return;
+  ac(); ACT[b.dataset.act] && ACT[b.dataset.act](b);
+});
+app.addEventListener("input", e=>{
+  const i = e.target.dataset.idx; if(i === undefined) return;
+  S.names[+i] = e.target.value; save();
+  const btn = document.querySelector('[data-act="confirmnames"]'); if(btn) btn.disabled = !S.names.every(n=>n.trim());
+});
+document.addEventListener("keydown", e=>{
+  const tag = e.target.tagName;
+  if(tag === "INPUT"){
+    if(e.key === "Enter"){
+      e.preventDefault();
+      if(e.target.id === "edit"){ ACT.saveedit(); return; }
+      const i = +e.target.dataset.idx;
+      if(i < 3) document.getElementById("n"+(i+1)).focus(); else ACT.confirmnames();
+    }
+    return;
+  }
+  const k = e.key.toLowerCase();
+  if(k === "m"){ ACT.mute(); return; }
+  if(S.screen === "intro" && k === "arrowright"){ ACT.nexthat(); return; }
+  if(S.screen === "intro" && k === "arrowleft"){ ACT.prevhat(); return; }
+  if(S.screen === "check" && "1234".includes(k) && k.length === 1){ toggleHat(HAT_KEYS[+k-1]); return; }
+  if(S.screen === "talk" && k === "p"){ ACT.pause(); return; }
+  if(k === "enter" || k === " "){
+    const p = document.querySelector("[data-primary]");
+    if(p && !p.disabled){ e.preventDefault(); ac(); ACT[p.dataset.act](p); }
+  }
+});
+
+function confetti(n){
+  const cols = Object.values(COLORS).concat(["#ef4b7c","#ffc83d"]);
+  for(let i=0;i<n;i++){
+    const d = document.createElement("div"); d.className = "confetti";
+    d.style.left = Math.random()*100 + "vw"; d.style.background = cols[i % cols.length];
+    d.style.animationDuration = (1.6 + Math.random()*1.6) + "s"; d.style.animationDelay = (Math.random()*.4) + "s";
+    d.style.borderRadius = Math.random() > .5 ? "50%" : "2px";
+    document.body.appendChild(d); setTimeout(()=>d.remove(), 3800);
+  }
+}
+
+render();
+</script>
+</body>
+</html>

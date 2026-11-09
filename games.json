@@ -42,5 +42,16 @@
     "path": "games/term-tycoon/",
     "thumb": "games/term-tycoon/thumb.png",
     "added": "2026-10-26"
+  },
+  {
+    "slug": "which-hat",
+    "title": "Which Hat?",
+    "zh": "哪一頂帽子？",
+    "description": "Meet the four hats a supervisor wears, then role-play in groups of four: the supervisor opens, the worker reads a real-life problem, and the two observers decide which hats were used before the roles switch. Four rounds, so everyone supervises once.",
+    "players": "Groups of 4, one phone or tablet per group",
+    "concept": "Social work supervision: the four functions (educational, administrative, supportive, mediating) (Ch. 8)",
+    "path": "games/which-hat/",
+    "thumb": "games/which-hat/thumb.png",
+    "added": "2026-11-10"
   }
 ]

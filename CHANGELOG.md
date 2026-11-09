@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-10 (Which Hat?)
+- New game: **Which Hat? 哪一頂帽子？** (`games/which-hat/`), a supervision role-play for the Social Work Administration unit (textbook Ch. 8), played by groups of 4 on one phone or tablet.
+- Opens by introducing the four functions of supervision as colored hats with a memory symbol each: Educational 教育性 (teal, lightbulb, "Learn"), Administrative 行政性 (orange, clipboard, "Rules"), Supportive 支持性 (green, heart, "Feelings"), Mediating 調解性 (purple, bridge, "Bridge"), with the meaning and the question each hat asks.
+- Setup: the group enters four names (Supervisor, Worker, Observer 1, Observer 2), then accepts or edits each name before starting.
+- Each round: the supervisor gets a suggested opener (shuffle for another), the worker reads a random scenario aloud, a 3-minute timer runs with the four hats shown as reminders (pause, +30 s, finish early), the two observers decide together and tick the hats they saw, and the game shows suggested hats with a short reason. Roles then rotate (Supervisor → Worker → Observer → Supervisor), four rounds in all, so everyone supervises once. An end summary lists every round.
+- 24 bilingual scenarios; none repeat within a game, and a device does not repeat them across games until the pool runs low. Progress is saved on the device ("Continue game" after a reload); the screen stays awake during the timer.
+- Touch first; keyboard for the projector demo (Enter/Space, ← →, 1–4 to tick hats, P pause, M mute). Sounds are generated in the browser. No 8BitDo support.
+
 ## 2026-10-27 (Key Term Tycoon, mini-games)
 - Landing on your **own** term starts a mini-game, picked at random: **Stop the Meter** (press Ⓐ when the swinging needle is in the green zone; 2 hits out of 3) or **Arrow Echo** (watch and hear 4–6 arrows, then repeat them on the D-pad or arrow keys). Each has its own chiptune loop generated in the browser.
 - Win: that term's rent doubles (×2 → ×4 → ×8, capped at ×8); the games get harder as the multiplier rises. Lose: nothing happens. Ⓑ skips the mini-game. The multiplier shows on the board ("RENT ×4") and is lost if the term goes back to the bank.
