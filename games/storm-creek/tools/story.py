@@ -48,7 +48,7 @@ SCRIPT = r'''
 {{CLASSROOM}}
 @put teacher D:88 classroom 10 2 cls_teacher
 @map classroom 16 18 up
-Teacher: Good morning, everyone. Today we're talking about community development: Chapter 6.
+Teacher: Good morning, everyone. Today we're talking about community development.
 Teacher: Kretzmann and McKnight describe two paths. One starts from a community's needs and deficits...
 Teacher: ...and the other starts from the assets and capacities that are already there.
 > 台上的老師用英文講得飛快。你看了看四周，六十幾位同學，有一半已經在偷偷打哈欠。
@@ -61,7 +61,7 @@ Teacher: In a need-based approach, outside experts survey the problems and deliv
 :: cls_a
 @label s{{A}} cls_done
 Classmate: deficits 是什麼意思？……我只聽懂 community。
-Classmate: 老師講好快，我連課本第六章的標題都還沒翻到。
+Classmate: 老師講好快，我連課本的標題都還沒翻到。
 @goto cls_count
 
 :: cls_b
