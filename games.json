@@ -53,5 +53,16 @@
     "path": "games/which-hat/",
     "thumb": "games/which-hat/thumb.png",
     "added": "2026-11-10"
+  },
+  {
+    "slug": "family-next-door",
+    "title": "The Family Next Door",
+    "zh": "隔壁那一家",
+    "description": "You want to help the struggling family next door, but every idea is a guess and every guess fails. Study research in the library, pass your BSW and MSW exams (every answer must be right), then come home as a social worker and help the family with real data.",
+    "players": "Pairs on one phone: one taps, one reads aloud; decide exam answers together",
+    "concept": "Social work research: ways of knowing and the halo effect, empirical research, five purposes, quantitative vs. qualitative, deductive vs. inductive, research questions and hypotheses, six steps, literature review, ethics, evidence-based practice, needs assessment, output vs. outcome, comparison groups",
+    "path": "games/family-next-door/",
+    "thumb": "games/family-next-door/thumb.png",
+    "added": "2026-11-12"
   }
 ]

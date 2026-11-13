@@ -24,6 +24,8 @@
  *   @light r | @light off       darkness everywhere except a lantern circle of r tiles around the player
  *   @timer seconds label | @timer off   countdown clock; runs label when it reaches 0 (paused during dialogue and quizzes)
  *   pauses: { code, alt, html, head, choices, var, unlockAfter, ready (show the button at once), go (button label) }
+ *   quizzes: { tag, q, options, answer, hint, ok }; add exam: 'varName' for an exam question (one try, options shuffled,
+ *            nothing revealed; sets ok_<id> to 1/0 and adds 1 to varName when right; G.text.examSaved is the line shown)
  */
 (() => {
   'use strict';
@@ -67,7 +69,7 @@
     else c.drawImage(IMG[sheet], sx, sy, TS, TS, dx, dy, TS, TS);
   }
   function spriteRef(s) {
-    if (/^[TD]:\d+$/.test(s)) return { sheet: s[0] === 'T' ? 'town' : 'dungeon', i: +s.slice(2) };
+    if (/^[TDX]:\d+$/.test(s)) return { sheet: { T: 'town', D: 'dungeon', X: 'extra' }[s[0]], i: +s.slice(2) };   // X: = the game's own extra.png
     const i = G.chars.indexOf(s);
     if (i < 0) throw new Error('Unknown sprite: ' + s);
     return { sheet: 'chars', i };
@@ -482,7 +484,7 @@
       });
       choiceState = { i: 0, n: opts.length };
       markChoice();
-      if (fast) setTimeout(() => dChoices.querySelector('button').click(), 0);
+      if (fast) setTimeout(() => dChoices.children[(window.__story.choicePick && window.__story.choicePick(opts)) || 0].click(), 0);   // test mode
     });
   }
   let choiceState = null;
@@ -532,6 +534,7 @@
   /* ---------------- quiz ---------------- */
   function quiz(id) {
     const q = G.quizzes[id]; if (!q) throw new Error('Unknown quiz: ' + id);
+    if (q.exam) return examQuestion(id, q);
     const ov = $('#ovQuiz'), opts = $('#quizOpts'), fb = $('#quizFb'), next = $('#quizNext');
     $('#quizQ').innerHTML = fmt(q.q); $('#quizTag').textContent = q.tag || '';
     opts.innerHTML = ''; fb.textContent = ''; fb.className = 'fb'; next.classList.add('hidden');
@@ -556,6 +559,39 @@
       next.onclick = () => { ov.classList.remove('show'); save(); res(); };
       ov.classList.add('show');
       if (fast) { opts.children[q.answer].click(); setTimeout(() => next.click(), 0); }
+    });
+  }
+
+  /* Exam questions (quiz with exam: true): one try, options shuffled, no right/wrong shown.
+   * Sets vars ok_<id> = 1 or 0 and adds 1 to vars[q.exam] when right (q.exam names the score variable, e.g. 'bsw'). */
+  function examQuestion(id, q) {
+    const ov = $('#ovQuiz'), opts = $('#quizOpts'), fb = $('#quizFb'), next = $('#quizNext');
+    $('#quizQ').innerHTML = fmt(q.q); $('#quizTag').textContent = q.tag || '';
+    opts.innerHTML = ''; fb.textContent = ''; fb.className = 'fb'; next.classList.add('hidden');
+    const order = q.options.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+    const key = typeof q.exam === 'string' ? q.exam : 'score';
+    return new Promise(res => {
+      let done = false;
+      order.forEach((oi, k) => {
+        const b = document.createElement('button'); b.type = 'button'; b.textContent = String.fromCharCode(65 + k) + '. ' + q.options[oi];
+        b.addEventListener('click', () => {
+          if (done) return; done = true;
+          b.classList.add('pick'); sfx('blip');
+          const right = oi === q.answer;
+          st.vars['ok_' + id] = right ? 1 : 0;
+          if (right) st.vars[key] = (+st.vars[key] || 0) + 1;
+          fb.className = 'fb'; fb.textContent = G.text.examSaved || '✎';
+          next.classList.remove('hidden'); next.focus();
+        });
+        opts.appendChild(b);
+      });
+      next.onclick = () => { ov.classList.remove('show'); save(); res(); };
+      ov.classList.add('show');
+      if (fast) {
+        const want = window.__story.examWrong && window.__story.examWrong.includes(id) ? (q.answer + 1) % q.options.length : q.answer;
+        opts.children[order.indexOf(want)].click(); setTimeout(() => next.click(), 0);
+      }
     });
   }
 
@@ -867,7 +903,7 @@
   $('#jumpInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); jumpCode(); } });
   function showEnd() {
     const n = Object.keys(G.quizzes).length, f = Object.keys(st.firstTry).length;
-    $('#endStats').innerHTML = G.text.endStats.replace('{f}', f).replace('{n}', n).replace('{t}', st.notes.length).replace('{T}', Object.keys(G.terms).length);
+    $('#endStats').innerHTML = interp(G.text.endStats.replace('{f}', f).replace('{n}', n).replace('{t}', st.notes.length).replace('{T}', Object.keys(G.terms).length));
     music('quiet');
     $('#ovEnd').classList.add('show');
   }
@@ -876,7 +912,7 @@
 
   /* ---------------- boot ---------------- */
   let fast = false, fastPick = 1;
-  window.__story = { st, run, BLOCKS, MAPS, set fast(v) { fast = v; }, set pick(v) { fastPick = v; }, advance, action, goMap, quiz, pause, get busy() { return st.busy; } };
+  window.__story = { st, run, BLOCKS, MAPS, set fast(v) { fast = v; }, set pick(v) { fastPick = v; }, examWrong: [], choicePick: null, advance, action, goMap, quiz, pause, get busy() { return st.busy; } };
   loadImages().then(() => {
     setIdle(); updateNoteCount();
     requestAnimationFrame(frame);

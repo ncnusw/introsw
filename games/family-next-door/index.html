@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f0c11">
+<title>隔壁那一家 The Family Next Door</title>
+<meta name="description" content="A story adventure about social work research: stop guessing, study research, earn a BSW and an MSW, and come back to help the family next door.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%230f0c11'/%3E%3Crect x='3' y='0' width='2' height='1' fill='%23ad9f90'/%3E%3Crect x='2' y='1' width='4' height='5' fill='%2358a0d6'/%3E%3Crect x='3' y='2' width='2' height='3' fill='%23ffd166'/%3E%3Crect x='0' y='7' width='8' height='1' fill='%2358a0d6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../engine/engine.css">
+<style>
+  #quizQ { white-space: pre-line; }
+  #gate { z-index: 80; }
+  #gate .logo { margin-bottom: 4px; }
+  #gate input { text-transform: uppercase; }
+  #jumpInput { text-transform: uppercase; }
+  .gameover { font: clamp(26px, 8vw, 48px)/1.3 "Press Start 2P", monospace; color: #ff5d5d; text-align: center; margin: 6px 0 14px; text-shadow: 4px 4px 0 #000; }
+  #ovPause.over .card { border-color: #ff5d5d; }
+  #ovPause.over .pausehead { display: none; }
+</style>
+</head>
+<body>
+<div class="ov show" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateHead">
+  <div class="card">
+    <div class="logo" id="gateHead">THE FAMILY NEXT DOOR</div>
+    <p class="zh">隔壁那一家</p>
+    <p>請輸入老師在課堂上公布的密碼。<br><span class="en">Enter the password your teacher gives in class.</span></p>
+    <div class="code"><input id="gateInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="密碼 Password" aria-label="密碼 Password"><button id="gateOk" type="button">進入 Enter</button></div>
+    <div class="fb" id="gateFb" aria-live="polite"></div>
+    <a class="big alt" href="../../">回到課程首頁 Back to course home</a>
+  </div>
+</div>
+<div id="app">
+  <div id="bar">
+    <a class="iconbtn" href="../../" aria-label="回到課程首頁 Back to course home">⌂</a>
+    <div id="goal" aria-live="polite"></div>
+    <button class="iconbtn" id="notesBtn" type="button" aria-label="筆記本 Notebook">📖<span class="count">0</span></button>
+    <button class="iconbtn" id="muteBtn" type="button" aria-label="聲音 Sound">🔊</button>
+  </div>
+  <div id="view">
+    <canvas id="map" aria-label="遊戲畫面 Game map"></canvas>
+        <div id="toast" role="status"></div>
+    <div id="chooser" class="hidden" role="dialog" aria-label="選擇 Choose"><p class="ask">你會怎麼說？ Choose one:</p><div class="choices"></div></div>
+  </div>
+  <div id="dlg" class="idle noPor" aria-live="polite">
+    <canvas class="por" aria-hidden="true"></canvas>
+    <div class="txt"><div class="who"></div><div class="say"></div></div>
+    <div class="more hidden">▼</div>
+  </div>
+  <div id="pad">
+    <div class="dpad">
+      <button class="u" data-dir="up" aria-label="上 Up">▲</button>
+      <button class="l" data-dir="left" aria-label="左 Left">◀</button>
+      <button class="r" data-dir="right" aria-label="右 Right">▶</button>
+      <button class="d" data-dir="down" aria-label="下 Down">▼</button>
+    </div>
+    <button id="btnA" type="button">A<small>說話 / 下一句</small></button>
+  </div>
+  <div id="keys">方向鍵或 WASD 走路 · Enter / 空白鍵 說話、下一句 · N 筆記本 · M 聲音　|　Arrows / WASD walk · Enter / Space talk · N notebook · M sound · 8BitDo OK</div>
+</div>
+
+<div class="titlecard" id="titlecard"><div><h1></h1><p></p></div></div>
+
+<div class="ov" id="ovTitle">
+  <div class="card">
+    <div class="logo">THE FAMILY NEXT DOOR</div>
+    <p class="zh">隔壁那一家</p>
+    <p>高中畢業的暑假，你想幫隔壁辛苦的陳家。你很熱心，辦法也很多……可是每一個都是用猜的。</p>
+    <p class="en">The summer after high school, you want to help the struggling family next door. You have lots of ideas, but every one of them is a guess.</p>
+    <p>走進圖書館，讀懂研究，考過社工學士和碩士的畢業考（每一題都要答對），再回到和平巷。</p>
+    <p class="en">Visit the library, learn research, pass your BSW and MSW exams (every question must be right), then come home to Peace Lane.</p>
+    <p class="small"><b>兩人一支手機</b>：一人操作、一人唸對話，每一段交換。考試時兩個人一起討論再作答。<br>
+      <b>Pairs on one phone</b>: one taps, one reads aloud; swap often. Decide exam answers together.</p>
+    <button class="big" id="btnStart" type="button">開始 Start</button>
+    <button class="big alt hidden" id="btnContinue" type="button">繼續上次進度 Continue</button>
+    <p class="small" style="margin-top:16px">換了手機？輸入老師給的代碼，從中途開始。<br>New device? Enter the code from your teacher to start part-way.</p>
+    <div class="code"><input id="jumpInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="代碼 Code" aria-label="代碼 Code"><button id="jumpOk" type="button">跳到 Go</button></div>
+    <div class="fb" id="jumpFb"></div>
+    <p class="small">和平巷、山城大學和所有角色都是虛構的。<br>Peace Lane, Hillside University and all their people are fictional.</p>
+  </div>
+</div>
+
+<div class="ov" id="ovQuiz" role="dialog" aria-modal="true" aria-labelledby="quizQ">
+  <div class="card">
+    <p class="small" id="quizTag"></p>
+    <h2 id="quizQ"></h2>
+    <div class="opts" id="quizOpts"></div>
+    <div class="fb" id="quizFb" aria-live="polite"></div>
+    <button class="big hidden" id="quizNext" type="button">繼續 Continue</button>
+  </div>
+</div>
+
+<div class="ov" id="ovPause" role="dialog" aria-modal="true" aria-labelledby="pauseHead">
+  <div class="card">
+    <div class="pausehead" id="pauseHead"></div>
+    <div class="task" id="pauseTask"></div>
+    <div class="opts zh" id="pauseOpts"></div>
+    <div class="code" id="pauseCode"><input id="pauseInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="密碼 Code" aria-label="密碼 Code"><button id="pauseOk" type="button">確認</button></div>
+    <div class="fb" id="pauseFb" aria-live="polite"></div>
+    <div class="timer" id="pauseTimer"></div>
+    <button class="big hidden" id="pauseGo" type="button">繼續 Continue</button>
+  </div>
+</div>
+
+<div class="ov" id="ovNotes" role="dialog" aria-modal="true" aria-labelledby="notesHead">
+  <div class="card">
+    <h2 id="notesHead">📖 筆記本 Notebook <span class="small" id="notesCount"></span></h2>
+    <p class="small">遊戲中學到的研究名詞。 Research terms from the story.</p>
+    <ul class="notes" id="notesList"></ul>
+    <button class="big" id="notesClose" type="button">關閉 Close</button>
+  </div>
+</div>
+
+<div class="ov" id="ovEnd">
+  <div class="card">
+    <div class="logo">THE END</div>
+    <p class="zh">隔壁那一家 — 完</p>
+    <p id="endStats"></p>
+    <button class="big" id="endNotes" type="button">📖 打開筆記本 Notebook</button>
+    <button class="big alt" id="endAgain" type="button">再玩一次 Play again</button>
+    <a class="big alt" href="../../">回到課程首頁 Back to course home</a>
+    <p class="credit">像素美術 Pixel art by Kenney (kenney.nl), CC0 · 路燈、垃圾與菜園圖塊為本站繪製</p>
+  </div>
+</div>
+
+<script>
+/* Opening password. Change GATE_PASSWORD before class; it is not secret from anyone who reads this file. */
+(() => {
+  const GATE_PASSWORD = 'RCT';
+  const KEY = 'family-next-door:gate';
+  const gate = document.getElementById('gate'), inp = document.getElementById('gateInput'), fb = document.getElementById('gateFb');
+  let ok = false;
+  try { ok = localStorage.getItem(KEY) === GATE_PASSWORD; } catch (e) {}
+  if (ok) { gate.classList.remove('show'); return; }
+  const check = () => {
+    if (inp.value.trim().toUpperCase() === GATE_PASSWORD.toUpperCase()) {
+      try { localStorage.setItem(KEY, GATE_PASSWORD); } catch (e) {}
+      gate.classList.remove('show');
+      document.getElementById('btnStart').focus();
+    } else { fb.className = 'fb no'; fb.textContent = '密碼不對。請等老師公布密碼。 Wrong password. Please wait for your teacher.'; inp.select(); }
+  };
+  document.getElementById('gateOk').addEventListener('click', check);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+  setTimeout(() => inp.focus(), 50);
+})();
+</script>
+<script src="data.js"></script>
+<script src="../engine/engine.js"></script>
+</body>
+</html>

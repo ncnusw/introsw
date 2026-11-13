@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-12 (The Family Next Door)
+- New game: **The Family Next Door 隔壁那一家** (`games/family-next-door/`), a story adventure on social work research, played in pairs on one phone.
+- Act 1: Ah-Zhe tries six ideas to help the Chen family and Peace Lane, each from a way of knowing that skips checking (intuition, authority, tradition, common sense, logic, the halo effect). Each one fails, then a discussion pause.
+- Act 2: in the library he reads five books and takes a one-try BSW exam (5 questions, all must be right), then five more books and an MSW exam. Exam options are shuffled, nothing is revealed during the exam, and a fail lists the missed questions and puts a ! back on the books to reread.
+- Act 3: he returns as a social worker and follows the research steps (question, consent, interviews, literature review, mixed-methods survey, analysis, evidence-based plan with the neighbors, evaluation with a comparison group). Wrong choices show GUESSING AGAIN and return to that step. 23 notebook terms.
+- Jump codes on the title screen for a new device: LIBRARY, MASTER, HOMECOMING.
+- Opening password screen (like Storm Creek): password **RCT**, set in `GATE_PASSWORD` in `index.html`. Once entered, a device remembers it.
+- Engine: quizzes can be exam questions (`exam: 'varName'`: one try, shuffled, sets `ok_<id>` and a score); scripts can place sprites from a game's own `extra.png` (`X:n`); end-screen text can show script variables; test-mode hooks `examWrong` and `choicePick`. Storm Creek and Tuesday Club checked.
+
 ## 2026-11-10 (Which Hat?)
 - New game: **Which Hat? 哪一頂帽子？** (`games/which-hat/`), a supervision role-play for the Social Work Administration unit (textbook Ch. 8), played by groups of 4 on one phone or tablet.
 - Opens by introducing the four functions of supervision as colored hats with a memory symbol each: Educational 教育性 (teal, lightbulb, "Learn"), Administrative 行政性 (orange, clipboard, "Rules"), Supportive 支持性 (green, heart, "Feelings"), Mediating 調解性 (purple, bridge, "Bridge"), with the meaning and the question each hat asks.
