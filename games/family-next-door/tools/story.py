@@ -385,6 +385,11 @@ Star: 記得按讚、訂閱、開啟小鈴鐺！
 @put chenma chenma lane 6 5 a1_cm_night
 @del yu
 @del star
+@del wang
+@del chief
+@del lee
+@del huang
+@del agong
 @put yu yu lane 9 17 a1_found
 @pos 5 5 down
 @light 2.6
