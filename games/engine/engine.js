@@ -24,6 +24,8 @@
  *   @light r | @light off       darkness everywhere except a lantern circle of r tiles around the player
  *   @timer seconds label | @timer off   countdown clock; runs label when it reaches 0 (paused during dialogue and quizzes)
  *   pauses: { code, alt, html, head, choices, var, unlockAfter, ready (show the button at once), go (button label) }
+ *   script: @add var n (add, n may be negative); @mini name var [arg] runs window.MINIGAMES[name](ctx) from the game's
+ *           own minigames.js and stores its result in var (ctx: vars, arg, fast, sfx, toast, music, interp, pick)
  *   quizzes: { tag, q, options, answer, hint, ok }; add exam: 'varName' for an exam question (one try, options shuffled,
  *            nothing revealed; sets ok_<id> to 1/0 and adds 1 to varName when right; G.text.examSaved is the line shown)
  */
@@ -823,6 +825,14 @@
       case 'goal': setGoal(rest); return;
       case 'set': st.vars[a[0]] = isNaN(+a[1]) ? a[1] : +a[1]; return;
       case 'inc': st.vars[a[0]] = (+st.vars[a[0]] || 0) + 1; return;
+      case 'add': st.vars[a[0]] = (+st.vars[a[0]] || 0) + (+a[1] || 0); return;
+      case 'mini': {   // @mini name var [arg…]: runs window.MINIGAMES[name] (the game's own minigames.js) and stores its result in var
+        const f = window.MINIGAMES && window.MINIGAMES[a[0]]; if (!f) throw new Error('Unknown mini-game: ' + a[0]);
+        const r = await f({ vars: st.vars, arg: a.slice(2).join(' '), fast, sfx, toast, music, interp,
+                           pick: window.__story.miniPick && window.__story.miniPick[a[0]] });
+        if (a[1] && a[1] !== '-') st.vars[a[1]] = r;
+        save(); return;
+      }
       case 'if': {
         const m = a[0].match(/^(\w+)(>=|=)(.+)$/); if (!m) throw new Error('Bad @if: ' + rest);
         const v = st.vars[m[1]];
@@ -912,7 +922,7 @@
 
   /* ---------------- boot ---------------- */
   let fast = false, fastPick = 1;
-  window.__story = { st, run, BLOCKS, MAPS, set fast(v) { fast = v; }, set pick(v) { fastPick = v; }, examWrong: [], choicePick: null, advance, action, goMap, quiz, pause, get busy() { return st.busy; } };
+  window.__story = { st, run, BLOCKS, MAPS, set fast(v) { fast = v; }, set pick(v) { fastPick = v; }, examWrong: [], choicePick: null, miniPick: {}, advance, action, goMap, quiz, pause, get busy() { return st.busy; } };
   loadImages().then(() => {
     setIdle(); updateNoteCount();
     requestAnimationFrame(frame);

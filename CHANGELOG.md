@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-13 (The Family Next Door, redesign)
+- Story: a 30-day deadline (the city will pave the empty lot unless the neighbors win a town hall) and two twists found only through research: a construction truck dumps the trash at 2 a.m., and Xiao Yu skips school because he gets up every night to help Grandpa, who falls in the dark hallway.
+- Act 1 is now the last five days of summer: six ideas, time for five, in any order. It ends with Xiao Yu missing in the dark lane (flashlight search).
+- Library: find the five research books among junk books. Exams are card-sort mini-games (BSW; MSW adds putting the six steps in order); missed books get a ! again.
+- Act 3: four investigations in any order, each costing days: interviews (trust meter), night watch (counting what passes), survey, literature (source detective). Each success is an evidence card.
+- Town hall mini-game: answer four claims with evidence cards. Three endings (4 points, 2-3, 0-1), with a choice to replay the 30 days.
+- Mini-games live in `games/family-next-door/minigames.js`. Time-jump cards cut from about 15 to 5 per playthrough.
+- Engine: `@mini name var [arg]` runs a game's own mini-game; `@add var n`. Storm Creek and Tuesday Club checked.
+
 ## 2026-11-12 (The Family Next Door)
 - New game: **The Family Next Door 隔壁那一家** (`games/family-next-door/`), a story adventure on social work research, played in pairs on one phone.
 - Act 1: Ah-Zhe tries six ideas to help the Chen family and Peace Lane, each from a way of knowing that skips checking (intuition, authority, tradition, common sense, logic, the halo effect). Each one fails, then a discussion pause.

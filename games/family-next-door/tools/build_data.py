@@ -157,6 +157,8 @@ SPEAKERS = {
     'Huang': {'name': '黃伯伯', 'sprite': 'huang'},
     'Liu': {'name': '劉小姐', 'sprite': 'liu'},
     'Star': {'name': '籃球網紅「小飛」', 'sprite': 'star'},
+    'Kao': {'name': '高董（開發商）', 'sprite': 'v8'},
+    'Tsai': {'name': '蔡太太', 'sprite': 'v4'},
     'Lib': {'name': '溫館員（圖書館）', 'sprite': 'librarian'},
     'Prof': {'name': '張教授', 'sprite': 'D:88'},
     'ProfYe': {'name': '葉教授', 'sprite': 'D:100'},
@@ -191,42 +193,11 @@ TERMS = {
     'output_outcome': {'en': 'output vs. outcome', 'zh': '產出與成效', 'def': '產出＝做了多少（辦了幾次課）；成效＝改變了多少（跌倒少了多少）。 How much we did vs. how much changed.'},
     'comparison_group': {'en': 'comparison group', 'zh': '比較組', 'def': '找一群相似、但沒有參加方案的人來比較，才比較能確定改變是方案造成的。 Compare with similar people who did not get the program.'},
     # Act 3
+    'observation': {'en': 'observation', 'zh': '觀察法', 'def': '照時間、有系統地記下實際看到的事，不靠猜測。紀錄就是資料。 Watching and recording what really happens.'},
     'mixed_methods': {'en': 'mixed methods', 'zh': '混合研究方法', 'def': '同時使用量化（問卷）和質性（訪談），既知道「多少」，也知道「為什麼」。 Counting and understanding together.'},
 }
 
-def exam(tag, q, options, answer, var):
-    return {'tag': tag, 'q': q, 'options': options, 'answer': answer, 'hint': '', 'exam': var}
-
-QUIZZES = {
-    # BSW final exam (one question per BSW book)
-    'e1': exam('BSW 畢業考 · 1 / 5', 'Ah-Zhe asks every household on the lane to fill in a survey, then counts and analyzes the answers. What is this?\n阿哲請巷子裡每一戶填問卷，再統計、分析答案。這是什麼？',
-               ['empirical research 實證研究', 'authority 權威', 'tradition 傳統與前例', 'halo effect 月暈效應'], 0, 'bsw'),
-    'e2': exam('BSW 畢業考 · 2 / 5', '"**Why** does Xiao Yu skip school?" This question is mainly about which purpose of research?\n「小宇**為什麼**蹺課？」這主要是哪一個研究目的？',
-               ['describe 敘述', 'explain 解釋', 'predict 預測', 'evaluate 評估'], 1, 'bsw'),
-    'e3': exam('BSW 畢業考 · 3 / 5', 'Ah-Zhe talks with Grandpa Chen for one hour about his life, then looks for themes in his words. What kind of research is this?\n阿哲和陳阿公聊了一小時，再從他的話裡找出主題。這是哪一種研究？',
-               ['qualitative research 質性研究', 'quantitative research 量化研究', 'common sense 一般常識', 'an experiment 實驗'], 0, 'bsw'),
-    'e4': exam('BSW 畢業考 · 4 / 5', 'A researcher starts with a theory, makes a hypothesis, and then tests it with data. Which logic is this?\n研究者從理論出發，提出假設，再用資料檢驗。這是哪一種邏輯？',
-               ['inductive 歸納法', 'deductive 演繹法', 'intuition 直覺', 'tradition 傳統'], 1, 'bsw'),
-    'e5': exam('BSW 畢業考 · 5 / 5', 'Which sentence is a **hypothesis**?\n哪一句是**研究假設**？',
-               ['Older adults are very important. 長輩很重要。',
-                'If older adults join a weekly exercise group, then they will fall less. 如果長輩參加每週運動團體，那麼他們會比較少跌倒。',
-                'How are you today? 你今天好嗎？',
-                'Falling down is sad. 跌倒很難過。'], 1, 'bsw'),
-    # MSW final exam (one question per MSW book)
-    'f1': exam('MSW 畢業考 · 1 / 5', 'What is the **first** step of a research study?\n研究的**第一步**是什麼？',
-               ['collect data 蒐集資料', 'write the report 撰寫報告', 'choose a research question 選定研究問題', 'analyze data 分析資料'], 2, 'msw'),
-    'f2': exam('MSW 畢業考 · 2 / 5', 'Ah-Zhe wants to know what is already known about preventing falls. Which source should he trust most?\n阿哲想知道「預防跌倒」已經有哪些研究。他最該相信哪一個來源？',
-               ['a viral video by a famous athlete 名人運動員的爆紅影片', 'peer-reviewed studies and research reviews 經過同儕審查的研究與研究回顧',
-                'what the neighbors have always done 鄰居一直以來的做法', 'his own feeling 他自己的感覺'], 1, 'msw'),
-    'f3': exam('MSW 畢業考 · 3 / 5', 'Before an interview, Ah-Zhe explains the study, says it is voluntary, and asks Grandpa Chen if he agrees. This is…\n訪談前，阿哲說明研究目的、告訴陳阿公可以自由決定，再問他是否同意。這是……',
-               ['informed consent 知情同意', 'halo effect 月暈效應', 'comparison group 比較組', 'output 產出'], 0, 'msw'),
-    'f4': exam('MSW 畢業考 · 4 / 5', 'Evidence-based practice combines the best research evidence, the worker\'s professional expertise, and…\n實證為基礎的實務結合：最好的研究證據、社工的專業經驗，還有……',
-               ['the client\'s values and preferences 案主的價值與偏好', 'the agency\'s budget only 只有機構的預算',
-                'the worker\'s intuition alone 只有社工的直覺', 'what famous people say 名人怎麼說'], 0, 'msw'),
-    'f5': exam('MSW 畢業考 · 5 / 5', 'Falls went down after an exercise group started. What makes us **more sure** the group caused the change?\n運動團體開始後，跌倒變少了。怎樣能讓我們**更確定**是團體造成的？',
-               ['count how many sessions were held 算辦了幾次', 'ask the borough chief 問里長',
-                'compare with a similar group that did not join 和沒參加的相似一群人比較', 'hold the group for longer 把團體辦久一點'], 2, 'msw'),
-}
+QUIZZES = {}   # the exams are mini-games now (minigames.js)
 
 TEXT = {
     'locked': '門鎖著。',
@@ -240,7 +211,7 @@ TEXT = {
     'badCode': '密碼不對。請問老師。',
     'newTerm': '新名詞 ',
     'examSaved': '✎ 已作答。考完才會公布成績。 Answer recorded. Results at the end.',
-    'endStats': '學士畢業考：考了 <b>{bswTries}</b> 次<br>碩士畢業考：考了 <b>{mswTries}</b> 次<br>筆記本：<b>{t} / {T}</b> 個名詞',
+    'endStats': '證據卡：<b>{ev} / 4</b> · 市民大會：<b>{pts} / 4</b> 分<br>學士考了 <b>{bswTries}</b> 次 · 碩士考了 <b>{mswTries}</b> 次<br>筆記本：<b>{t} / {T}</b> 個名詞',
 }
 
 # ---------------------------------------------------------------- story
@@ -290,13 +261,14 @@ for m in re.finditer(r'^@zone \S+ \S+ \d+ \d+ \d+ \d+ (\S+)', SCRIPT, re.M): ass
 for m in re.finditer(r'-> (\S+)', SCRIPT): assert m.group(1) in labels, m.group(0)
 for m in re.finditer(r'^@note (\S+)', SCRIPT, re.M): assert m.group(1) in TERMS, m.group(0)
 for m in re.finditer(r'^@quiz (\S+)', SCRIPT, re.M): assert m.group(1) in QUIZZES, m.group(0)
+MINIS = {m for pair in re.findall(r'^  async function (\w+)\(ctx\)', (HERE.parent / 'minigames.js').read_text(), re.M) for m in [pair]}
+for m in re.finditer(r'^@mini (\S+)', SCRIPT, re.M): assert m.group(1) in MINIS, m.group(0)
 for m in re.finditer(r'^@pause (\S+)', SCRIPT, re.M): assert m.group(1) in story.PAUSES, m.group(0)
 ENGINE_SPEAKER = re.compile(r"^[A-Za-z][A-Za-z ./']*$")   # same rule as SPEAK in engine.js (no digits)
 for m in re.finditer(r'^([^:\s>@?/][^:]*?)(?: \(VO\))?: ', SCRIPT, re.M):
     assert m.group(1) in SPEAKERS and ENGINE_SPEAKER.match(m.group(1)), m.group(1)
 for k in SPEAKERS: assert ENGINE_SPEAKER.match(k), k
 assert set(TERMS) == set(re.findall(r'^@note (\S+)', SCRIPT, re.M)), set(TERMS) ^ set(re.findall(r'^@note (\S+)', SCRIPT, re.M))
-assert set(QUIZZES) == set(re.findall(r'^@quiz (\S+)', SCRIPT, re.M)), 'every exam question should be used'
 for code, lab in story.JUMPS.items(): assert lab in labels, code
 blob = json.dumps(data, ensure_ascii=False) + SCRIPT
 for pat in (r'第\s*[0-9一二三四五六七八九十]+\s*[週章]', r'[Ww]eek\s*[0-9]', r'[Cc]hapter\s*[0-9]'):
