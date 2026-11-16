@@ -1,0 +1,400 @@
+# Week 11: Social Work Research
+
+```{=html}
+<style>
+/* Research helpers: full-slide SVGs, finger-vote questions, activity cards (same look as the administration section) */
+.reveal .big-svg img { max-height: 640px; width: auto; }
+.reveal .vote-q { font-size: 0.95em; font-weight: 700; margin: 0.2em 0 0.6em; }
+.reveal .vote-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.reveal .vote-opt { background: #fbf6ea; border: 3px solid #2c5f6f; border-radius: 14px; padding: 14px 18px; font-size: 0.8em; display: flex; gap: 16px; align-items: center; }
+.reveal .vote-opt b { background: #2c5f6f; color: #fff; border-radius: 50%; min-width: 52px; height: 52px; line-height: 52px; text-align: center; font-size: 1.1em; }
+.reveal .vote-steps { font-size: 0.55em; color: #6b7a8c; margin-top: 0.8em; }
+.reveal .vote-ans { margin-top: 0.5em; font-size: 0.75em; color: #d98e3a; font-weight: 700; }
+.reveal .act-card { background: #fbf6ea; border-left: 10px solid #d98e3a; border-radius: 10px; padding: 14px 22px; font-size: 0.72em; }
+.reveal .act-card ol, .reveal .act-card ul { margin: 0.2em 0 0.2em 1em; }
+.reveal .frame { font-size: 0.6em; color: #2c5f6f; background: #e8eef0; border-radius: 10px; padding: 8px 16px; margin-top: 0.6em; }
+</style>
+```
+
+## Check-In
+
+Scan QR code for attendance:
+
+![](imgs/attendance.png){fig-align="center"}
+
+- The final exam (12/22) will cover chapters 8-16
+- Grab your journal
+
+## {.big-svg}
+
+![](imgs/11_01_hook.svg){fig-align="center"}
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+::: {.notes}
+Take three or four answers and write them on the board. Most will be guesses (give him a game, tell grandpa to rest, put up a sign). Come back to the board at the end of class.
+:::
+
+## {.big-svg}
+
+![](imgs/11_02_ways.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_03_halo.svg){fig-align="center"}
+
+## Vote
+
+::: {.vote-q}
+Grandma says: "We have **always** done it this way." Which way of knowing is this?
+:::
+
+::: {.vote-grid}
+::: {.vote-opt}
+**1** Authority 權威
+:::
+::: {.vote-opt}
+**2** Tradition 傳統與前例
+:::
+::: {.vote-opt}
+**3** Common sense 一般常識
+:::
+::: {.vote-opt}
+**4** Intuition 個人直覺
+:::
+:::
+
+::: {.vote-steps}
+Vote with your fingers → talk with your partner (30 seconds) → vote again
+:::
+
+::: {.fragment .vote-ans}
+Answer: 2 Tradition. "Always done it this way" does not mean "it works."
+:::
+
+## {.big-svg}
+
+![](imgs/11_04_empirical.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_05_why.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_06_scared.svg){fig-align="center"}
+
+**Pair talk:** Why did people believe Scared Straight worked? What could only research show?
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+## {.big-svg}
+
+![](imgs/11_06a_aa_hook.svg){fig-align="center"}
+
+::: {.notes}
+Take a quick hand vote, then don't reveal yet. Ask: how would we find out whether it is safe?
+:::
+
+## {.big-svg}
+
+![](imgs/11_06b_aa_belgium.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_06c_aa_39.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_06d_aa_study.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_06e_aa_ban.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_06f_aa_after.svg){fig-align="center"}
+
+**Pair talk:** Many of our families use Chinese medicine. How can a social worker respect a family's culture **and** share this evidence?
+
+::: {.notes}
+Frame: research checked specific herbs; it is not "Chinese medicine is wrong." The Ministry of Health and Welfare says legal Chinese medicine products on the market today test negative for aristolochic acid (GMP factories). Lesson: ask, check the source, see a licensed doctor.
+:::
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+## {.big-svg}
+
+![](imgs/11_07_purposes.svg){fig-align="center"}
+
+## Vote
+
+::: {.vote-q}
+"**Why** does Xiao Yu skip school?" Which purpose of research is this?
+:::
+
+::: {.vote-grid}
+::: {.vote-opt}
+**1** Describe 敘述
+:::
+::: {.vote-opt}
+**2** Explain 解釋
+:::
+::: {.vote-opt}
+**3** Predict 預測
+:::
+::: {.vote-opt}
+**4** Evaluate 評估
+:::
+:::
+
+::: {.vote-steps}
+Vote with your fingers → talk with your partner (30 seconds) → vote again
+:::
+
+::: {.fragment .vote-ans}
+Answer: 2 Explain. "How many days did he miss?" would be describe.
+:::
+
+## {.big-svg}
+
+![](imgs/11_08_question.svg){fig-align="center"}
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## {.big-svg}
+
+![](imgs/11_09_logic.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_10_quantqual.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_11_table.svg){fig-align="center"}
+
+## Vote
+
+::: {.vote-q}
+You talk with Grandpa for one hour about his life, then look for themes in his words. This is...
+:::
+
+::: {.vote-grid}
+::: {.vote-opt}
+**1** Quantitative 量化
+:::
+::: {.vote-opt}
+**2** Qualitative 質性
+:::
+::: {.vote-opt}
+**3** Deductive 演繹法
+:::
+::: {.vote-opt}
+**4** An experiment 實驗
+:::
+:::
+
+::: {.vote-steps}
+Vote with your fingers → talk with your partner (30 seconds) → vote again
+:::
+
+::: {.fragment .vote-ans}
+Answer: 2 Qualitative. Words, a natural setting, and themes that come from the data (inductive).
+:::
+
+## {.big-svg}
+
+![](imgs/11_11b_mixed_why.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_11c_mixed_designs.svg){fig-align="center"}
+
+## Vote
+
+::: {.vote-q}
+First you survey every household. The numbers surprise you, so you interview five families to find out **why**. Which design?
+:::
+
+::: {.vote-grid}
+::: {.vote-opt}
+**1** Convergent 聚斂式
+:::
+::: {.vote-opt}
+**2** Explanatory 解釋性
+:::
+::: {.vote-opt}
+**3** Exploratory 探索性
+:::
+::: {.vote-opt}
+**4** Not mixed methods 不是混合方法
+:::
+:::
+
+::: {.vote-steps}
+Vote with your fingers → talk with your partner (30 seconds) → vote again
+:::
+
+::: {.fragment .vote-ans}
+Answer: 2 Explanatory. Numbers first, then words to explain them.
+:::
+
+## {.big-svg}
+
+![](imgs/11_12_steps.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_13_ethics.svg){fig-align="center"}
+
+## Vote
+
+::: {.vote-q}
+Before the interview, you explain the study and ask Grandpa if he wants to take part. This is...
+:::
+
+::: {.vote-grid}
+::: {.vote-opt}
+**1** Informed consent 知情同意
+:::
+::: {.vote-opt}
+**2** Confidentiality 保密
+:::
+::: {.vote-opt}
+**3** Halo effect 月暈效應
+:::
+::: {.vote-opt}
+**4** Literature review 文獻探討
+:::
+:::
+
+::: {.vote-steps}
+Vote with your fingers → talk with your partner (30 seconds) → vote again
+:::
+
+::: {.fragment .vote-ans}
+Answer: 1 Informed consent. Confidentiality = not showing who said what.
+:::
+
+## {.big-svg}
+
+![](imgs/11_14_ebp.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_15_compare.svg){fig-align="center"}
+
+::: {.notes}
+Link to last class: output vs. outcome, and "Did our program work?" (falls dropped from 20 to 12). The comparison lane answers the "warm winter?" question.
+:::
+
+## {.big-svg}
+
+![](imgs/11_15b_ai_math.svg){fig-align="center"}
+
+::: {.notes}
+Bastani et al. (2025), PNAS: field experiment, nearly 1,000 high school math students in Turkey, randomly given no AI, plain GPT-4 ("GPT Base") or a hint-giving tutor ("GPT Tutor") during practice. Practice scores rose 48% / 127%; when AI was removed for the exam, GPT Base students scored 17% lower than students who never had AI; the tutor group showed no drop. Ask first: "Guess what happened on the exam?"
+:::
+
+## {.big-svg}
+
+![](imgs/11_15c_ai_hints.svg){fig-align="center"}
+
+**Pair talk:** Is this why we put phones away in class? When does AI help you learn, and when does it learn *for* you?
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## Game: The Family Next Door 隔壁那一家
+
+::: {.act-card}
+1. **Pairs, one phone.** One taps, one reads aloud. Swap every time a new place opens.
+2. Ah-Zhe wants to help the family next door. First he **guesses**. Watch what happens.
+3. Find the right books in the library and pass the **BSW** and **MSW** exams. **Every card must be right.** Decide each answer together.
+4. Come home as a social worker. You have **30 days** to save the empty lot with evidence.
+:::
+
+![](imgs/11_game_qr.png){fig-align="center" width="22%"}
+
+::: {.frame}
+ncnusw.github.io/introsw → The Family Next Door. New phone? Codes: LIBRARY · MASTER · HOMECOMING
+:::
+
+```{r}
+countdown(minutes = 40, seconds = 0)
+```
+
+## Game Debrief
+
+::: {.act-card}
+1. **Stand up** if you passed the BSW exam on the first try. Which question was hardest?
+2. Which of Ah-Zhe's six guesses have **you** used in real life?
+3. In the end, what did research add that good intentions could not?
+:::
+
+::: {.frame}
+"Ah-Zhe's ___ idea failed because he used ___ instead of checking."
+:::
+
+```{r}
+countdown(minutes = 5, seconds = 0)
+```
+
+::: {.notes}
+Go back to the answers on the board from the opening slide. Which ones were guesses? How would we check them?
+:::
+
+## {.big-svg}
+
+![](imgs/11_16_everyday.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_17_recap.svg){fig-align="center"}
+
+## Journal
+
+::: {style="font-size: 100%;"}
+::: {.callout-note title="Journal Prompt"}
+Week 11 Prompt: Think of a time you helped someone (or tried to) by guessing what they needed. Which way of knowing did you use (intuition, authority, tradition, common sense, or logic)? If you could do it again, what question would you ask, and what information would you collect first? 想一想你曾經用「猜」的方式去幫助別人（或試著幫忙）的經驗。你用的是哪一種知道的方法（直覺、權威、傳統、常識或邏輯）？如果可以重來，你會先問什麼問題、先蒐集哪些資訊？
+:::
+:::
+
+![](imgs/no_phone.svg){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+<audio class="slide-audio" loop controls>
+  <source src="audio/journaling2.mp3" type="audio/mpeg">
+</audio>
+
+## Next Week
+
+- Please return your journals before you leave
+- Read the textbook sections on social work in family, medical, and school settings before class
+- See you next week

@@ -598,6 +598,9 @@ ProfYe: 你準備好成為一位會用研究的社工了。回到需要你的地
 @set ivag 0
 @set sv 0
 @set svon 0
+@set licOK 0
+@set licTries 0
+@set lic 沒有報考
 {{LIGHTS_OFF}}
 {{TRASH_ALL}}
 @put mom jaymom lane 6 5 a3_mom !
@@ -611,9 +614,10 @@ ProfYe: 你準備好成為一位會用研究的社工了。回到需要你的地
 @put liu liu lane 30 8 a3_busy
 @put tsai v4 lane 26 17 a3_busy
 @put lib librarian library 8 6 a3_lib_hi
+@put proctor v2 hall 7 3 lic_hi !
 @door lane/chen reset
 @door lane/library reset
-@door lane/univ lock 山城大學。你已經畢業了。
+@door lane/univ reset
 @door lane/jay lock 家。媽媽在門口。
 @map lane 5 5 down
 > 阿哲在城裡的社會福利中心當了幾年社工。這一天，他被派回自己長大的地方：和平巷。
@@ -640,6 +644,7 @@ Me: 三十天……好。這一次，我們用資料說話。
 > 你在筆記本上寫下四件要查的事。每一件都要花時間，三十天不多，順序由你決定：
 > 💬 陳家發生了什麼事？（訪談）　🌙 垃圾到底是誰丟的？（夜間觀察）
 > 📊 巷子裡的人需要什麼？（問卷）　📗 研究怎麼說？（文獻探討）
+> 📝 支線（選做）：今年的**社工師國家考試**就在山城大學。考一次要花一天。
 @label chenma a3_chen !
 @label liu a3_liu !
 @label lib a3_lib !
@@ -890,6 +895,40 @@ Mom: 當然要填！路燈太暗、空地垃圾、孩子放學後沒地方去。
 @note quantitative
 @goto a3_hub
 
+// ---- side quest: the social work licensing exam (optional, one day per try)
+:: lic_hi
+Proctor: 這裡是**社會工作師國家考試**考場。
+Proctor: 選擇題，每題四個選項，只有一個最正確。從題庫抽十題，六十分及格。
+Proctor: 考一次要花一天。你已經考了 {licTries} 次。要現在考嗎？
+@choice
+? 「我要考。」 -> lic_go
+? 「先不要，我還要蒐集證據。」 -> lic_later
+
+:: lic_later
+Proctor: 好，想考的時候再來。
+
+:: lic_go
+@add days -1
+@inc licTries
+@mini license licScore
+@if licScore>=6 lic_pass
+Proctor: {licPts} 分，差一點。題目每次都會重新抽，想再考隨時回來。
+@label proctor lic_hi !
+@goto a3_hub
+
+:: lic_pass
+@music bright
+@set licOK 1
+@set lic 及格✅
+Proctor: {licPts} 分，及格！恭喜你。
+@item 🪪 社會工作師證書
+Me: 有了證照，也代表我要對案主、對專業負起更大的責任。
+@label proctor lic_done
+@goto a3_hub
+
+:: lic_done
+Proctor: 恭喜你考上社工師！記得，證照不是終點，要繼續學習研究證據喔。
+
 // ---- investigation 4: the literature (source detective)
 :: a3_lib
 @if ev_research=1 a3_lib_done
@@ -934,6 +973,14 @@ Lib: 研究都幫你整理好了。市民大會加油！
 @music quiet
 Chief: 各位鄰居，今天要決定空地的未來。高董，請。
 Kao: 大家好，我是高董，常上電視的那個。停車場對大家最好，我有四個理由。
+@if licOK>=1 th_lic
+@goto th_debate
+:: th_lic
+Chief: 先介紹一下：阿哲是通過國家考試的社會工作師。
+Kao: 哼，有證照又怎樣？我上過電視！
+Me: 證照不代表我說的都對。所以，我們就看證據吧。
+@goto th_debate
+:: th_debate
 @mini townhall pts
 @music warm
 Chief: 好，請高董和阿哲都說完了。阿哲，那你的計畫是什麼？

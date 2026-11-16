@@ -163,6 +163,7 @@ SPEAKERS = {
     'Prof': {'name': '張教授', 'sprite': 'D:88'},
     'ProfYe': {'name': '葉教授', 'sprite': 'D:100'},
     'Student': {'name': '同學', 'sprite': 'v6'},
+    'Proctor': {'name': '監考人員', 'sprite': 'v2'},
     'Everyone': {'name': '大家', 'sprite': None},
 }
 
@@ -211,7 +212,7 @@ TEXT = {
     'badCode': '密碼不對。請問老師。',
     'newTerm': '新名詞 ',
     'examSaved': '✎ 已作答。考完才會公布成績。 Answer recorded. Results at the end.',
-    'endStats': '證據卡：<b>{ev} / 4</b> · 市民大會：<b>{pts} / 4</b> 分<br>學士考了 <b>{bswTries}</b> 次 · 碩士考了 <b>{mswTries}</b> 次<br>筆記本：<b>{t} / {T}</b> 個名詞',
+    'endStats': '證據卡：<b>{ev} / 4</b> · 市民大會：<b>{pts} / 4</b> 分<br>學士考了 <b>{bswTries}</b> 次 · 碩士考了 <b>{mswTries}</b> 次<br>社工師考試（支線）：<b>{lic}</b><br>筆記本：<b>{t} / {T}</b> 個名詞',
 }
 
 # ---------------------------------------------------------------- story

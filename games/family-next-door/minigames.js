@@ -7,6 +7,7 @@
  *   interview  yu | agong: pick questions, keep trust up                 -> 1 if the person shared what was really going on
  *   exam       bsw | msw: card-sorting exam, every card must be right    -> 1 pass / 0 fail; sets miss_b1..b5 or miss_m1..m5
  *   townhall   answer four claims with evidence cards                    -> points 0-4
+ *   license    side quest: 10 multiple-choice questions drawn from 26     -> number correct (60 points = 6 to pass); sets licPts
  */
 (() => {
   const css = `
@@ -87,7 +88,7 @@
     s.body.innerHTML = html;
     const b = h('button', 'big', label); b.type = 'button'; s.body.appendChild(b);
     s.keys.clear(); s.keys.set('Enter', () => b.click()); s.keys.set(' ', () => b.click());
-    b.focus(); await waitClick([b]); s.close();
+    s.ov.scrollTop = 0; b.focus({ preventScroll: true }); await waitClick([b]); s.close();
   }
 
   /* ------------------------------------------------------------ 1. trash sort */
@@ -395,6 +396,127 @@
     return missed.size === 0 ? 1 : 0;
   }
 
+  /* ------------------------------------------------------------ 7. licensing exam (side quest) */
+  // [stem zh, stem en, [4 options zh], correct index, explanation]; options are shuffled and relabeled (A)-(D) each try
+  const LICENSE = [
+    ['某研究發現：冰淇淋賣得越多的月份，溺水人數也越多。下列推論何者最正確？', 'More ice cream sold, more drownings. Best conclusion?',
+      ['吃冰淇淋會導致溺水', '兩者呈正相關，但可能是「天氣炎熱」這個第三變項造成的', '溺水會讓人想吃冰淇淋', '兩者完全沒有關係'], 1,
+      '相關不等於因果。天氣熱，吃冰的人多、玩水的人也多，這是虛假關係。 Correlation is not causation.'],
+    ['社會科學判斷因果關係的條件，下列何者「不」包括在內？', 'Which is NOT a criterion for causation?',
+      ['原因發生在結果之前', '兩個變項之間有關聯（共變）', '排除第三個變項造成的虛假關係', '兩變項的相關達到統計顯著，就足以證明因果'], 3,
+      '因果的三個條件：時間順序、共變、排除其他解釋。只有顯著相關不夠。 Time order, covariation, no third variable.'],
+    ['已知變項 X 發生在變項 Y 之前，下列何者可以「確定」？', 'X happened before Y. What can we be sure of?',
+      ['X 是 Y 的原因', 'Y 不是 X 的原因', 'X 不是 Y 的原因', 'Y 是 X 的原因'], 1,
+      '結果不可能發生在原因之前，所以只能確定 Y 不是 X 的原因；X 不一定是 Y 的原因。 Only that Y did not cause X.'],
+    ['研究報告指出：「平均家庭收入較低的鄉鎮，兒少保護通報率較高。」下列推論何者最適當？', 'Towns with lower average income have more child-protection reports. Best conclusion?',
+      ['低收入家庭的父母比較容易傷害孩子', '該地區的平均家庭收入與兒少保護通報率呈負相關', '只要提高收入，就不會有兒虐', '高收入家庭不會發生兒虐'], 1,
+      '用「地區」的資料推論「個人」，會犯區位謬誤。只能說兩者在地區層次呈負相關。 Ecological fallacy.'],
+    ['A 市一年有 1,200 件長者跌倒就醫，B 市有 600 件。下列何者正確？', 'City A: 1,200 falls; City B: 600. Which is correct?',
+      ['A 市長者跌倒的比率比較高', 'B 市的長者比較健康', '不知道兩市的長者人口數，無法比較跌倒率', 'A 市的長照服務比較差'], 2,
+      '要比較「比率」，不是比「件數」。A 市的長者可能多很多。 Compare rates, not counts.'],
+    ['社工找來「症狀最嚴重、剛出院」的憂鬱症患者參加支持團體，團體前後各測一次憂鬱量表，後測分數明顯下降。下列何者最正確？', 'A group of the most severe patients improved from pre-test to post-test. Best conclusion?',
+      ['這證明團體確實有效', '沒有對照組，分數下降也可能是統計迴歸或時間本身造成的', '應該只看後測分數就好', '前後測用同一份量表是錯誤的'], 1,
+      '最嚴重的人，之後通常會往平均值回來（統計迴歸），沒有對照組就無法排除。 No control group; regression to the mean.'],
+    ['某課後閱讀方案採「自願報名」，參加的孩子半年後閱讀成績進步，機構宣稱方案有效。最主要的問題是？', 'Volunteers for a reading program improved. Main problem with "it works"?',
+      ['樣本太大', '自願報名的孩子可能本來就比較有動機（選擇偏誤）', '閱讀能力無法測量', '半年的時間太長'], 1,
+      '會自願報名的孩子和家庭，本來就可能不一樣。應隨機分派或找相似的比較組。 Selection bias.'],
+    ['某機構想了解全縣獨居長者的需求，只在機構的 LINE 官方帳號放網路問卷。最主要的問題是？', 'A needs survey of older adults living alone, only online via LINE. Main problem?',
+      ['問卷題目太短', '最需要幫助、不會用手機的長者可能沒被調查到，樣本缺乏代表性', '網路問卷不需要知情同意', '沒有任何問題'], 1,
+      '抽樣方式決定誰被聽見。最孤立的人最容易被漏掉。 Sampling bias: the loneliest are missed.'],
+    ['研究題目：「居家服務時數與家庭照顧者壓力之研究」，研究者預期服務時數越多，照顧者壓力越低。本研究的自變項是？', 'More home-care hours, less caregiver stress. Independent variable?',
+      ['家庭照顧者', '居家服務時數', '照顧者壓力', '研究者'], 1,
+      '自變項是「原因」那一邊（服務時數）；依變項是被影響的（壓力）。 IV = home-care hours.'],
+    ['下列哪一個選項中，列出的「都是變項」？', 'Which list contains only variables?',
+      ['女性、基督徒、台中人', '社工師、護理師、老師', '性別、宗教信仰、居住縣市', '貧窮的、年老的、勇敢的'], 2,
+      '變項是會變的「類別」，例如性別；「女性」只是性別的一個屬性。 Variables vs. attributes.'],
+    ['下列何者是可以用研究來檢驗的研究假設？', 'Which is a testable hypothesis?',
+      ['家庭是社會的基礎', '參加課後方案的國中生，蹺課天數比沒有參加的少', '每個孩子都應該好好讀書', '青少年與天氣'], 1,
+      '好的假設要說出兩個變項的關係，而且可以用資料檢驗。 It names a relationship we can test.'],
+    ['研究者假設「社會支持與長者的憂鬱程度有關」。這項研究的虛無假設是？', 'Hypothesis: social support is related to depression. The null hypothesis?',
+      ['社會支持越多，憂鬱程度越低', '社會支持與長者的憂鬱程度無關', '社會支持越多，憂鬱程度越高', '憂鬱程度會影響社會支持'], 1,
+      '虛無假設就是「沒有關係、沒有差異」。 The null says: no relationship.'],
+    ['某大學想調查「影響本校學生擔任志工的因素」。這項調查的母群體是？', 'A survey on what makes students volunteer. The population?',
+      ['目前正在當志工的學生', '曾經當過志工的學生', '有意願當志工的學生', '該校全體學生'], 3,
+      '要知道「誰會、誰不會」當志工，就要包含沒當過志工的人。 All students, including non-volunteers.'],
+    ['某機構今年的服務案量比去年增加了 40%，社工想了解這個現象。下列哪一個研究問題最適當？', 'Caseload rose 40%. Best research question?',
+      ['影響案主滿意度的因素為何？', '影響案量增加的因素為何？', '社工的薪資是否合理？', '哪一種處遇最有效？'], 1,
+      '研究問題要直接對準你想了解的現象。 The question must match the puzzle.'],
+    ['對一個很少人研究過的新現象（例如外送員的職業傷害經驗），研究者先做深度訪談，了解大致的樣貌。這屬於哪一種研究目的？', 'Interviews on a new, little-studied topic. Which purpose?',
+      ['探索性研究', '描述性研究', '解釋性研究', '評估性研究'], 0,
+      '對新議題先「探路」，就是探索性研究。 Exploratory research.'],
+    ['研究者訪談 20 位隔代教養的阿公阿嬤，從訪談內容中整理出共同的主題，再發展成概念。這是哪一種邏輯？', 'From 20 interviews to common themes to concepts. Which logic?',
+      ['演繹法', '歸納法', '權威法', '傳統法'], 1,
+      '從具體的觀察，往上整理出通則，是歸納法。 Induction: from observations to ideas.'],
+    ['下列哪一個研究問題，最適合使用「質性研究」？', 'Which question fits qualitative research best?',
+      ['全台灣有多少比例的長者獨居？', '新住民媽媽在孩子的學校裡，經歷了哪些被排除的感受？', '居家服務時數與照顧者壓力的相關程度為何？', '兩個防跌方案中，哪一個減少的跌倒次數比較多？'], 1,
+      '想深入了解「經驗、感受、意義」，適合質性研究；多少、多大，適合量化。 Experiences and meanings: qualitative.'],
+    ['下列哪一種做法，最符合研究倫理中的「知情同意」？', 'Which best fits informed consent?',
+      ['先偷偷錄音，事後再告知', '說明研究目的、內容和可能的風險，告知可以隨時退出，由參與者自己決定', '由機構主管代替案主簽同意書', '告訴案主不參加研究就不能接受服務'], 1,
+      '參與者要「知道」並「自願」，而且隨時可以退出，不能影響服務。 Informed and voluntary.'],
+    ['研究者知道每一位受訪者是誰，但承諾在報告中不揭露任何人的身分。這是指？', 'The researcher knows who you are but never reveals it. This is…',
+      ['匿名', '保密', '欺瞞', '事後說明'], 1,
+      '連研究者都不知道是誰，才是匿名；知道但不公開，是保密。 Confidentiality, not anonymity.'],
+    ['下列何者最符合「實證為基礎的實務」（EBP）？', 'Which best describes evidence-based practice?',
+      ['完全照研究結論做，不需要問案主的意見', '照督導多年來的習慣做', '整合最佳研究證據、實務專業經驗，以及案主的價值與偏好', '上網看哪一種方法最多人按讚'], 2,
+      'EBP 是三者的結合：研究證據、專業經驗、案主的價值。 Evidence + expertise + client values.'],
+    ['研究者到安置機構觀察，發現工作人員只有在研究者在場時，對院生特別溫柔有耐心。這最可能是？', 'Staff are extra kind only while being observed. This is…',
+      ['霍桑效應', '安慰劑效應', '倖存者偏誤', '抽樣誤差'], 0,
+      '人知道自己被觀察，行為就會改變。 Hawthorne effect.'],
+    ['面對面訪問家長「過去一個月是否打過孩子」，大多數人回答「沒有」，但匿名問卷的比例高出很多。這最可能是？', 'Face to face, parents deny hitting; anonymously, many admit it. This is…',
+      ['社會期許偏誤', '確認偏誤', '霍桑效應', '權威偏誤'], 0,
+      '受訪者想讓自己看起來比較好。匿名可以減少這種偏誤。 Social desirability bias.'],
+    ['評估長者防跌方案時，研究者把報名的長者「隨機分派」到方案組和等待組（等待組之後也會參加）。隨機分派最主要的目的是？', 'Why randomly assign older adults to program vs. waitlist?',
+      ['讓研究比較省錢', '讓兩組在方案開始前盡可能相似，排除其他解釋', '讓每位長者都滿意', '增加樣本數'], 1,
+      '隨機分派讓兩組條件相近，差異才比較能歸因於方案。 To make groups alike before the program.'],
+    ['研究者先用問卷調查 500 位家庭照顧者的壓力，再挑出壓力最高的 10 位做深度訪談，了解原因。這是哪一種研究？', 'Survey 500 caregivers, then interview the 10 most stressed. Which design?',
+      ['單純的質性研究', '混合方法研究（解釋性序列設計）', '實驗研究', '次級資料分析'], 1,
+      '先量化找出「是什麼」，再用質性解釋「為什麼」。 Mixed methods: explanatory sequential.'],
+    ['評估課後方案時，下列何者是「成效」（outcome），而不是「產出」（output）？', 'Which is an outcome, not an output?',
+      ['一年辦了 96 次課程', '發出 300 份傳單', '參加的孩子蹺課天數從每月 12 天降到 2 天', '招募了 20 位志工'], 2,
+      '產出是「做了多少」，成效是「改變了多少」。 Outputs = what we did; outcomes = what changed.'],
+    ['社工一開始就認定「這位媽媽疏忽孩子」，之後只注意支持這個想法的資訊，忽略相反的證據。這是？', 'A worker decides "neglect" and only notices supporting facts. This is…',
+      ['確認偏誤', '霍桑效應', '安慰劑效應', '需求特徵'], 0,
+      '只找支持自己想法的證據。好的社工會主動找「相反」的證據。 Confirmation bias.']];
+  async function license(ctx) {
+    const N = 10, T = 360000, L = ['(A)', '(B)', '(C)', '(D)'];
+    const qs = shuffle(LICENSE).slice(0, N).map(q => { const o = shuffle(q[2].map((x, i) => [x, i])); return { q, o, ans: o.findIndex(x => x[1] === q[3]) }; });
+    let right = 0; const wrong = [];
+    if (ctx.fast) right = ctx.pick == null ? N : ctx.pick;
+    else {
+      const s = sheet('社會工作師國家考試 Social Work Licensing Exam',
+        `選擇題 ${N} 題，每題 10 分，60 分及格。每題只有一個最正確的答案。考試中不會告訴你對錯。限時 ${T / 60000} 分鐘。<br>${N} questions, 60 points to pass. No feedback until the end.`);
+      const go = h('button', 'big', '開始作答 Begin'); s.body.appendChild(go); s.keys.set('Enter', () => go.click()); await waitClick([go]); go.remove();
+      const hud = h('div', 'hud'); const bar = h('div', 'bar', '<i style="width:100%"></i>'); const stem = h('div', 'say'); const opts = h('div');
+      s.body.append(hud, bar, stem, opts);
+      const t0 = Date.now(); let timeUp = false, live = [];
+      const timer = setInterval(() => {
+        const left = Math.max(0, T - (Date.now() - t0)); bar.firstChild.style.width = (left / T * 100) + '%';
+        const m = Math.floor(left / 60000), sec = String(Math.ceil(left / 1000) % 60).padStart(2, '0');
+        hud.lastChild && (hud.lastChild.textContent = `⏱ ${m}:${sec}`);
+        if (!left && !timeUp) { timeUp = true; live[0] && live[0].click(); }
+      }, 250);
+      for (let i = 0; i < qs.length; i++) {
+        const { q, o, ans } = qs[i];
+        if (timeUp) { wrong.push([qs[i], -1]); continue; }
+        hud.innerHTML = `<span>第 ${i + 1} / ${N} 題</span><span>✏️ ${'●'.repeat(i)}${'○'.repeat(N - i)}</span><span></span>`;
+        stem.innerHTML = `<span class="who">${i + 1}.</span>${q[0]}<br><small style="color:var(--mut)">${q[1]}</small>`;
+        opts.innerHTML = '';
+        live = buttons(s, opts, o.map((x, k) => `<b>${L[k]}</b> ${x[0]}`), 'opt');
+        const k = await waitClick(live); ctx.sfx('blip');
+        if (!timeUp && k === ans) right++; else wrong.push([qs[i], timeUp ? -1 : k]);
+      }
+      clearInterval(timer);
+      const pts = right * 10, pass = right >= 6;
+      const review = wrong.map(([{ q, o, ans }, k]) => `<div class="say" style="font-size:15px"><span class="who">${q[0]}</span>
+        ${k >= 0 ? `你選 ${L[k]}，` : '沒有作答，'}正確答案是 <b>${L[ans]} ${o[ans][0]}</b><br>💡 ${q[4]}</div>`).join('');
+      await finish(s, `<p style="font-size:44px;text-align:center;margin:6px">${pass ? '🪪' : '📝'}</p>
+        <h2 style="text-align:center">${timeUp ? '時間到！ ' : ''}${pts} 分 ${pass ? '及格！ You passed!' : '未達 60 分 Not yet'}</h2>
+        ${wrong.length ? '<p>看看答錯的題目 Review your mistakes:</p>' + review : '<p style="text-align:center">全部答對！ A perfect score!</p>'}`);
+    }
+    ctx.vars.licPts = right * 10;
+    return right;
+  }
+
   /* ------------------------------------------------------------ 6. town hall */
   const CARDS = {
     ev_truck: ['🚚 夜間觀察紀錄', 'Night-watch log: 2:14 a.m. truck'],
@@ -441,5 +563,5 @@
     return pts;
   }
 
-  window.MINIGAMES = { trash, stakeout, sources, interview, exam, townhall };
+  window.MINIGAMES = { trash, stakeout, sources, interview, exam, townhall, license };
 })();

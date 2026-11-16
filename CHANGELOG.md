@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-16 (The Family Next Door, licensing exam side quest)
+- Optional side quest in the 30 days: the social work licensing exam (社會工作師國家考試) at Hillside University. Each try costs one day.
+- New `license` mini-game: 10 multiple-choice questions drawn from a bank of 26 in the style of the national exam (causation, ecological fallacy, rates vs. counts, control groups, selection and sampling bias, variables and hypotheses, research purposes and logic, qualitative vs. quantitative, consent and confidentiality, EBP, Hawthorne, social desirability, confirmation bias, mixed methods, outputs vs. outcomes). Options are shuffled; 60 points to pass; afterwards a review explains every miss.
+- Passing gives a 🪪 certificate, a line at the town hall and a line on the end screen. It does not change the score.
+
 ## 2026-11-13 (The Family Next Door, redesign)
 - Story: a 30-day deadline (the city will pave the empty lot unless the neighbors win a town hall) and two twists found only through research: a construction truck dumps the trash at 2 a.m., and Xiao Yu skips school because he gets up every night to help Grandpa, who falls in the dark hallway.
 - Act 1 is now the last five days of summer: six ideas, time for five, in any order. It ends with Xiao Yu missing in the dark lane (flashlight search).
