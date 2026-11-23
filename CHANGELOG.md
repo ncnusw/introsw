@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-24 (Safety Net Dispatch, fun layer)
+- **Supervisor stamps**: the Approve step now has two big stamps, APPROVED 核准 and REJECTED 駁回. Each one slams across the screen with a thunk and a screen shake. REJECTED sends the group back to Prove so they can find better proof. This also works in the practice turn.
+- **Sound effects** (made in the browser, no audio files): a sad trombone for wrong answers, a crowd cheer plus confetti for every 3 right in a row, and "dun dun DUNNN" with a toast when 30 seconds are left on a round clock. A "🔥 3 in a row" chip shows next to the card counter. Scoring is unchanged.
+- **Penalty wheel**: after a wrong answer in Round 1 or 2, the dispatcher can spin a wheel of 8 light, whole-group penalties (a soap-opera "Sorry, Supervisor!", a slow-motion facepalm, a stadium wave, a sports-commentator answer, etc.; one slice means no penalty). Not shown in the practice turn.
+- **Awards** on the final screen: up to 5 playful awards based on what happened in the game (e.g. Most Overruled Dispatcher, The Supervisor Who Trusted No One, Rubber Stamp Supervisor, Fastest Fingers, Sad Trombone Orchestra, Time Travelers, Out Loud and Proud), with a cheer and confetti. Groups read them out to the class.
+- The printed sheets are unchanged.
+
 ## 2026-11-23 (Safety Net Dispatch, handout = role)
 - Roles are now set by the handouts, not by names. Each person takes one handout (Dispatcher Card, Supervisor Card or Expert Sheet 1–6), writes their name on it, and that is their role. Between rounds the game says "Swap handouts": everyone passes their handout to the person on their left, and the dispatcher passes the tablet too.
 - The game no longer asks for 8 names (only the group number and an optional team name). The roles screen shows the 8 roles with black-and-white avatars (`avatars.js`), the same ones printed on the handouts.

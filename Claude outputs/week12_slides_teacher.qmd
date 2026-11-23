@@ -1,0 +1,547 @@
+# Week 12: Family, Medical, and School Social Work
+
+## Check-In
+
+Scan QR code for attendance:
+
+![](imgs/attendance.png){fig-align="center"}
+
+- The final exam (12/22) will cover chapters 8-16
+- Grab your journal
+
+::: {.notes}
+EN: Good morning! Scan in, grab your journal. Yes, the paper one. No, ChatGPT cannot write it for you. I can tell, because ChatGPT never has bad handwriting.
+
+中：早安！先掃 QR code 簽到，再拿你的週記。對，是紙本的。不，ChatGPT 不能幫你寫，我看得出來，因為 ChatGPT 的字從來不會醜。
+:::
+
+## Today 今天
+
+- Family social work 家庭社會工作
+- Medical social work 醫務社會工作
+- School social work 學校社會工作
+- **Pair talk:** Which one could you see yourself doing? Why? 你比較能想像自己做哪一種？為什麼？
+
+```{r}
+countdown(minutes = 2, seconds = 0)
+```
+
+::: {.notes}
+EN: Three fields today. Same social work brain, three different workplaces: someone's living room, a hospital ward, and a primary school. Tell your partner which one you could see yourself in. "None, I'm going to be a YouTuber" is not an option.
+
+中：今天三個領域。同一顆社工的腦袋，三個不同的工作場所：別人家的客廳、醫院病房、國小校園。跟旁邊的同學說說你比較想去哪裡。「都不要，我要當 YouTuber」不算答案。
+:::
+
+## Family Social Work 家庭社會工作
+
+- The family is the client 以「家庭」為服務單位
+- Not one person, but the whole system 不只是個人，而是整個家庭系統
+
+::: {.notes}
+EN: In family social work, the client is not one person. It's the whole family system. Think of a mobile hanging over a baby's bed: touch one piece and every piece moves. Dad loses his job, and suddenly the kids' grades, Mom's sleep, and even the dog's mood change. Mary Richmond said this back in 1917: you can't separate casework from the family. Family social work became its own field from the 1960s.
+
+中：家庭社會工作的服務對象不是一個人，而是整個家庭系統。想像嬰兒床上方的吊飾：碰一個，全部都會動。爸爸失業，孩子的成績、媽媽的睡眠，甚至連狗的心情都會跟著變。Mary Richmond 在 1917 年就說過：個案工作不能跟家庭分開。家庭社會工作從 1960 年代開始發展成一個專業領域。
+:::
+
+## Five Family Types 五種家庭類型
+
+- Nuclear family 核心家庭
+- Multigenerational family 多代同堂家庭
+- Single-parent family 單親家庭
+- Grandparent-headed family 隔代教養家庭
+- Blended family 混合家庭 (step-family 繼親家庭)
+
+::: {.notes}
+EN: Five types. Quick show of hands, no need to explain: who grew up with grandparents in the same house? (Wait.) That's the multigenerational family, and the parents in the middle are the "sandwich generation": caring for kids below and parents above, squeezed like the ham. The textbook also mentions "pseudo single-parent" families, where one parent works far away, and "weekend parents." Grandparent-headed families happen when parents work away, or when child protection has removed the child.
+
+中：五種類型。舉手就好，不用解釋：誰從小跟爺爺奶奶住在一起？（停一下）這就是多代同堂家庭，中間那一代就是「三明治世代」：上有老、下有小，被夾在中間像火腿一樣。課本也提到「泛單親」家庭，就是一位家長長期在外地工作，還有「假日父母」。隔代教養家庭可能是因為父母在外地工作，也可能是兒少保護把孩子帶離原生家庭。
+:::
+
+## Family Life Cycle 家庭生命週期
+
+- Newlywed 新婚期
+- Marriage adjustment 婚姻調整期
+- New parents 初為父母期
+- School-age children 子女學齡期
+- Teen children 子女青少年期
+- Launching 子女準備離家期
+- Empty nest 空巢期
+- Later life 孤寂期
+
+::: {.notes}
+EN: Families move through stages, like levels in a game. Newlywed: everything is romantic. Marriage adjustment: you discover your spouse squeezes the toothpaste from the middle. New parents: nobody sleeps. Teens: the kids discover their bedroom door has a lock. Launching and empty nest: parents cry for one week, then turn your bedroom into a gym. Carter & McGoldrick (1999); 黃馨慧 (1996). Each stage has its own family tasks and potential crises.
+
+中：家庭會經過不同階段，就像遊戲的關卡。新婚期：一切都很浪漫。婚姻調整期：你發現另一半擠牙膏是從中間擠。初為父母期：沒有人能睡覺。青少年期：孩子發現自己房門原來可以上鎖。準備離家和空巢期：爸媽哭一個禮拜，然後把你的房間改成健身房。出處：Carter & McGoldrick (1999)；黃馨慧 (1996)。每個階段都有家庭任務和潛在危機。
+:::
+
+## Tasks and Crises 任務與危機
+
+- Every stage has a task 每個階段都有任務
+- Every stage has a possible crisis 每個階段都有潛在危機
+- Teens: adjust boundaries → parent-child conflict 青少年期：調整界線 → 親子衝突
+- Empty nest: new roles → separation anxiety 空巢期：新角色 → 分離焦慮
+- **Pair talk:** Which stage is your family in now? 你的家現在在哪個階段？
+
+```{r}
+countdown(minutes = 2, seconds = 0)
+```
+
+::: {.notes}
+EN: Every stage gives the family a homework task, and if the homework doesn't get done, a crisis can show up. Teens: the task is adjusting boundaries; if parents still treat a 16-year-old like a 6-year-old, expect conflict. Many of you are probably in the "launching" stage right now: you left home, and your mom texts you "Did you eat?" three times a day. That text is the family doing its task.
+
+中：每個階段都像是家庭的作業，作業沒寫完，危機就可能出現。青少年期的任務是調整界線；如果爸媽還把 16 歲當 6 歲管，衝突就來了。你們很多人現在應該就在「子女準備離家期」：你離家讀書了，媽媽一天傳三次「吃飽沒？」那則訊息，就是家庭正在完成它的任務。
+:::
+
+## Life Cycle → Life Course 生命週期 → 生命歷程
+
+- Life is not a straight line 人生不是一條直線
+- Divorce, remarriage, late children 離婚、再婚、晚年得子
+- Stages can be skipped or repeated 階段可能跳過或重來
+- De-standardization 去標準化
+
+::: {.notes}
+EN: The life cycle model is neat. Real life is not neat. Some families skip stages, some repeat them, some do two at once: a grandmother raising a toddler while caring for her own mother. So we move from "life cycle" to "life course": transitions and trajectories, family positions, norms and roles, and de-standardization or de-institutionalization. 劉香蘭 (2019). In short: there is no "standard" family, so don't assess families against one.
+
+中：生命週期模型很整齊，但真實人生一點都不整齊。有的家庭跳過某些階段，有的重來，有的同時進行兩個：一位阿嬤一邊帶孫子，一邊照顧自己的媽媽。所以我們從「生命週期」走向「生命歷程」：家庭階段變遷與家庭軌跡、家庭位置、規範與角色、標準化與去標準化或去制度化。劉香蘭 (2019)。簡單說：沒有「標準」家庭，所以不要用一個標準去評估所有家庭。
+:::
+
+## New Family Shapes 新的家庭樣貌
+
+- Boomerang generation 回巢世代
+- Childfree families 無子女家庭
+- Digital families 遠距家庭
+- Multi-local families 多地居住家庭
+
+::: {.notes}
+EN: New shapes. The boomerang generation: you leave home, and you come back. Like a boomerang, or like your laundry. Digital families: Grandma lives on LINE stickers. Multi-local families: Dad works in Taichung on weekdays, comes home to Puli on weekends. The social work response: cultural humility (I don't assume I know how your family works) and a family resilience framework (what helps this family bounce back?).
+
+中：新的家庭樣貌。回巢世代：你離家，然後又回來了，就像迴力鏢，或像你的髒衣服。遠距家庭：阿嬤活在 LINE 貼圖裡。多地居住家庭：爸爸平日在台中上班，週末才回埔里。社工的回應：文化謙遜（我不假設我懂你的家怎麼運作）和家庭彈性框架（什麼能幫這個家庭重新站起來？）。
+:::
+
+## Four Principles 四個實務原則
+
+- The best place to help is at home 協助家庭最好的地方是他們的家
+- Empower families to solve their own problems 賦權家庭解決自己的問題
+- Make help individual 介入應該個別化
+- Urgent needs first, long-term goals later 先回應立即需求，再談長期目標
+
+::: {.notes}
+EN: Four principles. One: the best place to help is at home. You learn more from one home visit than from ten office interviews; you see the fridge, the shoes at the door, who answers the phone. Two: empower, don't rescue; the social worker is a coach, not the superhero. Three: individual; no copy-paste plans. Four: urgent needs first. If the electricity was cut off yesterday, today is not the day for a parenting workshop. 謝秀芬 (2018); Collins, Jordan, & Coleman (2012).
+
+中：四個原則。第一：協助家庭最好的地方是他們的家。一次家訪學到的比十次辦公室會談還多；你會看到冰箱、門口的鞋子、誰接電話。第二：賦權，不是拯救；社工是教練，不是超級英雄。第三：個別化；不要複製貼上的計畫。第四：先處理立即需求。如果昨天家裡被斷電，今天就不是上親職講座的日子。謝秀芬 (2018)；Collins, Jordan, & Coleman (2012)。
+:::
+
+## Three Levels of Service 三種服務
+
+- Family support services 家庭支持服務: any family, prevention 一般家庭、預防
+- Family-centred services 以家庭為中心的服務: family has a problem 家庭有問題
+- Intensive crisis services 危機介入服務: high crisis 高度危機
+
+::: {.notes}
+EN: Think of it like health care. Family support is the vitamins: any family, prevention. Family-centred services are the clinic visit: the family has a problem. Intensive crisis services are the emergency room. Strydom (2014). Remember this shape. It comes back later in school social work, and it will be on the exam. I'm not joking about that one.
+
+中：可以用健康照護來想。家庭支持服務是維他命：任何家庭都可以，重在預防。以家庭為中心的服務是門診：家庭出了問題。危機介入服務是急診室。Strydom (2014)。記住這個形狀，等一下學校社工會再出現，而且考試會考。這句我沒在開玩笑。
+:::
+
+## Family Assessment 家庭評估
+
+- Problem 問題
+- Family system 家庭系統
+- Family and environment 家庭與環境
+- Life cycle stage 家庭生命週期
+- Family function 家庭功能
+- Tools: genogram, ecomap 工具：家系圖、生態圖
+
+::: {.notes}
+EN: Assessment means looking at the problem, the family system, the family and its environment, the life cycle stage, and how well the family functions. Two tools: the genogram is the family tree with all the drama added; the ecomap shows the family's connections to school, work, church, temple, the 7-Eleven clerk who knows everyone. 謝秀芬等 (2012); Holman & Birch (2001).
+
+中：評估要看問題、家庭系統、家庭與環境、生命週期階段，以及家庭功能。兩個工具：家系圖就是加上所有八點檔劇情的家譜；生態圖畫出家庭跟學校、工作、宗教團體，還有那位認識全村的超商店員之間的連結。謝秀芬等 (2012)；Holman & Birch (2001)。
+:::
+
+## Taiwan's Social Safety Net 社會安全網
+
+- Phase 1 第一期 (2018-2020) → Phase 2 第二期 (2021-2025)
+- Now: Social Safety Net 2.0 社安網2.0 (2026-2030)
+- Catch families early, before a crisis 在危機發生前及早接住家庭
+- 2.0 adds new parents, older adults living alone, near-poor people 2.0 新增：新手父母、獨居長者、近貧者
+- Links welfare, health, mental health, jobs, police, schools 整合社福、衛生、心理健康、就業、治安、教育
+
+::: {.notes}
+EN: Imagine a trapeze artist. The net isn't there because we expect her to fall; it's there so a fall isn't the end of the story. That's the Social Safety Net: catch families early and link every system around them. The textbook stops at Phase 2 (110-114). The Executive Yuan approved "強化社會安全網計畫2.0 (115-119年)" on 2025-11-21: 2026-2030, about NT$81.9 billion over five years, almost double Phase 2. It adds new parents, older adults living alone, near-poor people, and victims of sexual-image abuse to front-end prevention. For the exam, the textbook's two phases are enough. You'll meet this net again in today's game.
+
+中：想像一位空中飛人。網子不是因為我們預期她會掉下來，而是讓掉下來不會變成故事的結局。這就是社會安全網：及早接住家庭，把周圍所有系統串起來。課本只寫到第二期 (110-114)。行政院在 2025-11-21 核定「強化社會安全網計畫2.0 (115-119年)」：2026-2030，五年約 819 億元，幾乎是第二期的兩倍，並把新手父母、獨居長者、近貧者，以及性影像受害者納入前端預防。考試只要會課本的兩期就夠了。今天的遊戲會再遇到這張網。
+:::
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## Medical Social Work 醫務社會工作
+
+- Not only the body 不只是身體
+- Biological, psychological, social 生理、心理、社會
+- Holistic view 全人觀點
+- Medical SW (hospital) vs. health care SW (broader) 醫務社工 vs. 健康照顧社工
+
+::: {.notes}
+EN: Welcome to the hospital. The doctor treats the liver; the social worker treats everything attached to the liver: the fear, the bills, the kids at home, the boss who keeps calling. That's the biopsychosocial, holistic view. Medical social work usually means inside the hospital; health care social work is broader: clinics, home care, community health.
+
+中：歡迎來到醫院。醫師治療肝臟；社工處理跟這個肝臟有關的一切：恐懼、帳單、家裡的孩子、一直打電話來的老闆。這就是生理、心理、社會的全人觀點。醫務社工通常指在醫院內；健康照顧社工範圍更廣：診所、居家照護、社區健康。
+:::
+
+## What Do Medical Social Workers Do? 醫務社工做什麼？
+
+- Assess psychosocial needs 評估心理暨社會需求
+- Crisis and emotional support 危機介入與情緒支持
+- Handle abuse cases 處理虐待事件
+- Link resources 轉介資源
+- Resolve patient-doctor conflict 處理醫病衝突
+- Run patient groups 經營病友團體
+
+::: {.notes}
+EN: The textbook lists ten duties; here are six. Also: removing barriers to treatment, consulting the medical team, designing community programs, teaching and research. Notice "resolve patient-doctor conflict." When a family is shouting at the nurses' station, guess who gets called? Not security first. The social worker.
+
+中：課本列了十項職責，這裡挑六項。其他還有：排除就醫障礙、提供醫療團隊諮詢、規劃社區方案、教學與研究。注意「處理醫病衝突」。當家屬在護理站大吼大叫，你猜誰會被叫來？第一個不是警衛，是社工。
+:::
+
+## Three Levels 三個層次
+
+- Macro: health policy, NHI 鉅視面：衛生政策、全民健保
+- Mezzo: hospital SW department 中介面：醫院社工部門
+- Micro: medical team 微視面：醫療團隊
+- Hospitals have dual authority 醫院有雙重權威
+
+::: {.notes}
+EN: Macro, mezzo, micro: health policy and NHI, the hospital social work department, the medical team at the bedside. "Dual authority" means two bosses: the administrative line (your social work department head) and the medical line (the doctors). It's like having two moms giving you different instructions for the same dinner.
+
+中：鉅視、中介、微視：衛生政策與全民健保、醫院社工部門、病床旁的醫療團隊。「雙重權威」就是有兩個老闆：行政體系（你的社工部門主管）和醫療體系（醫師）。就像同一頓晚餐，有兩個媽媽給你不同的指示。
+:::
+
+## Three Kinds of Teams 三種團隊
+
+- Multi-professional: meet only when needed 多專業團隊：必要時才聚在一起
+- Inter-professional: work closely together 專業間團隊：互動密切、角色互補
+- Trans-professional: cross the lines 跨專業團隊：跨越專業界線
+
+::: {.notes}
+EN: You already know these from group projects. Multi-professional: everyone does their own part alone and staples it together the night before. Inter-professional: you actually meet, talk, and fit the parts together. Trans-professional: you know each other's roles so well you can cover for each other, like a basketball team switching on defense. Ask: which kind was your last group project? (Pause for laughter.)
+
+中：你們從分組報告就懂這三種了。多專業團隊：每個人各做各的，前一天晚上釘在一起交出去。專業間團隊：真的有開會、討論、把各部分接起來。跨專業團隊：彼此熟到可以互相補位，就像籃球隊防守換人。問問看：你上一次的分組報告是哪一種？（等大家笑完）
+:::
+
+## SOAP Notes 問題取向記錄
+
+- S: Subjective, what the patient says 主觀：病人說的話
+- O: Objective, what we observe 客觀：我們觀察到的
+- A: Assessment, what it means 評量：代表什麼
+- P: Plan, what we will do 計畫：接下來要做什麼
+
+::: {.notes}
+EN: SOAP is not for washing, although some case notes could use it. S is what the patient says, O is what we observe, A is what it means, P is what we will do. Also the 4Rs social system record: role, relationship, reaction, resource. Quick check on the next slide.
+
+中：SOAP 不是拿來洗手的，雖然有些紀錄真的需要洗一洗。S 是病人說的，O 是我們觀察到的，A 是代表什麼，P 是接下來要做什麼。另外還有 4R 社會系統記錄法：角色、關係、反應、資源。下一張馬上小測驗。
+:::
+
+## S, O, A, or P? 是 S、O、A 還是 P？
+
+- "I'm scared. How will I pay for the hospital?" 「我好害怕，醫藥費要怎麼付？」
+- Patient cried twice during the interview 會談中病人哭了兩次
+- Financial stress is raising anxiety 經濟壓力加重焦慮
+- Refer to hospital financial aid this week 本週轉介醫院急難救助
+- **Pair talk:** Label each line 兩人一組：幫每一句貼上標籤
+
+```{r}
+countdown(minutes = 2, seconds = 0)
+```
+
+::: {.notes}
+EN: Answers: S, O, A, P, in order. Yes, I made it easy. The exam will not be in order. Common mistake: students write "the patient is anxious" under O. Anxiety is your interpretation, so it's A. Under O you write what a camera could record: "cried twice."
+
+中：答案依序是 S、O、A、P。對，我故意出簡單的。考試不會照順序。常見錯誤：同學把「病人很焦慮」寫在 O。焦慮是你的解讀，所以是 A。O 只寫攝影機拍得到的東西：「哭了兩次」。
+:::
+
+## Groups in the Hospital 醫院裡的團體
+
+- Education groups 教育性團體
+- Support groups 支持性團體
+- Growth, socialization, therapy groups 成長性、社會化、治療性團體
+- Self-help groups 自助性團體 (e.g., breast cancer clubs 乳癌病友)
+
+::: {.notes}
+EN: Hospitals use education and support groups most, because patient stays are short. You can't run a 12-week growth group for someone discharged on Thursday. Self-help groups, like breast cancer clubs, are run by patients for patients; the social worker helps start them, then steps back. 莫藜藜譯 (2023).
+
+中：醫院最常用教育性和支持性團體，因為住院時間很短。你不可能幫一個星期四就出院的病人開 12 週的成長團體。自助性團體，例如乳癌病友團體，是病友帶病友；社工協助成立，然後退到旁邊。莫藜藜譯 (2023)。
+:::
+
+## Special Services 特殊性服務
+
+- Cancer and hospice care 腫瘤與安寧療護
+- Organ donation 器官移植與捐贈
+- Medical disputes 醫療爭議
+- Protective services 保護性服務
+- Advance care planning 預立醫療照護諮商 (ACP)
+- Discharge planning and long-term care 出院準備暨長期照顧
+
+::: {.notes}
+EN: (Tone down the jokes here; these are heavy topics.) Hospice care, organ donation, medical disputes, protective services. ACP comes from the Patient Right to Autonomy Act (病人自主權利法), in force since early 2019: people can decide ahead of time what care they want at the end of life, and a social worker is part of that consultation team. Discharge planning links patients to Long-Term Care 2.0 (長照2.0), so "going home" is actually safe.
+
+中：（這張先收起笑話，主題比較沉重。）安寧療護、器官捐贈、醫療爭議、保護性服務。ACP 來自《病人自主權利法》，2019 年初上路：民眾可以事先決定生命末期想要的照護，諮商團隊裡就有社工。出院準備會連結長照2.0，讓「回家」是真的安全。
+:::
+
+## Challenges 挑戰
+
+- Heavy workload 工作負荷與壓力
+- Salary competition 薪資競爭與人力流動
+- Caught between health and welfare 夾在醫療與社福之間
+- "Dad doesn't love me, Mom doesn't want me" 「爹不疼、娘不愛」
+
+::: {.notes}
+EN: Honest slide. Heavy workload, salary competition, staff turnover. And medical social work sits between two ministries' worlds, health and welfare, so sometimes neither side claims it: "Dad doesn't love me, Mom doesn't want me." Licensing: Social Worker Act (社會工作師法) 1997; specialist social workers (專科社工師) from 2008, including a medical specialty.
+
+中：這張很誠實。工作量大、薪資競爭、人員流動。醫務社工夾在醫療和社福兩個世界中間，有時兩邊都不認領，就是「爹不疼、娘不愛」。證照：1997 年《社會工作師法》；2008 年起有專科社工師，包含醫務專科。
+:::
+
+## Game: Safety Net Dispatch 遊戲：社安網派案中心
+
+- Groups of 8, one tablet per group 8 人一組，每組一台平板
+- Take one handout each and write your name 每人拿一張講義，寫上名字
+- Between rounds, pass your handout to the LEFT 每回合結束，講義往左傳
+- Every question: Read → Search → Show → Prove → Approve 每一題：讀 → 找 → 比 → 證 → 核
+- ncnusw.github.io/introsw/games/safety-net-dispatch/
+
+```{r}
+countdown(minutes = 37, seconds = 0)
+```
+
+::: {.notes}
+EN: Password (say it out loud only when groups are seated and ready): spiderman. Any case works. Timing: set-up 2, roles 2, tutorial about 7, Round 1 about 7, Round 2 about 10, Round 3 about 9. The dispatcher passes the tablet to the left too. "With great power comes great responsibility": that's the password and also the job description of a social worker.
+
+中：密碼（等各組坐好、準備好再唸出來）：spiderman，大小寫都可以。時間：設定 2 分鐘、角色 2 分鐘、教學約 7 分鐘、第一回合約 7 分鐘、第二回合約 10 分鐘、第三回合約 9 分鐘。派案員也要把平板往左傳。「能力越強，責任越大」：這是密碼的由來，也是社工的工作說明書。
+:::
+
+## Game Debrief 遊戲回顧
+
+- Which strategy did your group mix up most? 你們這組最常搞混哪一種策略？
+- Which new 2.0 group matters most in Nantou? 哪一個 2.0 新增對象在南投最重要？
+- Where could a family still fall through the net? 家庭還可能從哪裡掉出這張網？
+
+```{r}
+countdown(minutes = 5, seconds = 0)
+```
+
+::: {.notes}
+EN: Announce the top group first, applause, then the questions. For the Nantou question, push them: older adults living alone in the mountains, near-poor farming families. For the last question, there is no wrong answer, only a lazy one.
+
+中：先宣布最高分的組別，鼓掌，再問問題。南投那一題可以追問：山區的獨居長者、近貧的農家。最後一題沒有錯誤答案，只有偷懶的答案。
+:::
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## School Social Work 學校社會工作
+
+- Links school, family, community 連結學校、家庭、社區
+- Helps every child learn 協助每個孩子學習
+- Works with teachers and parents 與教師、家長合作
+
+::: {.notes}
+EN: Last field. A school social worker is the bridge between school, family, and community. The goal isn't "fix the bad kid." The goal is that every child can learn. A child who is hungry, scared, or up all night because parents were fighting cannot learn long division, no matter how good the teacher is.
+
+中：最後一個領域。學校社工是學校、家庭、社區之間的橋樑。目標不是「修理壞孩子」，而是讓每個孩子都能學習。一個肚子餓、害怕，或因為爸媽吵架整晚沒睡的孩子，不管老師多厲害，都學不會長除法。
+:::
+
+## History 發展歷程
+
+- 1906 USA: visiting teachers 美國：訪問教師
+- 1940-1970: clinical casework 臨床個案工作
+- 1990-now: prevention and systems 預防介入與系統觀
+- 1977 Taiwan: first pilot 臺灣：家扶基金會試辦
+- 2014: Student Counseling Act 《學生輔導法》
+
+::: {.notes}
+EN: Started in 1906 in the US as "visiting teachers," people who walked from school to the child's home. Then the clinical era, then prevention and systems. Taiwan: 家扶基金會 pilot in 1977; Ministry of Education pilots 1996-1998; local government pilots 1998-2010; National Education Act (國民教育法) amended 2011-01-12; Student Counseling Act 2014; Social Safety Net from 2018. Exam tip: 2014 is the one to remember.
+
+中：1906 年從美國的「訪問教師」開始，就是從學校走到孩子家裡的人。接著是臨床個案工作時期，再到預防與系統觀。臺灣：1977 年家扶基金會試辦；1996-1998 教育部試辦；1998-2010 地方政府試辦；2011-01-12 修正《國民教育法》；2014 年《學生輔導法》；2018 年起社會安全網。考試小提醒：2014 一定要記。
+:::
+
+## Three-Tier Guidance 學校三級輔導
+
+- Tier 1: development, all teachers 發展性輔導：全體教師
+- Tier 2: intervention, counseling teachers 介入性輔導：輔導教師
+- Tier 3: treatment, social workers and psychologists 處遇性輔導：社工師、心理師
+
+::: {.notes}
+EN: Remember the vitamins, the clinic, and the emergency room from family services? Same shape. Tier 1 is every teacher, for every student. Tier 2 is the counseling teacher, for students starting to struggle. Tier 3 is social workers and psychologists, for the most serious cases. In Taiwan, school social workers mostly handle tier 3.
+
+中：還記得家庭服務的維他命、門診、急診室嗎？一樣的形狀。第一級是全體老師，服務所有學生。第二級是輔導老師，服務開始出狀況的學生。第三級是社工師和心理師，處理最嚴重的個案。在臺灣，學校社工大多負責第三級。
+:::
+
+## A Day with a Rural Social Worker 偏鄉社工的一天
+
+- 兒福聯盟中區工作站 Child Welfare League Foundation, central office
+- Two rural primary schools in Nantou 南投兩所偏鄉小學
+- Watch for: how does she learn what the children need? 觀察：社工如何了解孩子的需要？
+
+::: {.notes}
+EN: This one is local: Nantou schools, maybe near where some of you grew up. Watch how she gets kids to talk. Hint: it's not a questionnaire.
+
+中：這支影片很在地：南投的學校，可能就在你們有些人的家鄉附近。注意她怎麼讓孩子開口。提示：不是靠問卷。
+:::
+
+---
+
+{{< video vids/12_school_social_worker_[kjyj3tk9ynQ].mkv width="1000" height="600" >}}
+
+## After the Video 看完之後
+
+- **Trio talk:** How did she find out what the children needed? 她怎麼知道孩子需要什麼？
+- Which tier is she working at? 她在做第幾級輔導？
+- A child says, "My parents fight. No one can help me." What do you do next? 孩子說：「爸媽常吵架，沒有人可以幫我。」你下一步怎麼做？
+- Who else should know about this family? 還有誰應該知道這個家庭？
+
+```{r}
+countdown(minutes = 5, seconds = 0)
+```
+
+::: {.notes}
+EN: Games, regular visits, trust built over time. Which tier? Mostly tier 1-2, plus spotting kids who need more. Let them argue. Point out she's an NGO social worker coming into the school, not school staff; that's the R in WISER on the next slide.
+
+中：遊戲、定期訪視、長時間建立的信任。第幾級？大部分是第一到第二級，加上找出需要更多協助的孩子。讓他們辯一下。提醒：她是進到學校服務的民間團體社工，不是學校編制內人員；這就是下一張 WISER 裡的 R。
+:::
+
+## WISER
+
+- W: whole school, working smart, win-win 全校做、聰明做、雙贏做
+- I: individual intervention 個別化介入
+- S: system collaboration 系統合作
+- E: ongoing evaluation 持續評估
+- R: resource integration 資源整合
+
+::: {.notes}
+EN: Don't just be wise, be WISER. Ministry of Education (2020). W matches tier 1; I, S, E match tier 2; R matches tier 3. Exam tip: if a question says "the school brings in an outside agency," think R.
+
+中：不只要 wise，還要 WISER。教育部 (2020)。W 對應第一級；I、S、E 對應第二級；R 對應第三級。考試小提醒：題目如果寫「學校引進校外機構」，就想到 R。
+:::
+
+## Three Lenses 三個理論觀點
+
+- Ecological theory 生態理論
+- Strengths perspective 優勢觀點
+- Trauma-informed care 創傷知情照顧
+
+::: {.notes}
+EN: Three pairs of glasses. Ecological: zoom out and see the child inside family, school, community. Strengths: look for what's going right, not only what's broken. Trauma-informed: look behind the behavior. Same child, three pairs of glasses, three different pictures.
+
+中：三副眼鏡。生態理論：把鏡頭拉遠，看見孩子身處的家庭、學校、社區。優勢觀點：找出做得好的地方，不只看壞掉的地方。創傷知情：看見行為背後的東西。同一個孩子，三副眼鏡，三種不同的畫面。
+:::
+
+## Trauma-Informed Care 創傷知情照顧
+
+- Not "What's wrong with you?" 不是「你有什麼問題？」
+- But "What happened to you?" 而是「你經歷了什麼？」
+- **Pair talk:** Rewrite: "This kid is lazy and always fakes being sick." 改寫：「這孩子很懶，老是裝病。」
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+::: {.notes}
+EN: One question change, a whole new way of seeing. A stomachache with no medical cause, many absences, falling asleep in class: "lazy" ends the conversation, "What happened to you?" starts it. Sample rewrite: "This child often reports pain and misses school; something at home or school may be making him feel unsafe."
+
+中：換一個問題，就換了一種看見的方式。查不出原因的肚子痛、常缺課、上課睡覺：「懶」會讓對話結束，「你經歷了什麼？」才讓對話開始。改寫範例：「這孩子常說身體痛、常缺課；家裡或學校可能有讓他感到不安全的事。」
+:::
+
+## Strategies 介入策略
+
+- Direct: education, intervention, mediation 直接：教育、介入、調解
+- Indirect: consultation, collaboration, advocacy 間接：諮詢、合作、倡導
+
+::: {.notes}
+EN: Direct strategies work with the child or family face to face. Indirect strategies work on the people and systems around them: consulting teachers, collaborating with agencies, advocating for policy. Sometimes the best help for one child is convincing the school to change a rule for all children. Also Alderson's four models (Constable, 2009): clinical, school change, community school, social interaction.
+
+中：直接策略是面對面跟孩子或家庭工作。間接策略是針對他們周圍的人和系統：諮詢老師、跟機構合作、倡導政策。有時候幫助一個孩子最好的方法，是說服學校為所有孩子改一條規定。另外還有 Alderson 的四個模式 (Constable, 2009)：臨床模式、學校變遷模式、社區學校模式、社會互動模式。
+:::
+
+## The Future 未來
+
+- Show the results 展現服務成效
+- Dream: prevention. Reality: crisis 理想是預防，現實是危機
+- Respond to AI and digital life 因應人工智慧與數位生活
+
+::: {.notes}
+EN: Three challenges. Prove that the work works, because budgets follow evidence. The dream is prevention, but most days are crisis. And AI and digital life: cyberbullying, gaming, kids who talk more to chatbots than to adults. AI can write a report; it still can't sit on a tiny classroom chair next to a crying eight-year-old.
+
+中：三個挑戰。證明服務有效，因為預算跟著證據走。理想是預防，但大部分的日子是在處理危機。還有人工智慧和數位生活：網路霸凌、遊戲、跟聊天機器人講話比跟大人講話還多的孩子。AI 可以寫報告，但它還不能坐在小小的教室椅子上，陪一個在哭的八歲孩子。
+:::
+
+## Closing 結語
+
+## Same Shape, Three Fields 三個領域，同一個形狀
+
+- Family: support → family-centred → crisis 家庭：支持 → 以家庭為中心 → 危機介入
+- Hospital: body, mind, and social world 醫院：生理、心理、社會
+- School: tier 1 → 2 → 3 學校：三級輔導
+- Prevention first, crisis when needed 預防優先，必要時危機介入
+
+::: {.notes}
+EN: If you remember one thing from today: prevention first, crisis when needed. Vitamins, clinic, emergency room. That shape shows up in families, in schools, and in the Social Safety Net. Learn the shape and half the exam questions answer themselves.
+
+中：今天只記得一件事的話：預防優先，必要時危機介入。維他命、門診、急診室。這個形狀出現在家庭、學校，也出現在社會安全網。學會這個形狀，一半的考題會自己解開。
+:::
+
+## Before We Watch 觀看之前
+
+- ReMoved 被帶走的孩子: a 13-minute award-winning short film 約 13 分鐘的得獎短片
+- A 10-year-old girl taken from a violent home into foster care 十歲女孩離開暴力家庭，進入寄養體系
+- Content warning: domestic violence in the opening 內容提醒：開頭有家庭暴力畫面
+- You may step out if you need to 如有需要，可以先離開教室
+- Watch for: what adults see vs. what she feels 觀察：大人看到的 vs. 她感受到的
+
+::: {.notes}
+EN: No jokes from here on. Say the content warning slowly and mean it. Let students know they can step out without explaining, and mention the counseling center. After the film, go straight to the journal; let the silence do the work.
+
+中：從這裡開始不開玩笑。內容提醒要慢慢說、說得真誠。讓學生知道可以離開教室，不需要解釋，並提一下學生諮商中心。影片結束後直接進週記，讓安靜發揮作用。
+:::
+
+---
+
+{{< video vids/12_ReMoved_subs.mp4 width="1000" height="600" >}}
+
+## Journal
+
+::: {style="font-size: 100%;"}
+::: {.callout-note title="Journal Prompt"}
+Week 12 Prompt: In ReMoved, the girl's anger and silence looked like "bad behavior" to many adults. Choose one moment. What was she really feeling or needing? If you were her social worker, what would you say or do, and why? 在《ReMoved》中，女孩的憤怒和沉默，在許多大人眼中像是「行為問題」。請選擇片中的一個片段：你認為她當時真正的感受或需要是什麼？如果你是她的社工，你會說什麼或做什麼？為什麼？
+:::
+:::
+
+![](imgs/no_phone.svg){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+<audio class="slide-audio" loop controls>
+  <source src="audio/journaling2.mp3" type="audio/mpeg">
+</audio>
+
+## Next Week
+
+- Please return your journals before you leave
+- Read the textbook section on emerging issues (justice, Indigenous, new immigrant, and disaster social work) before class
+- See you next week
+
+::: {.notes}
+EN: Journals back before you leave, please. I count them like a mother counting ducklings.
+
+中：離開前請交回週記。我會像鴨媽媽數小鴨一樣一本一本數。
+:::

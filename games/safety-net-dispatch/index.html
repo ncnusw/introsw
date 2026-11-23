@@ -153,6 +153,34 @@ table.bd td:last-child{text-align:right;font-weight:800}
 .swap.big{font-size:20px;line-height:1.5}
 #menu{position:fixed;inset:0;background:rgba(10,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
 #menu .card{max-width:420px;width:100%;display:flex;flex-direction:column;gap:10px}
+/* --- fun layer: stamp, wheel, awards --- */
+.stamprow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.stampbtn{font:900 22px 'Noto Sans TC',sans-serif;letter-spacing:1px;padding:14px 22px;border-radius:14px;border:4px solid;background:#fff;cursor:pointer;min-width:200px;transform:rotate(-2deg);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.stampbtn.ok{color:var(--ok);border-color:var(--ok)}
+.stampbtn.no{color:var(--bad);border-color:var(--bad);transform:rotate(2deg)}
+.stampbtn:disabled{opacity:.4;cursor:default}
+.stampbtn:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.stampfx{position:fixed;left:50%;top:42%;z-index:70;pointer-events:none;font:900 clamp(48px,11vw,110px)/1 'Noto Sans TC',sans-serif;letter-spacing:4px;padding:14px 34px;border:10px solid;border-radius:22px;background:rgba(255,255,255,.88);text-align:center;animation:slam .28s cubic-bezier(.2,1.6,.4,1) forwards, fadeout .4s ease-in 1.05s forwards}
+.stampfx small{display:block;font-size:.42em;letter-spacing:2px}
+.stampfx.ok{color:var(--ok);border-color:var(--ok)}
+.stampfx.no{color:var(--bad);border-color:var(--bad)}
+@keyframes slam{from{transform:translate(-50%,-50%) rotate(-14deg) scale(3);opacity:0}to{transform:translate(-50%,-50%) rotate(-14deg) scale(1);opacity:1}}
+@keyframes fadeout{to{opacity:0}}
+.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
+.streak{display:inline-block;background:#fff0e0;border:2px solid #e8833a;color:#a14e0a;border-radius:999px;padding:1px 10px;font-weight:800;margin-left:6px}
+.wheelbox{background:#fff;border:3px dashed var(--bad);border-radius:16px;padding:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center}
+.wheelwrap{position:relative;width:170px;height:170px;flex:0 0 170px}
+.wheelwrap svg{width:170px;height:170px;transition:transform 3s cubic-bezier(.15,.85,.25,1)}
+.wheelwrap:after{content:'';position:absolute;left:50%;top:-6px;transform:translateX(-50%);border:12px solid transparent;border-top:20px solid var(--navy)}
+.pen{flex:1;min-width:220px;font-size:18px;line-height:1.5}
+.pen .big{font-size:22px;font-weight:900}
+.timer-dun{animation:pulse .5s 3}
+.awards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.award{background:#fffdf5;border:3px solid var(--gold);border-radius:16px;padding:14px;text-align:center;animation:in .4s ease both}
+.award .ai{font-size:48px;line-height:1}
+.award .an{font-weight:900;font-size:19px;margin-top:6px}
+.award .ad{font-size:15px;color:var(--muted);margin-top:4px}
 </style>
 </head>
 <body>
@@ -204,6 +232,9 @@ const $ = (s,el=document)=>el.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 
+function freshFx(){ return {rej:0, appr:0, streak:0, best:0, wrong:0, back:0, maxLeft:0, spins:0, penKey:null, pen:null, dunAt:null}; }
+function FX(){ if(!S.fx) S.fx=freshFx(); return S.fx; }
+function isReal(){ return S && ['r1','r2','r3a','r3b'].includes(S.screen); }
 function fresh(){
   return { screen:'setup', group:null, team:'', 
     round:0, endAt:null, timeUp:false,
@@ -212,6 +243,7 @@ function fresh(){
     r3a:{order:shuffle(MCQ.map((_,i)=>i)).slice(0,MCQ_COUNT), i:0, pick:null, done:false, score:0, right:0, left:MCQ_SEC},
     r3b:{essay:null, place:{}, armed:null, done:false, score:0, said:null, turn:0},
     prac:{step:0, pick:null, done:false}, tut:0, tutShow:false,
+    fx:freshFx(),
   };
 }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
@@ -231,6 +263,43 @@ function beep(f=660,d=.12,type='sine',v=.15){
 const sOk = ()=>{beep(660,.1);setTimeout(()=>beep(990,.16),100);};
 const sBad = ()=>{beep(220,.25,'square',.08);};
 const sTick = ()=>beep(880,.05,'sine',.08);
+function ac(){ if(!sound) return null; try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); return actx; }catch(e){ return null; } }
+function noise(a, t0, dur, ftype, freq, vol){
+  const len=Math.max(1,Math.floor(a.sampleRate*dur)), b=a.createBuffer(1,len,a.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+  const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain();
+  src.buffer=b; f.type=ftype; f.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+Math.min(.03,dur/3)); g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  src.connect(f).connect(g).connect(a.destination); src.start(t0); src.stop(t0+dur);
+}
+function tone(a, t0, f0, f1, dur, type, vol, vib){
+  const o=a.createOscillator(), g=a.createGain(), lp=a.createBiquadFilter();
+  o.type=type; o.frequency.setValueAtTime(f0,t0); if(f1!==f0) o.frequency.linearRampToValueAtTime(f1,t0+dur);
+  lp.type='lowpass'; lp.frequency.value=1400;
+  if(vib){ const l=a.createOscillator(), lg=a.createGain(); l.frequency.value=6; lg.gain.value=vib; l.connect(lg).connect(o.frequency); l.start(t0); l.stop(t0+dur); }
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(vol,t0+.03); g.gain.setValueAtTime(vol,t0+dur*.8); g.gain.exponentialRampToValueAtTime(.0001,t0+dur);
+  o.connect(lp).connect(g).connect(a.destination); o.start(t0); o.stop(t0+dur+.02);
+}
+// wah wah wah waaaah
+function sTrombone(){ const a=ac(); if(!a) return; const t=a.currentTime+.02;
+  [[294,290,.38],[277,273,.38],[262,258,.38],[247,233,1.1]].forEach((n,k)=>tone(a,t+k*.42,n[0],n[1],n[2],'sawtooth',.13,k===3?7:0)); }
+// crowd cheer: a roar plus scattered claps
+function sCheer(){ const a=ac(); if(!a) return; const t=a.currentTime+.02;
+  noise(a,t,1.8,'bandpass',1400,.22); noise(a,t+.1,1.5,'bandpass',2600,.12);
+  for(let k=0;k<22;k++) noise(a,t+Math.random()*1.5,.05,'highpass',1800,.25);
+  [523,659,784,1047].forEach((f,k)=>tone(a,t+k*.11,f,f,k===3?.4:.14,'triangle',.12,0)); }
+function sThunk(){ const a=ac(); if(!a) return; const t=a.currentTime+.01;
+  tone(a,t,140,45,.22,'sine',.6,0); noise(a,t,.09,'lowpass',700,.5); }
+// dun dun DUNNN
+function sDun(){ const a=ac(); if(!a) return; const t=a.currentTime+.02;
+  [[147,.3],[139,.3],[110,1.4]].forEach((n,k)=>{ tone(a,t+k*.38,n[0],n[0]*(k===2?.97:1),n[1],'sawtooth',.18,k===2?4:0); tone(a,t+k*.38,n[0]/2,n[0]/2,n[1],'square',.08,0); }); }
+// one right / wrong answer in a real round: sound + streak bookkeeping
+function hit(ok){
+  const fx=FX();
+  if(ok){ fx.streak++; fx.best=Math.max(fx.best,fx.streak);
+    if(fx.streak>=3 && fx.streak%3===0){ sCheer(); confetti(); toast(`🔥 ${fx.streak} in a row! 連續答對${fx.streak}題！`,'ok'); } else sOk(); }
+  else { fx.streak=0; fx.wrong++; sTrombone(); }
+}
 
 /* ---------- wake lock ---------- */
 let lock=null;
@@ -238,6 +307,7 @@ async function wake(){ try{ if('wakeLock' in navigator && !lock){ lock=await nav
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && S && S.endAt) wake(); });
 
 /* ---------- top bar ---------- */
+function streakChip(){ const k=FX().streak; return k>=2?`<span class="streak">🔥 ${k} in a row 連對${k}</span>`:''; }
 function totalScore(){ return S.r1.score+S.r2.score+S.r3a.score+S.r3b.score; }
 function bar(){
   const sp=$('#scorePill'), tp=$('#timer');
@@ -247,6 +317,7 @@ function bar(){
     const left=Math.max(0,Math.round((S.endAt-Date.now())/1000));
     tp.style.display=''; tp.textContent=`⏱ ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;
     tp.classList.toggle('warn', left<=60);
+    if(left===30 && FX().dunAt!==S.endAt){ FX().dunAt=S.endAt; save(); sDun(); tp.classList.remove('timer-dun'); void tp.offsetWidth; tp.classList.add('timer-dun'); toast('⏱ 30 seconds left! 剩30秒！'); }
     if(left===0 && !S.timeUp){ S.timeUp=true; save(); toast("Time's up! Finish this one, then move on. 時間到！完成這題就進入下一關。"); sBad(); render(); }
   } else tp.style.display='none';
 }
@@ -254,7 +325,7 @@ function startClock(min){ S.endAt=Date.now()+min*60000; S.timeUp=false; wake(); 
 function stopClock(){ S.endAt=null; S.timeUp=false; }
 setInterval(()=>{ if(S) bar(); },1000);
 
-function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
+function toast(msg,kind){ const t=document.createElement('div'); t.className='toast'; if(kind==='ok') t.style.background='#e8833a'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
 
 /* ---------- render ---------- */
 function go(screen){ S.screen=screen; save(); render(); window.scrollTo(0,0); }
@@ -263,9 +334,66 @@ function render(){
   const f = SCREENS[S ? S.screen : 'title'] || SCREENS.title;
   app.innerHTML = '<div class="screen">'+f()+'</div>';
   bind[S ? S.screen : 'title'] && bind[S ? S.screen : 'title']();
+  funHooks();
   bar();
 }
 const bind = {};
+/* ---------- fun layer: stamps + penalty wheel (wired after every render) ---------- */
+function stampFx(ok){
+  const d=document.createElement('div'); d.className='stampfx '+(ok?'ok':'no');
+  d.innerHTML= ok?'APPROVED<small>核准</small>':'REJECTED<small>駁回</small>';
+  document.body.appendChild(d); setTimeout(()=>d.remove(),1500);
+  sThunk(); app.classList.remove('shake'); void app.offsetWidth; app.classList.add('shake');
+}
+function turnR(){ return {r1:S.r1, r2:S.r2, tut:S.prac}[S.screen]; }
+function funHooks(){
+  if(!S) return;
+  const ok=$('#ok[data-stamp]'), rej=$('#rej');
+  if(ok && ok.onclick){ const orig=ok.onclick;
+    ok.onclick=()=>{ ok.disabled=true; if(rej) rej.disabled=true; if(isReal()) FX().appr++; stampFx(true); setTimeout(()=>{ orig(); },750); }; }
+  if(rej) rej.onclick=()=>{ const R=turnR(); if(!R) return; rej.disabled=true; if(ok) ok.disabled=true;
+    if(isReal()) FX().rej++; stampFx(false);
+    setTimeout(()=>{ R.step=3; save(); render(); toast('🧐 REJECTED! Find better proof. 駁回！再找更好的證據。'); },900); };
+  const sp=$('#spin'); if(sp) sp.onclick=spinWheel;
+}
+const PENALTIES = [
+  ['😭','Everyone says "Sorry, Supervisor!" together, like a dramatic soap opera.','全組用八點檔的語氣一起說：「督導，對不起！」'],
+  ['📣','Group chant, three times: "Read the sheet! Read the sheet!"','全組一起喊三次：「看卡！看卡！」'],
+  ['🤦','Everyone does a slow-motion facepalm.','全組慢動作扶額。'],
+  ['🎙️','The dispatcher announces the right answer like a sports commentator.','派案員用體育主播的語氣宣布正確答案。'],
+  ['🌊','The whole group does a stadium wave, left to right.','全組從左到右做一次球場波浪舞。'],
+  ['😮‍💨','The supervisor gives a huge sigh. Everyone sighs back.','督導大嘆一口氣，全組一起嘆回去。'],
+  ['🧍','Everyone stands up, sits down, and says "We\'ll do better!"','全組起立、坐下，一起說：「我們會更好！」'],
+  ['🍀','Lucky! No penalty this time.','好運！這次免罰。'],
+];
+const WHEEL_COLS=['#e8833a','#d64545','#3a8fd6','#2f9e6e','#8e5bd6','#c79a16','#16233b','#239a5b'];
+function wheelSVG(){
+  const n=PENALTIES.length, r=80, c=85; let out='';
+  PENALTIES.forEach((p,k)=>{ const a0=(k/n)*2*Math.PI-Math.PI/2-Math.PI/n, a1=a0+2*Math.PI/n, am=(a0+a1)/2;
+    out+=`<path d="M${c} ${c} L${c+r*Math.cos(a0)} ${c+r*Math.sin(a0)} A${r} ${r} 0 0 1 ${c+r*Math.cos(a1)} ${c+r*Math.sin(a1)} Z" fill="${WHEEL_COLS[k]}" stroke="#fff" stroke-width="2"/>
+      <text x="${c+52*Math.cos(am)}" y="${c+52*Math.sin(am)+8}" text-anchor="middle" font-size="22">${p[0]}</text>`; });
+  const fx=FX(), keep = fx.penKey===penKey() && fx.pen!==null ? ` style="transition:none;transform:rotate(${360-fx.pen*360/n}deg)"` : '';
+  return `<svg id="wheel" viewBox="0 0 170 170"${keep}>${out}<circle cx="${c}" cy="${c}" r="12" fill="#fff" stroke="#16233b" stroke-width="3"/></svg>`;
+}
+function penKey(){ return S.screen==='r1' ? `r1-${S.r1.i}` : `r2-${S.r2.ci}-${S.r2.qi}`; }
+function wheelHTML(){
+  const fx=FX(), got = fx.penKey===penKey() && fx.pen!==null;
+  const p = got ? PENALTIES[fx.pen] : null;
+  return `<div class="wheelbox"><div class="wheelwrap">${wheelSVG()}</div>
+    <div class="pen">${got
+      ? `<div class="big">${p[0]} ${esc(p[1])}</div><div class="zh">${esc(p[2])}</div>`
+      : `<div class="big">🎡 Penalty wheel! 懲罰輪盤！</div><div class="small">Wrong answer = the whole group spins. 答錯了，全組轉一次。</div>
+         <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn gold" id="spin" style="min-height:48px">🎡 Spin 轉！</button></div>`}</div></div>`;
+}
+function spinWheel(){
+  const fx=FX(), n=PENALTIES.length, k=Math.floor(Math.random()*n);
+  const btn=$('#spin'); if(btn) btn.disabled=true;
+  const w=$('#wheel'); const deg=360*5 + (360 - k*360/n);
+  if(w) w.style.transform=`rotate(${deg}deg)`;
+  let t=0, gap=60; const tickNext=()=>{ sTick(); t+=gap; gap*=1.12; if(t<2700) setTimeout(tickNext,gap); }; tickNext();
+  setTimeout(()=>{ fx.spins++; fx.penKey=penKey(); fx.pen=k; save(); render();
+    if(k===n-1){ sOk(); } else sThunk(); }, 3100);
+}
 const SCREENS = {};
 
 /* ---------- title ---------- */
@@ -394,7 +522,7 @@ bind.tut = ()=>{
   $('#tBack').onclick=()=>tutGo(S.tut-1);
   $('#tNext').onclick=()=>{ if(S.tut===TUT_N-1) go('tutdone'); else tutGo(S.tut+1); };
   $('#tSkip').onclick=()=>{ if(confirm('Skip the rest of the tutorial and start the real game? 略過其餘教學，開始正式比賽？')) go('r1intro'); };
-  if(S.tut===TUT_N-1) bindStratTurn(S.prac, PRACTICE, ok=>{ ok?sOk():sBad(); }, null);
+  if(S.tut===TUT_N-1) bindStratTurn(S.prac, PRACTICE, ok=>{ ok?sOk():sTrombone(); }, null);
 };
 
 /* ---------- tutorial complete ---------- */
@@ -441,7 +569,8 @@ function stepPanel(step, kind, nOpt, hasPick){
   if(step===3){ extra=`<div class="pickhint ${hasPick?'got':''}">${hasPick?'✔ Answer chosen. Tap another to change it. 已選答案；點別的可更改。':'👆 Dispatcher: tap the answer the group agrees on (above). 派案員：點選全組同意的答案（在上方）。'}</div>`;
     btn=`<button class="btn gold" id="stepNext" ${hasPick?'':'disabled'}>✔ Group agreed → Approve 全組同意 → 督導核可</button>`; }
   if(step===4){ extra=`<br><span class="small">Changed your mind? Tap a different answer above. 想改答案就點上方別的選項。</span>`;
-    btn=`<button class="btn ok" id="ok" ${hasPick?'':'disabled'}>🧐 Supervisor approves 督導核可</button>`; }
+    btn=`<div class="stamprow"><button class="stampbtn ok" id="ok" data-stamp="1" ${hasPick?'':'disabled'}>APPROVED 核准</button><button class="stampbtn no" id="rej" ${hasPick?'':'disabled'}>REJECTED 駁回</button></div>`;
+    extra+=`<br><span class="small">🧐 Supervisor: slam a stamp! REJECTED sends the group back to Prove. 督導：蓋章！按「駁回」全組回到「證」重找證據。</span>`; }
   return `<div class="steppanel"><div class="sp-head">${s.icon} <b>Step ${step+1} · ${s.en} ${s.zh}</b> · <span class="sw">${s.who[0]} ${s.who[1]}</span></div>
     <div>${esc(s.do[0])}<br><span class="zh">${esc(s.do[1])}</span>${extra}</div></div>
     ${btn?`<div class="row">${btn}</div>`:''}
@@ -495,12 +624,13 @@ function stratTurnHTML(R, c, head, nextLbl, scored){
   ${!R.done ? stepPanel(R.step,'strat',6,R.pick!==null)
   : `<div class="fb ${R.pick===c.s?'ok':'bad'}"><b class="big">${R.pick===c.s?`✔ Correct! 答對了！${scored?' +100':''}`:'✘ Not this time 這次沒答對'}</b><br>
       This is <b>Strategy ${st.n} · ${st.zh}</b> (${esc(st.en)}). It is on <b>Expert Sheet ${st.n}</b>.<br><span class="zh">這是策略${st.n}「${st.zh}」，在專家卡${st.n}上。${st.fullZh}</span></div>
+    ${scored && R.pick!==c.s ? wheelHTML() : ''}
     ${nextLbl?`<div class="row"><button class="btn gold" id="next">${nextLbl}</button></div>`:`<div class="center small">Practice done. Press <b>Finish tutorial</b> below. 練習完成，請按下方「完成教學」。</div>`}`}`;
 }
 function bindStratTurn(R, c, onApprove, onNext){
   if(!R.done && R.step>=3) app.querySelectorAll('.sbtn').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.s; save(); render(); });
   const sn=$('#stepNext'); if(sn) sn.onclick=()=>{ R.step++; save(); render(); };
-  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; save(); render(); };
+  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; if(isReal()) FX().back++; save(); render(); };
   const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; onApprove(R.pick===c.s); save(); render(); };
   const nx=$('#next'); if(nx && onNext) nx.onclick=onNext;
 }
@@ -511,12 +641,12 @@ SCREENS.r1 = ()=>{
   const pct=Math.round(R.i/R.order.length*100);
   return stratTurnHTML(R, c,
     `<div class="prog"><i style="width:${pct}%"></i></div>
-     <div class="small">${ROUNDS[0].en} · Card ${R.i+1} / ${R.order.length} · ✔ ${R.right}</div>`,
+     <div class="small">${ROUNDS[0].en} · Card ${R.i+1} / ${R.order.length} · ✔ ${R.right}${streakChip()}</div>`,
     (R.i+1>=R.order.length||S.timeUp)?'Finish round 結束本回合':'Next card 下一張 →', true);
 };
 bind.r1 = ()=>{
   const R=S.r1, c=CLUES[R.order[R.i]];
-  bindStratTurn(R, c, ok=>{ R.n++; if(ok){R.score+=100;R.right++;sOk();} else sBad(); },
+  bindStratTurn(R, c, ok=>{ R.n++; if(ok){R.score+=100;R.right++;} hit(ok); },
     ()=>{ if(R.i+1>=R.order.length||S.timeUp){ endRound(); } else { R.i++; R.pick=null; R.done=false; R.step=0; save(); render(); window.scrollTo(0,0);} });
 };
 
@@ -543,7 +673,7 @@ SCREENS.r2 = ()=>{
   const pct=Math.round((R.ci*3+R.qi)/(R.order.length*3)*100);
   return `
   <div class="prog"><i style="width:${pct}%"></i></div>
-  <div class="small">${ROUNDS[1].en} · Report ${R.ci+1} / ${R.order.length} · Question ${R.qi+1} / 3 · ✔ ${R.right}</div>
+  <div class="small">${ROUNDS[1].en} · Report ${R.ci+1} / ${R.order.length} · Question ${R.qi+1} / 3 · ✔ ${R.right}${streakChip()}</div>
   <div class="card">
     <span class="tag">📨 ${R.qi===0?'New report 新通報':'Report 通報'} · ${esc(ca.title[0])} ${esc(ca.title[1])}</span>
     <p class="lead" style="margin-top:8px">${esc(ca.text[0])}</p>
@@ -555,6 +685,7 @@ SCREENS.r2 = ()=>{
   ${!R.done ? stepPanel(R.step,'opt',q.o.length,R.pick!==null)
   : `<div class="fb ${R.pick===q.a?'ok':'bad'}"><b class="big">${R.pick===q.a?'✔ Correct! 答對了！ +100':'✘ Not quite 差一點'}</b><br>${esc(q.why[0])}<br><span class="zh">${esc(q.why[1])}</span>
       ${q.src?`<div class="small" style="margin-top:6px">📄 Where it is 證據在哪：${esc(q.src)}</div>`:''}</div>
+    ${R.pick!==q.a ? wheelHTML() : ''}
     <div class="row"><button class="btn gold" id="next">${nextLabel2()}</button></div>`}`;
 };
 function nextLabel2(){
@@ -566,8 +697,8 @@ bind.r2 = ()=>{
   const R=S.r2, q=CASES[R.order[R.ci]].qs[R.qi];
   if(!R.done && R.step>=3) app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.o; save(); render(); });
   const sn=$('#stepNext'); if(sn) sn.onclick=()=>{ R.step++; save(); render(); };
-  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; save(); render(); };
-  const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; R.n++; if(R.pick===q.a){R.score+=100;R.right++;sOk();} else sBad(); save(); render(); };
+  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; FX().back++; save(); render(); };
+  const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; R.n++; if(R.pick===q.a){R.score+=100;R.right++;} hit(R.pick===q.a); save(); render(); };
   const nx=$('#next'); if(nx) nx.onclick=()=>{
     if(R.qi<2){ R.qi++; }
     else if(R.ci+1>=R.order.length || S.timeUp){ endRound(); return; }
@@ -592,7 +723,7 @@ SCREENS.r3a = ()=>{
 bind.r3a = ()=>{
   const R=S.r3a, q=MCQ[R.order[R.i]];
   const finish = pick=>{ clearInterval(tick); R.done=true; R.pick=pick; R.last=0;
-    if(pick===q.a){ R.last=100+R.left*5; R.score+=R.last; R.right++; sOk(); } else sBad(); save(); render(); };
+    if(pick===q.a){ R.last=100+R.left*5; R.score+=R.last; R.right++; FX().maxLeft=Math.max(FX().maxLeft,R.left); } hit(pick===q.a); save(); render(); };
   if(!R.done){
     app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>finish(+b.dataset.o));
     tick=setInterval(()=>{ R.left--; const ring=$('#ring'); if(ring){ ring.textContent=R.left; ring.classList.toggle('low',R.left<=5);}
@@ -692,12 +823,32 @@ SCREENS.final = ()=>`
     <tr><td>Round 3A · Lightning 快問快答 (${S.r3a.right}/${S.r3a.order.length})</td><td>${S.r3a.score}</td></tr>
     <tr><td>Round 3B · Essay builder 申論組裝</td><td>${S.r3b.score}</td></tr>
   </table></div>
+  <div class="card"><h3 class="center">🏆 Your awards 你們的獎項</h3>
+    <p class="center small" style="margin:4px 0 10px">Read them out loud to the class! 大聲唸給全班聽！</p>
+    <div class="awards">${awards().map((a,k)=>`<div class="award" style="animation-delay:${k*.25}s"><div class="ai">${a[0]}</div><div class="an">${a[1]}<br><span class="zh">${a[2]}</span></div><div class="ad">${a[3]}</div></div>`).join('')}</div></div>
   <div class="card lead"><h3>Talk about it 討論</h3>
     1. Which strategy did your group mix up most? Why? <span class="zh">你們最常搞混哪一個策略？為什麼？</span><br>
     2. Which new 2.0 group matters most in Nantou? <span class="zh">在南投，哪一個2.0新增族群最需要被接住？</span><br>
     3. Where could a family still fall through the net? <span class="zh">家庭還可能從網子的哪裡漏掉？</span></div>
   <div class="row"><button class="btn ghost" id="again">↺ New game 新遊戲</button></div>`;
-bind.final = ()=>{ $('#again').onclick=()=>{ if(confirm('Start a new game? 要開始新遊戲嗎？')){ clearSave(); S=fresh(); go('setup'); } }; };
+function awards(){
+  const fx=FX(), out=[];
+  const n=S.r1.n+S.r2.n, right=S.r1.right+S.r2.right;
+  if(fx.rej>=3) out.push(['🧐','The Supervisor Who Trusted No One','誰都不信的督導',`Slammed REJECTED ${fx.rej} times. 蓋了${fx.rej}次駁回章。`]);
+  else if(fx.rej>=1) out.push(['😅','Most Overruled Dispatcher','最常被駁回的派案員',`The supervisor said NO ${fx.rej} time${fx.rej>1?'s':''}. 被督導駁回${fx.rej}次。`]);
+  else if(fx.appr>=5) out.push(['🟩','Rubber Stamp Supervisor','橡皮圖章督導','Approved every single answer. Brave. 每一題都核准，好勇敢。']);
+  if(fx.best>=5) out.push(['🔥','Unstoppable Net','無敵安全網',`${fx.best} right in a row. 連續答對${fx.best}題。`]);
+  else if(fx.best>=3) out.push(['🧶','Tightly Woven','網子編得很密',`${fx.best} right in a row. 連續答對${fx.best}題。`]);
+  if(fx.maxLeft>=12) out.push(['⚡','Fastest Fingers','最快手指',`Got one right with ${fx.maxLeft} seconds still on the clock. 還剩${fx.maxLeft}秒就答對。`]);
+  if(n>=6 && right/n>=.85) out.push(['🎯','Sharpshooters','神射手',`${right} of ${n} dispatch answers right. 派案答對${right}/${n}。`]);
+  if(fx.wrong>=4) out.push(['🎺','Sad Trombone Orchestra','悲傷長號樂團',`Played the sad trombone ${fx.wrong} times. 演奏了${fx.wrong}次悲傷長號。`]);
+  if(fx.spins>=3) out.push(['🎡','Penalty Wheel Regulars','懲罰輪盤常客',`Spun the wheel ${fx.spins} times. 轉了${fx.spins}次輪盤。`]);
+  if(fx.back>=4) out.push(['⏪','Time Travelers','時光旅人',`Went back a step ${fx.back} times. 回上一步${fx.back}次。`]);
+  if(S.r3b.said===true) out.push(['🎤','Out Loud and Proud','勇敢開口獎','All 8 people said the answer out loud. 八個人都開口說了答案。']);
+  if(out.length<2) out.push(['🤝','Team Spirit','團隊精神獎','You made it through the whole shift together. 一起撐完整個班。']);
+  return out.slice(0,5);
+}
+bind.final = ()=>{ fanfare(); setTimeout(sCheer,600); confetti(); $('#again').onclick=()=>{ if(confirm('Start a new game? 要開始新遊戲嗎？')){ clearSave(); S=fresh(); go('setup'); } }; };
 
 /* ---------- facts ---------- */
 SCREENS.facts = ()=>`
