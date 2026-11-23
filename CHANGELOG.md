@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-23 (Safety Net Dispatch, handout = role)
+- Roles are now set by the handouts, not by names. Each person takes one handout (Dispatcher Card, Supervisor Card or Expert Sheet 1–6), writes their name on it, and that is their role. Between rounds the game says "Swap handouts": everyone passes their handout to the person on their left, and the dispatcher passes the tablet too.
+- The game no longer asks for 8 names (only the group number and an optional team name). The roles screen shows the 8 roles with black-and-white avatars (`avatars.js`), the same ones printed on the handouts.
+- Essay builder: callers go clockwise starting with the person on the dispatcher's left.
+- Handouts (`sheets.html`, 9 A4 pages per group): a new Roles page; "How a turn works" is now the Dispatcher Card; every handout has the role's avatar and name lines for Tutorial + Round 1, Round 2 and Round 3.
+
 ## 2026-11-23 (Safety Net Dispatch, clearer tutorial)
 - New order: names → roles (hand out the sheets) → tutorial → "Tutorial complete" → the real game.
 - The tutorial is one sequence of 11 slides: 10 concept slides plus the practice turn as the last slide. Numbered dots at the top jump to any slide at any time; Back and Next on every slide; "Slide 4 of 11 · 7 left" always shown.

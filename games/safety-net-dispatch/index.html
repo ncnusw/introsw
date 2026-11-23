@@ -149,6 +149,8 @@ table.bd td:last-child{text-align:right;font-weight:800}
 .roundsline{margin-top:14px;background:#faf8f3;border-radius:12px;padding:10px;font-weight:700}
 .conf{position:fixed;top:-12px;width:10px;height:16px;z-index:50;border-radius:2px;animation:fall 2.2s ease-in forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
+.avs{width:64px;flex:0 0 64px}
+.swap.big{font-size:20px;line-height:1.5}
 #menu{position:fixed;inset:0;background:rgba(10,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
 #menu .card{max-width:420px;width:100%;display:flex;flex-direction:column;gap:10px}
 </style>
@@ -179,12 +181,13 @@ table.bd td:last-child{text-align:right;font-weight:800}
 </div></div>
 
 <script src="data.js"></script>
+<script src="avatars.js"></script>
 <script>
 'use strict';
 /* ---------- config ---------- */
 const ROUND_MIN = {r1:7, r2:10, r3b:7};   // minutes per timed round
 const MCQ_SEC = 20, MCQ_COUNT = 6;
-const SAVE_KEY = 'snd-save-v3';
+const SAVE_KEY = 'snd-save-v4';
 const ROUNDS = [
   {key:'r1', en:'Round 1 · Who handles this?', zh:'第一回合 · 這是誰的業務？'},
   {key:'r2', en:'Round 2 · Dispatch', zh:'第二回合 · 派案'},
@@ -202,7 +205,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&
 const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 
 function fresh(){
-  return { screen:'setup', group:null, team:'', names:Array.from({length:8},(_,i)=>`Player ${i+1}`),
+  return { screen:'setup', group:null, team:'', 
     round:0, endAt:null, timeUp:false,
     r1:{order:shuffle(CLUES.map((_,i)=>i)), i:0, step:0, pick:null, done:false, score:0, right:0, n:0},
     r2:{ci:0, qi:0, step:0, pick:null, done:false, score:0, right:0, n:0, order:shuffle([0,1,2,3,4,5,6].slice(0,2)).concat(shuffle([2,3,4,5,6]))},
@@ -214,25 +217,6 @@ function fresh(){
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
 function load(){ try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)); return s && s.screen ? s : null; }catch(e){ return null; } }
 function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
-
-/* ---------- roles ---------- */
-// Round r (0-2): dispatcher = player 2r, supervisor = player 2r+1. Sheets pass to the previous holders.
-function holders(r){
-  const h = {1:2,2:3,3:4,4:5,5:6,6:7};       // round 0: players 3-8 hold sheets 1-6 (0-based index)
-  for(let k=1;k<=r;k++){
-    const d=2*k, s=2*k+1;                      // new dispatcher & supervisor
-    const pd=2*(k-1), ps=2*(k-1)+1;            // previous dispatcher & supervisor
-    for(const n in h){ if(h[n]===d) h[n]=pd; else if(h[n]===s) h[n]=ps; }
-  }
-  return h;
-}
-function swaps(r){
-  if(r===0) return [];
-  const before=holders(r-1), after=holders(r), out=[];
-  for(const n in after) if(before[n]!==after[n]) out.push([+n, before[n], after[n]]);
-  return out;
-}
-const nm = i => esc(S.names[i] || `Player ${i+1}`);
 
 /* ---------- sound ---------- */
 let actx=null;
@@ -323,34 +307,27 @@ SCREENS.setup = ()=>`
     <h3 style="margin-top:14px">Team name (optional) 隊名（可不填）</h3>
     <input type="text" id="team" maxlength="24" value="${esc(S.team)}" placeholder="e.g. Puli Net 埔里網">
   </div>
-  <div class="card">
-    <h3>Your 8 names 八位成員</h3>
-    <p class="small">Sit in this order. Roles rotate each round, so everyone holds the tablet once. 照這個順序坐；每回合輪換角色。</p>
-    <div class="grid2" style="margin-top:8px">${S.names.map((n,i)=>`<label><span class="small">${i+1}.</span> <input type="text" data-n="${i}" maxlength="16" value="${esc(n)}"></label>`).join('')}</div>
-  </div>
   <div class="row"><button class="btn gold" id="go" ${S.group?'':'disabled'}>Next: roles 下一步：分配角色</button></div>`;
 bind.setup = ()=>{
   app.querySelectorAll('.gbtn').forEach(b=>b.onclick=()=>{ S.group=+b.dataset.g; save(); render(); });
   $('#team').oninput=e=>{ S.team=e.target.value; save(); };
-  app.querySelectorAll('[data-n]').forEach(inp=>inp.oninput=e=>{ S.names[+inp.dataset.n]=e.target.value.trim()||`Player ${+inp.dataset.n+1}`; save(); });
   $('#go').onclick=()=>{ S.round=0; go('roles'); };
 };
 
-/* ---------- roles ---------- */
+/* ---------- roles: one handout = one role ---------- */
 SCREENS.roles = ()=>{
-  const r=S.round, h=holders(r), sw=swaps(r);
+  const r=S.round;
   return `
   <span class="tag">${ROUNDS[r].en} · ${ROUNDS[r].zh}</span>
-  <h2>${r===0?'Your roles 你們的角色':'New roles 換角色'}</h2>
-  ${sw.length?`<div class="swap">🔄 Pass the sheets 交換卡片：${sw.map(([n,from,to])=>`<br>• ${nm(from)} gives <b>Expert Sheet ${n}</b> to ${nm(to)} ${nm(from)} 把專家卡${n}交給 ${nm(to)}`).join('')}
-    <br>• Pass the tablet to ${nm(2*r)}. 平板交給 ${nm(2*r)}。</div>`:''}
-  <div class="roles">
-    <div class="role"><div class="ic" style="background:var(--navy)">${ICON.disp}</div><div><div class="nm">${nm(2*r)}</div><div><b>Dispatcher 派案員</b></div><div class="small">Holds the tablet, reads aloud, taps. 拿平板、唸題目、按答案。</div></div></div>
-    <div class="role"><div class="ic" style="background:#555">${ICON.sup}</div><div><div class="nm">${nm(2*r+1)}</div><div><b>Supervisor 督導</b></div><div class="small">Holds the Supervisor Card. Asks "Why? Show me." before approving. 拿督導卡；按核可前先問「為什麼？證據在哪？」</div></div></div>
-    ${STRATS.map(s=>`<div class="role"><div class="ic" style="background:${s.color}">${s.n}</div><div><div class="nm">${nm(h[s.n])}</div><div><b>Expert ${s.n} 專家：${s.zh}</b></div><div class="small">${esc(s.en)}</div></div></div>`).join('')}
-  </div>
-  ${r===0?`<div class="card small center">Hand out the sheets now: Expert Sheets 1–6 as shown, the Supervisor Card, and the "How a turn works" page in the middle. 現在發卡：專家卡1–6、督導卡，「一題怎麼玩」放桌子中間。</div>`:''}
-  <div class="row"><button class="btn gold" id="go">Ready 準備好了</button></div>`;
+  <h2>${r===0?'Your handout is your role 拿到哪張卡，就是你的角色':'🔄 Swap handouts! 交換卡片！'}</h2>
+  ${r===0
+    ? `<div class="card lead">Each of the 8 people takes one handout and writes their name on it. 8個人每人拿一張卡，在卡上寫自己的名字。<br>
+       <span class="small">${esc(SWAP_RULE[0])} ${esc(SWAP_RULE[1])}</span></div>`
+    : `<div class="swap big">⬅️ Everyone: pass your handout to the person on your <b>LEFT</b>. The dispatcher passes the tablet too.<br>
+       每個人把手上的卡傳給<b>左邊</b>的人；派案員連平板一起傳。<br><span class="small">Write your name on your new handout. 在新拿到的卡上寫名字。</span></div>`}
+  <div class="roles">${ROLE_INFO.map(x=>`<div class="role"><div class="avs">${AVATARS[x.k]}</div><div><div class="nm">${x.en} ${x.zh}</div>
+    <div class="small"><b>${x.card[0]} ${x.card[1]}</b><br>${esc(x.do[0])} ${esc(x.do[1])}</div></div></div>`).join('')}</div>
+  <div class="row"><button class="btn gold" id="go">${r===0?'Everyone has a handout 大家都拿到卡了':'We swapped 換好了'}</button></div>`;
 };
 bind.roles = ()=>{ $('#go').onclick=()=>go(S.round===0?'tutask':['r1intro','r2intro','r3intro'][S.round]); };
 
@@ -639,7 +616,7 @@ bind.r3pick = ()=>{ app.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{
   S.r3b.tileOrder=shuffle(ESSAYS[S.r3b.essay].tiles.map((_,i)=>i));
   startClock(ROUND_MIN.r3b); go('r3b'); }); };
 
-function caller(){ return (2*S.round+1+(S.r3b.turn||0))%8; } // starts with the supervisor, goes around the circle
+function caller(){ return (S.r3b.turn||0)%8; } // 0 = person on the dispatcher's left, then clockwise
 function tileCls(i, sec){
   const t=ESSAYS[S.r3b.essay].tiles[i];
   if(t[1]===-1) return 'x';
@@ -651,7 +628,7 @@ SCREENS.r3b = ()=>{
   return `
   <span class="tag">Part B · Essay builder 申論組裝</span>
   <div class="prompt">📝 ${esc(E.q[0])}<br><span class="zh">${esc(E.q[1])}</span></div>
-  ${!R.done?`<div class="caller"><div>🎤 Now calling out 現在輪到：<b class="who">${nm(caller())}</b></div>
+  ${!R.done?`<div class="caller"><div>🎤 Now calling out 現在輪到：<b class="who">${caller()===0?'the person on the dispatcher\'s left 派案員左邊的人':`person ${caller()+1} (keep going clockwise) 第${caller()+1}位（繼續順時針）`}</b></div>
     <div class="small">Say one tile, which part it goes in, and one reason. Supervisor can say no. Dispatcher taps the tile, then the part. 說出一張卡、放哪一段、一個理由；督導可否決；派案員先點卡再點段落。</div>
     <div class="row" style="justify-content:flex-start;margin-top:6px"><button class="btn ghost" id="pass" style="min-height:40px;font-size:15px">Pass → next person 跳過，下一位</button></div></div>`:''}
   <div class="secs">${(E.secs||SECTIONS).map((s,si)=>`<div class="sec ${R.armed!==null&&!R.done?'armed':''}" data-sec="${si}"><h4>${si+1}. ${s[0]} · ${s[1]}</h4><div class="tiles">${
@@ -761,7 +738,7 @@ $('#mRestart').onclick=()=>{ menu.style.display='none'; if(confirm('Start over? 
 
 /* ---------- boot ---------- */
 S = null; render();
-window.__snd = { get S(){return S;}, set S(v){S=v;}, render, go, holders, swaps };
+window.__snd = { get S(){return S;}, set S(v){S=v;}, render, go };
 </script>
 </body>
 </html>

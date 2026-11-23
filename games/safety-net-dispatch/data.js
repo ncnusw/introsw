@@ -371,3 +371,15 @@ const TUTORIAL = [
     ],
     check:['Finish it: 以家庭為中心，以＿＿為基礎','完成句子：以家庭為中心，以＿＿為基礎'], ans:['社區 (community)','社區'] },
 ];
+
+/* ---------- Roles: one handout = one role ---------- */
+const ROLE_INFO = [
+  { k:'disp', en:'Dispatcher', zh:'派案員', card:['Dispatcher Card','派案員卡'],
+    do:['Holds the tablet and this card. Reads aloud and leads the five steps.','拿平板和這張卡；唸題目，帶大家走五步驟。'] },
+  { k:'sup', en:'Supervisor', zh:'督導', card:['Supervisor Card','督導卡'],
+    do:['Holds the Supervisor Card. Asks "Which line proves it?" then approves.','拿督導卡；問「哪一行可以證明？」再核可。'] },
+  ...STRATS.map(s=>({ k:s.n, en:`Expert ${s.n}`, zh:`專家${s.n}`, card:[`Expert Sheet ${s.n}`,`專家卡${s.n}`],
+    do:[`${s.en}: search your sheet, read your line aloud.`, `${s.zh}：找你的卡，唸出證據。`] })),
+];
+const SWAP_RULE = ['Between rounds, everyone passes their handout to the person on their LEFT. The dispatcher passes the tablet too. Your new handout = your new role.',
+                   '每回合之間，每個人把手上的卡傳給左邊的人；派案員連平板一起傳。拿到哪張卡，就是你的新角色。'];
