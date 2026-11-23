@@ -12,7 +12,7 @@ body{font-family:'Noto Sans TC','Noto Sans CJK TC','Microsoft JhengHei','PingFan
 .bar button{font:700 16px inherit;padding:8px 14px;border-radius:8px;border:0;cursor:pointer}
 .page{width:194mm;height:281mm;margin:10px auto;background:#fff;display:flex;flex-direction:column;page-break-after:always;break-after:page}
 .page:last-child{page-break-after:auto;break-after:auto}
-.card{flex:1;height:100%;padding:10mm 11mm;border:1.6pt solid #000;display:flex;flex-direction:column;gap:4mm;overflow:hidden;position:relative}
+.card{flex:1;height:100%;padding:8mm 10mm;border:1.6pt solid #000;display:flex;flex-direction:column;gap:2.8mm;overflow:hidden;position:relative}
 .cut{height:0;border-top:1pt dashed #000;position:relative;margin:0}
 .cut span{position:absolute;left:50%;top:-7pt;transform:translateX(-50%);background:#fff;font-size:8pt;padding:0 4pt}
 .head{display:flex;gap:4mm;align-items:center}
@@ -20,12 +20,12 @@ body{font-family:'Noto Sans TC','Noto Sans CJK TC','Microsoft JhengHei','PingFan
 .num.inv{background:#000;color:#fff}
 .t1{font-size:28pt;font-weight:900;line-height:1.1}
 .t2{font-size:14pt;font-weight:700}
-.full{font-size:13.5pt;border-left:3pt solid #000;padding-left:3mm;line-height:1.35}
+.full{font-size:12pt;border-left:3pt solid #000;padding-left:3mm;line-height:1.35}
 .lab{font-size:11pt;font-weight:900;letter-spacing:.5pt;text-transform:uppercase;border-bottom:.8pt solid #000;padding-bottom:.6mm}
-ol{padding-left:7mm;font-size:12.5pt;line-height:1.32}
-ol li{margin-bottom:2mm}
-ol li .zh{display:block;font-size:12pt;font-weight:700}
-.who{font-size:12.5pt;line-height:1.35}
+ol{padding-left:7mm;font-size:11.5pt;line-height:1.3}
+ol li{margin-bottom:1.6mm}
+ol li .zh{display:block;font-size:11pt;font-weight:700}
+.who{font-size:11.5pt;line-height:1.35}
 .keys{display:flex;flex-wrap:wrap;gap:1.6mm}
 .keys span{border:1.2pt solid #000;border-radius:2mm;padding:1mm 2.6mm;font-size:12pt;font-weight:700}
 .foot{position:absolute;right:8mm;bottom:5mm;font-size:9pt}
@@ -34,15 +34,25 @@ td{border:.8pt solid #000;padding:1.6mm 2.4mm;vertical-align:top}
 td:first-child{font-weight:900;width:28mm}
 .script{font-size:13pt;line-height:1.4}
 .script b{font-weight:900}
-  .sup table{font-size:10.5pt;line-height:1.28} .sup td{padding:1.1mm 2mm} .sup .script,.sup .who{font-size:11.5pt}
+  .sup table{font-size:9.6pt;line-height:1.25} .sup td{padding:.8mm 1.8mm} .sup .script,.sup .who{font-size:10.5pt}
+.job{border:2pt solid #000;border-radius:3mm;padding:2mm 3.5mm;font-size:10.5pt;line-height:1.4;background:#f2f2f2}
+.job b{font-weight:900}
+.turn{display:flex;flex-direction:column;gap:2.2mm}
+.turn .st{display:flex;gap:3.5mm;align-items:flex-start;border:1.6pt solid #000;border-radius:3mm;padding:2mm 3.5mm}
+.turn .n{width:13mm;height:13mm;border-radius:50%;background:#000;color:#fff;font:900 20pt/13mm sans-serif;text-align:center;flex:0 0 auto}
+.turn .h{font-size:14.5pt;font-weight:900}
+.turn .w{font-size:11pt;font-weight:700}
+.turn .d{font-size:11pt;line-height:1.3}
+.fing{display:grid;grid-template-columns:repeat(2,1fr);gap:3mm;font-size:11pt}
+.fing div{border:1.2pt solid #000;border-radius:2mm;padding:2mm 3mm}
 @media print{body{background:#fff}.bar{display:none}.page{margin:0;box-shadow:none}}
 </style>
 </head>
 <body>
 <div class="bar">
   <b>Printable sheets 列印用卡片</b>
-  <span>Each group of 8 needs one set: Expert Sheets 1–6 and one Supervisor Card (7 A4 pages). Black and white.
-  每組一套：專家卡1–6與督導卡（7張A4），黑白列印即可。</span>
+  <span>Each group of 8 needs one set: How a Turn Works, Expert Sheets 1–6 and one Supervisor Card (8 A4 pages). Black and white.
+  每組一套：一題怎麼玩、專家卡1–6與督導卡（8張A4），黑白列印即可。</span>
   <label>Sets 份數 <input id="sets" type="number" min="1" max="12" value="1" style="width:56px;font-size:16px"></label>
   <button onclick="print()">🖨 Print 列印</button>
 </div>
@@ -54,6 +64,8 @@ function expert(s){
   return `<div class="card">
     <div class="head"><div class="num">${s.n}</div>
       <div><div class="t1">Expert ${s.n} 專家卡 · ${s.zh}</div><div class="t2">Strategy ${s.n}: ${esc(s.en)}</div></div></div>
+    <div class="job"><b>Your job every turn 每一題你要做的：</b> 🔎 Search this sheet in silence → ✋ show your answer with fingers → 🗣 if a line here matches, read it aloud: "Sheet ${s.n}, line __ says…"<br>
+      安靜找這張卡 → 用手指比答案 → 有相符的一行就唸出來：「專家卡${s.n}第__行寫…」</div>
     <div class="full">${esc(s.fullEn)}<br><b>${esc(s.fullZh)}</b></div>
     <div class="lab">Who it helps 服務對象</div>
     <div class="who">${esc(s.who)}</div>
@@ -68,11 +80,10 @@ function supervisor(){
   return `<div class="card sup">
     <div class="head"><div class="num inv">?</div>
       <div><div class="t1">Supervisor Card 督導卡</div><div class="t2">You approve every answer. Your job is to ask "Why?" 每題都由你核可；你的工作是問「為什麼？」</div></div></div>
-    <div class="script">
-      <b>Before you approve 核可前：</b> "Which expert's sheet proves it? Read the line." 「哪位專家的卡可以證明？請唸出來。」<br>
-      <b>If two experts disagree 兩位專家意見不同：</b> each reads their line; the group votes. 各自唸證據，全組表決。<br>
-      <b>Essay round 申論回合：</b> no tile goes in until someone says why. 沒說出理由的卡不能放。
-    </div>
+    <div class="job"><b>Your job every turn 每一題你要做的：</b> 🔎 Search this card too (family types, clocks and facts are only here) → ✋ show your answer with fingers →
+      🧐 ask "Which line proves it?" → choose the answer with the best proof (or the majority) → tap <b>Supervisor approves</b>.<br>
+      也要找這張卡（三類家庭、時限、重點只在這裡）→ 比手指 → 問「哪一行可以證明？」→ 選證據最好（或多數）的答案 → 按「督導核可」。<br>
+      <b>Essay round 申論：</b> you may say no to any tile without a good reason. 沒有好理由的卡可以否決。</div>
     <div class="lab">Quick facts 計畫重點</div>
     <table>${FACTS.map(f=>`<tr><td>${esc(f[0])}</td><td><b>${esc(f[1])}</b><br>${esc(f[2])}</td></tr>`).join('')}</table>
     <div class="lab">Three family types 三類家庭</div>
@@ -84,9 +95,22 @@ function supervisor(){
     <div class="foot">Safety Net Dispatch 社安網派案中心</div>
   </div>`;
 }
+function turnPage(){
+  return `<div class="card turn">
+    <div class="head"><div class="num inv">↻</div><div><div class="t1">How a turn works 一題怎麼玩</div><div class="t2">Put this page in the middle of the table. 放在桌子中間。</div></div></div>
+    ${STEPS.map((st,k)=>`<div class="st"><div class="n">${k+1}</div><div><div class="h">${st.icon} ${st.en} ${st.zh}</div><div class="w">Who 誰：${st.who[0]} ${st.who[1]}</div>
+      <div class="d">${esc(st.do[0])}<br><b>${esc(st.do[1])}</b></div></div></div>`).join('')}
+    <div class="lab">Fingers 手指</div>
+    <div class="fing"><div><b>Round 1:</b> 1–6 fingers = Strategy 1–6<br>第一回合：比1–6＝策略1–6</div>
+      <div><b>Round 2 and Lightning:</b> 1–4 fingers = option 1–4 on screen<br>第二回合與快問快答：比1–4＝畫面上的選項1–4</div></div>
+    <div class="lab">Essay builder 申論組裝</div>
+    <div class="who">The dispatcher keeps the tablet. The screen shows whose turn it is. That person calls out one tile, which part it goes in, and one reason. The supervisor may say no. 派案員拿平板；畫面顯示輪到誰。那個人說出一張卡、放哪一段、一個理由；督導可以否決。</div>
+    <div class="foot">Safety Net Dispatch 社安網派案中心</div>
+  </div>`;
+}
 function build(){
   const n=Math.max(1,Math.min(12,+document.getElementById('sets').value||1));
-  const cards=[...STRATS.map(expert), supervisor()];
+  const cards=[turnPage(), ...STRATS.map(expert), supervisor()];
   let html='';
   for(let k=0;k<n;k++){
     for(const c of cards) html+=`<div class="page">${c}</div>`;

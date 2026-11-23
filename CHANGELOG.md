@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-23 (Safety Net Dispatch, tutorial and turn steps)
+- **Tutorial**: after the group types its names, a 10-slide tutorial (recommended, can be skipped) covers what the game needs: what a safety net is, the core value, three kinds of families, a report's journey, who's who, levels of prevention, the four new groups, the six strategies (two slides), and how to answer an exam question. Each slide shows how many are left, has a quick check with a hidden answer, and moves on only when the group presses "Everyone gets it".
+- **Five-step turn**: every Round 1 and Round 2 question is now played as Read → Search → Show → Prove → Approve, shown as a strip on screen with who does what. No countdown; the dispatcher moves to the next step. Everyone shows an answer with fingers at the same time; answers can only be tapped in the Prove step.
+- **Practice turn** (not scored) after the roles screen, before Round 1.
+- Options are numbered 1–4 (for fingers) instead of A–D. Round 2 feedback says where the answer is on the sheets.
+- Lightning: a red "SHOW!" cue at 10 seconds left; the dispatcher taps the majority.
+- Essay builder: the dispatcher keeps the tablet; the screen shows whose turn it is to call out a tile (with a Pass button). The second essay question has its own section names.
+- Sheets: a new "How a turn works" page (8 A4 pages per group now), a "Your job every turn" box on every sheet, and new lines so every Round 2 answer can be found on paper (家防中心 on Expert Sheet 2, 社福中心 on Expert Sheet 1, mental health center home visits on Expert Sheet 3, funding and prevention levels on the Supervisor Card).
+
 ## 2026-11-23 (Safety Net Dispatch)
 - New game: **Safety Net Dispatch 社安網派案中心** (`games/safety-net-dispatch/`), on Social Safety Net 2.0 (強化社會安全網計畫2.0, 2026–2030). Groups of 8, one tablet per group, bilingual, about 30 minutes.
 - Roles: a dispatcher (tablet), a supervisor (approves every answer after asking "why?") and six experts, each holding a printed sheet for one strategy. Dispatcher and supervisor rotate each round and the screen says which sheets change hands.
