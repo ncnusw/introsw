@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-23 (Safety Net Dispatch, clearer tutorial)
+- New order: names → roles (hand out the sheets) → tutorial → "Tutorial complete" → the real game.
+- The tutorial is one sequence of 11 slides: 10 concept slides plus the practice turn as the last slide. Numbered dots at the top jump to any slide at any time; Back and Next on every slide; "Slide 4 of 11 · 7 left" always shown.
+- "Tutorial complete! 教學結束！" screen with a short fanfare and confetti, then "Start the real game". Round intro screens now carry a "REAL GAME 正式比賽 · Round 1 of 3" banner and a "Round 1: …" title. The score stays hidden until the real game starts.
+- Prove step: tapping an answer no longer jumps ahead. A "Group agreed → Approve" button appears (greyed out until an answer is chosen), with a hint pointing to the answers. Every step after the first has "Back a step".
+
 ## 2026-11-23 (Safety Net Dispatch, tutorial and turn steps)
 - **Tutorial**: after the group types its names, a 10-slide tutorial (recommended, can be skipped) covers what the game needs: what a safety net is, the core value, three kinds of families, a report's journey, who's who, levels of prevention, the four new groups, the six strategies (two slides), and how to answer an exam question. Each slide shows how many are left, has a quick check with a hidden answer, and moves on only when the group presses "Everyone gets it".
 - **Five-step turn**: every Round 1 and Round 2 question is now played as Read → Search → Show → Prove → Approve, shown as a strip on screen with who does what. No countdown; the dispatcher moves to the next step. Everyone shows an answer with fingers at the same time; answers can only be tapped in the Prove step.

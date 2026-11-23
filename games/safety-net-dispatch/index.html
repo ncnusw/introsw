@@ -135,6 +135,20 @@ table.bd td:last-child{text-align:right;font-weight:800}
 @keyframes pulse{50%{transform:scale(1.02)}}
 .caller{background:#fff3cd;border:2px solid #e0b84a;border-radius:14px;padding:10px 14px;font-size:18px}
 .caller .who{font-size:22px}
+.tutnav{display:flex;flex-direction:column;gap:8px}
+.tag.last{background:var(--gold);color:var(--navy)}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.dot{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:#fff;font:800 16px 'Baloo 2',sans-serif;color:var(--muted);cursor:pointer}
+.dot.seen{background:#e7f6ed;border-color:#9fd4b4;color:#15683c}
+.dot.on{background:var(--navy);border-color:var(--navy);color:#fff;transform:scale(1.12)}
+.tutfoot{position:sticky;bottom:0;background:linear-gradient(rgba(244,241,234,0),var(--bg) 30%);padding-top:14px}
+.pickhint{margin-top:8px;border-radius:10px;padding:8px 10px;font-weight:800;background:#fff3cd;border:2px dashed #e0b84a;animation:pulse 1.4s infinite}
+.pickhint.got{background:#e7f6ed;border:2px solid var(--ok);animation:none}
+.realbar{background:var(--navy);color:#fff;border-radius:14px;padding:12px 16px;text-align:center;font:800 clamp(17px,2.6vw,22px) 'Noto Sans TC',sans-serif;letter-spacing:.5px;box-shadow:0 4px 0 #0b1426}
+.donecard{padding:28px 18px;border-color:var(--gold);border-width:3px}
+.roundsline{margin-top:14px;background:#faf8f3;border-radius:12px;padding:10px;font-weight:700}
+.conf{position:fixed;top:-12px;width:10px;height:16px;z-index:50;border-radius:2px;animation:fall 2.2s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
 #menu{position:fixed;inset:0;background:rgba(10,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
 #menu .card{max-width:420px;width:100%;display:flex;flex-direction:column;gap:10px}
 </style>
@@ -170,7 +184,7 @@ table.bd td:last-child{text-align:right;font-weight:800}
 /* ---------- config ---------- */
 const ROUND_MIN = {r1:7, r2:10, r3b:7};   // minutes per timed round
 const MCQ_SEC = 20, MCQ_COUNT = 6;
-const SAVE_KEY = 'snd-save-v2';
+const SAVE_KEY = 'snd-save-v3';
 const ROUNDS = [
   {key:'r1', en:'Round 1 · Who handles this?', zh:'第一回合 · 這是誰的業務？'},
   {key:'r2', en:'Round 2 · Dispatch', zh:'第二回合 · 派案'},
@@ -243,7 +257,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==
 function totalScore(){ return S.r1.score+S.r2.score+S.r3a.score+S.r3b.score; }
 function bar(){
   const sp=$('#scorePill'), tp=$('#timer');
-  if(!S || S.screen==='title' || S.screen==='setup'){ sp.style.display='none'; tp.style.display='none'; return; }
+  if(!S || ['title','setup','tutask','tut','tutdone'].includes(S.screen) || (S.screen==='roles'&&S.round===0)){ sp.style.display='none'; tp.style.display='none'; return; }
   sp.style.display=''; sp.textContent=`${S.group?('Group '+S.group+' · '):''}${totalScore()} pts`;
   if(S.endAt){
     const left=Math.max(0,Math.round((S.endAt-Date.now())/1000));
@@ -319,7 +333,7 @@ bind.setup = ()=>{
   app.querySelectorAll('.gbtn').forEach(b=>b.onclick=()=>{ S.group=+b.dataset.g; save(); render(); });
   $('#team').oninput=e=>{ S.team=e.target.value; save(); };
   app.querySelectorAll('[data-n]').forEach(inp=>inp.oninput=e=>{ S.names[+inp.dataset.n]=e.target.value.trim()||`Player ${+inp.dataset.n+1}`; save(); });
-  $('#go').onclick=()=>go('tutask');
+  $('#go').onclick=()=>{ S.round=0; go('roles'); };
 };
 
 /* ---------- roles ---------- */
@@ -335,27 +349,55 @@ SCREENS.roles = ()=>{
     <div class="role"><div class="ic" style="background:#555">${ICON.sup}</div><div><div class="nm">${nm(2*r+1)}</div><div><b>Supervisor 督導</b></div><div class="small">Holds the Supervisor Card. Asks "Why? Show me." before approving. 拿督導卡；按核可前先問「為什麼？證據在哪？」</div></div></div>
     ${STRATS.map(s=>`<div class="role"><div class="ic" style="background:${s.color}">${s.n}</div><div><div class="nm">${nm(h[s.n])}</div><div><b>Expert ${s.n} 專家：${s.zh}</b></div><div class="small">${esc(s.en)}</div></div></div>`).join('')}
   </div>
+  ${r===0?`<div class="card small center">Hand out the sheets now: Expert Sheets 1–6 as shown, the Supervisor Card, and the "How a turn works" page in the middle. 現在發卡：專家卡1–6、督導卡，「一題怎麼玩」放桌子中間。</div>`:''}
   <div class="row"><button class="btn gold" id="go">Ready 準備好了</button></div>`;
 };
-bind.roles = ()=>{ $('#go').onclick=()=>{ if(S.round===0){ S.prac={step:0,pick:null,done:false}; go('practice'); } else go(['r1intro','r2intro','r3intro'][S.round]); }; };
+bind.roles = ()=>{ $('#go').onclick=()=>go(S.round===0?'tutask':['r1intro','r2intro','r3intro'][S.round]); };
 
-/* ---------- tutorial ---------- */
+/* ---------- tutorial (10 concept slides + 1 practice turn) ---------- */
+const TUT_N = TUTORIAL.length + 1;   // last slide is the practice turn
 SCREENS.tutask = ()=>`
-  <h2 class="center">Before you start 開始之前</h2>
-  <div class="card lead center">A 10-slide tutorial explains everything you need for the game, in about 6 minutes. The dispatcher reads each slide aloud; press Next only when everyone understands.<br>
-  <span class="zh">10張投影片的教學，約6分鐘，說明遊戲需要的所有概念。派案員唸出每一張；全組都懂了才按下一張。</span></div>
+  <h2 class="center">Tutorial first? 先看教學嗎？</h2>
+  <div class="card lead center">${TUT_N} slides, about 7 minutes: ${TUTORIAL.length} short slides on the plan, then one practice turn. The dispatcher reads each slide aloud; move on when everyone understands. You can jump to any slide at any time.<br>
+  <span class="zh">共${TUT_N}張、約7分鐘：${TUTORIAL.length}張計畫重點，加上一次練習回合。派案員唸出每一張；大家都懂了再往下。隨時可以跳到任何一張。</span></div>
   <div class="row"><button class="btn gold" id="tutGo">📖 Start tutorial (recommended) 開始教學（建議）</button></div>
-  <div class="row"><button class="btn ghost" id="tutSkip" style="min-height:44px;font-size:15px">Skip 略過</button></div>`;
+  <div class="row"><button class="btn ghost" id="tutSkip" style="min-height:44px;font-size:15px">Skip, go to the real game 略過，直接比賽</button></div>`;
 bind.tutask = ()=>{
-  $('#tutGo').onclick=()=>{ S.tut=0; S.tutShow=false; go('tut'); };
-  $('#tutSkip').onclick=()=>{ if(confirm('Skip the tutorial? It is recommended. 確定略過教學？建議先看。')){ S.round=0; go('roles'); } };
+  $('#tutGo').onclick=()=>{ S.tut=0; S.tutShow=false; S.prac={step:0,pick:null,done:false}; go('tut'); };
+  $('#tutSkip').onclick=()=>{ if(confirm('Skip the tutorial? It is recommended. 確定略過教學？建議先看。')) go('r1intro'); };
 };
-SCREENS.tut = ()=>{
-  const i=S.tut, t=TUTORIAL[i], n=TUTORIAL.length, left=n-i-1;
+function tutNav(i){
+  const left=TUT_N-i-1;
   return `
-  <div class="prog"><i style="width:${Math.round((i+1)/n*100)}%"></i></div>
-  <div class="row" style="justify-content:space-between"><span class="tag">📖 Tutorial 教學 · Slide ${i+1} of ${n}</span>
-    <span class="tag">${left? `${left} left 還剩${left}張`:'Last slide 最後一張'}</span></div>
+  <div class="tutnav">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <span class="tag">📖 Tutorial 教學 · Slide ${i+1} of ${TUT_N}</span>
+      <span class="tag ${left?'':'last'}">${left?`${left} left 還剩${left}張`:'Last slide 最後一張'}</span>
+    </div>
+    <div class="dots">${Array.from({length:TUT_N},(_,k)=>`<button class="dot ${k===i?'on':''} ${k<i?'seen':''}" data-k="${k}" aria-label="Slide ${k+1}">${k===TUT_N-1?'🧪':k+1}</button>`).join('')}</div>
+  </div>`;
+}
+function tutFoot(i){
+  const last=i===TUT_N-1;
+  const nextLbl = last ? '✔ Finish tutorial 完成教學'
+    : (i===TUT_N-2 ? '✔ Everyone gets it → Practice turn 大家都懂了 → 練習回合' : '✔ Everyone gets it → Next 大家都懂了，下一張');
+  return `<div class="row tutfoot">
+    <button class="btn ghost" id="tBack" ${i===0?'disabled':''}>← Back 上一張</button>
+    <button class="btn gold" id="tNext">${nextLbl}</button>
+  </div>
+  <div class="center"><button class="linkbtn" id="tSkip">Skip the rest, go to the real game 略過其餘，直接比賽</button></div>`;
+}
+SCREENS.tut = ()=>{
+  const i=S.tut;
+  if(i===TUT_N-1){
+    const P=S.prac;
+    return tutNav(i) + stratTurnHTML(P, PRACTICE,
+      `<div class="card center" style="background:#fff8e1;border-color:#e0b84a"><b>🧪 Practice turn 練習回合 · not scored 不計分</b><br>
+       <span class="small">Play one card with the five steps, exactly like the real game. Experts: hold your sheets. 用五步驟玩一張卡，和正式比賽一樣。專家請拿好卡片。</span></div>`,
+      null, false) + tutFoot(i);
+  }
+  const t=TUTORIAL[i];
+  return tutNav(i) + `
   <div class="card tutcard">
     <div class="tuticon">${t.icon}</div>
     <h2>${esc(t.title[0])}<br><span class="zh">${esc(t.title[1])}</span></h2>
@@ -366,19 +408,42 @@ SCREENS.tut = ()=>{
     <div class="small" style="margin-top:4px">Dispatcher: point to someone to answer. 派案員：指一個人回答。</div>
     ${S.tutShow?`<div class="fb ok" style="margin-top:8px">✔ ${esc(t.ans[0])}${t.ans[1]!==t.ans[0]?' · '+esc(t.ans[1]):''}</div>`
       :`<div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn ghost" id="showAns" style="min-height:44px">👀 Show answer 看答案</button></div>`}
-  </div>
-  <div class="row">
-    ${i>0?`<button class="btn ghost" id="tBack">← Back 上一張</button>`:''}
-    <button class="btn gold" id="tNext">${left?'✔ Everyone gets it → Next 大家都懂了，下一張':'✔ Everyone gets it → Roles 大家都懂了，分配角色'}</button>
-  </div>
-  <div class="center"><button class="linkbtn" id="tSkip">Skip the rest 略過其餘</button></div>`;
+  </div>` + tutFoot(i);
 };
+function tutGo(k){ S.tut=Math.max(0,Math.min(TUT_N-1,k)); S.tutShow=false; go('tut'); }
 bind.tut = ()=>{
+  app.querySelectorAll('.dot').forEach(d=>d.onclick=()=>tutGo(+d.dataset.k));
   const sa=$('#showAns'); if(sa) sa.onclick=()=>{ S.tutShow=true; save(); render(); };
-  const b=$('#tBack'); if(b) b.onclick=()=>{ S.tut--; S.tutShow=false; go('tut'); };
-  $('#tNext').onclick=()=>{ if(S.tut+1>=TUTORIAL.length){ S.round=0; go('roles'); } else { S.tut++; S.tutShow=false; go('tut'); } };
-  $('#tSkip').onclick=()=>{ if(confirm('Skip the rest of the tutorial? 略過其餘教學？')){ S.round=0; go('roles'); } };
+  $('#tBack').onclick=()=>tutGo(S.tut-1);
+  $('#tNext').onclick=()=>{ if(S.tut===TUT_N-1) go('tutdone'); else tutGo(S.tut+1); };
+  $('#tSkip').onclick=()=>{ if(confirm('Skip the rest of the tutorial and start the real game? 略過其餘教學，開始正式比賽？')) go('r1intro'); };
+  if(S.tut===TUT_N-1) bindStratTurn(S.prac, PRACTICE, ok=>{ ok?sOk():sBad(); }, null);
 };
+
+/* ---------- tutorial complete ---------- */
+SCREENS.tutdone = ()=>`
+  <div class="card center donecard">
+    <div class="tuticon">🎉</div>
+    <h1>Tutorial complete!</h1>
+    <h2 class="zh" style="text-align:center">教學結束！</h2>
+    <p class="lead" style="margin-top:12px">Now the <b>real game</b> begins. From here the clock runs and every point counts.<br>
+    <span class="zh">接下來是<b>正式比賽</b>：開始計時，每一分都算數。</span></p>
+    <div class="roundsline">🏁 Round 1 Who handles this? · Round 2 Dispatch · Round 3 Exam desk<br><span class="zh">第一回合 這是誰的業務？· 第二回合 派案 · 第三回合 考場</span></div>
+  </div>
+  <div class="row"><button class="btn gold" id="go">▶ Start the real game 開始正式比賽</button></div>
+  <div class="center"><button class="linkbtn" id="back">← Back to the tutorial 回到教學</button></div>`;
+bind.tutdone = ()=>{
+  fanfare(); confetti();
+  $('#go').onclick=()=>go('r1intro');
+  $('#back').onclick=()=>go('tut');
+};
+function fanfare(){ [523,659,784,1047].forEach((f,k)=>setTimeout(()=>beep(f,k===3?.35:.14,'triangle',.18),k*130)); }
+function confetti(){
+  const cols=['#e8833a','#d64545','#3a8fd6','#2f9e6e','#8e5bd6','#c79a16'];
+  for(let k=0;k<40;k++){ const c=document.createElement('i'); c.className='conf';
+    c.style.left=Math.random()*100+'vw'; c.style.background=cols[k%6]; c.style.animationDelay=(Math.random()*.6)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),2600); }
+}
 
 /* ---------- the five-step turn ---------- */
 function stepStrip(step){
@@ -396,19 +461,21 @@ function stepPanel(step, kind, nOpt, hasPick){
       ? 'Fingers = strategy number: ☝ 1 · ✌ 2 · 3 · 4 · 🖐 5 · 🖐+☝ 6 &nbsp; 手指數＝策略編號'
       : `Fingers = option number 1–${nOpt} &nbsp; 手指數＝選項編號 1–${nOpt}`}</div>`;
     btn=`<button class="btn gold" id="stepNext">Everyone showed → Prove 大家比完了</button>`; }
-  if(step===3){ extra=`<br><b>Dispatcher: when the group agrees, tap that answer above. 派案員：全組有共識後，點上面的答案。</b>`; }
-  if(step===4){ extra=`<br><span class="small">Changed your mind? Tap a different answer. 想改答案就點別的選項。</span>`;
+  if(step===3){ extra=`<div class="pickhint ${hasPick?'got':''}">${hasPick?'✔ Answer chosen. Tap another to change it. 已選答案；點別的可更改。':'👆 Dispatcher: tap the answer the group agrees on (above). 派案員：點選全組同意的答案（在上方）。'}</div>`;
+    btn=`<button class="btn gold" id="stepNext" ${hasPick?'':'disabled'}>✔ Group agreed → Approve 全組同意 → 督導核可</button>`; }
+  if(step===4){ extra=`<br><span class="small">Changed your mind? Tap a different answer above. 想改答案就點上方別的選項。</span>`;
     btn=`<button class="btn ok" id="ok" ${hasPick?'':'disabled'}>🧐 Supervisor approves 督導核可</button>`; }
   return `<div class="steppanel"><div class="sp-head">${s.icon} <b>Step ${step+1} · ${s.en} ${s.zh}</b> · <span class="sw">${s.who[0]} ${s.who[1]}</span></div>
     <div>${esc(s.do[0])}<br><span class="zh">${esc(s.do[1])}</span>${extra}</div></div>
-    ${btn?`<div class="row">${btn}</div>`:''}`;
+    ${btn?`<div class="row">${btn}</div>`:''}
+    ${step>0?`<div class="center"><button class="linkbtn" id="stepBack">← Back a step 回上一步</button></div>`:''}`;
 }
 
 /* ---------- round intros ---------- */
 function introCard(r, en, zh, how, mins, btn){
   return `
-  <span class="tag">${ROUNDS[r].en} · ${ROUNDS[r].zh}</span>
-  <h2>${en}<br><span class="zh">${zh}</span></h2>
+  <div class="realbar">🏁 REAL GAME 正式比賽 · Round ${r+1} of 3 第${r+1}回合（共3回合）</div>
+  <h1 style="font-size:clamp(30px,6vw,48px)">Round ${r+1}: ${en}<br><span class="zh" style="font-size:.7em">第${'一二三'[r]}回合：${zh}</span></h1>
   <div class="card lead">${how}</div>
   <p class="center small">⏱ ${mins}</p>
   <div class="row"><button class="btn gold" id="go">${btn}</button></div>`;
@@ -451,29 +518,15 @@ function stratTurnHTML(R, c, head, nextLbl, scored){
   ${!R.done ? stepPanel(R.step,'strat',6,R.pick!==null)
   : `<div class="fb ${R.pick===c.s?'ok':'bad'}"><b class="big">${R.pick===c.s?`✔ Correct! 答對了！${scored?' +100':''}`:'✘ Not this time 這次沒答對'}</b><br>
       This is <b>Strategy ${st.n} · ${st.zh}</b> (${esc(st.en)}). It is on <b>Expert Sheet ${st.n}</b>.<br><span class="zh">這是策略${st.n}「${st.zh}」，在專家卡${st.n}上。${st.fullZh}</span></div>
-    <div class="row"><button class="btn gold" id="next">${nextLbl}</button></div>`}`;
+    ${nextLbl?`<div class="row"><button class="btn gold" id="next">${nextLbl}</button></div>`:`<div class="center small">Practice done. Press <b>Finish tutorial</b> below. 練習完成，請按下方「完成教學」。</div>`}`}`;
 }
 function bindStratTurn(R, c, onApprove, onNext){
-  if(!R.done && R.step>=3) app.querySelectorAll('.sbtn').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.s; R.step=4; save(); render(); });
+  if(!R.done && R.step>=3) app.querySelectorAll('.sbtn').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.s; save(); render(); });
   const sn=$('#stepNext'); if(sn) sn.onclick=()=>{ R.step++; save(); render(); };
+  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; save(); render(); };
   const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; onApprove(R.pick===c.s); save(); render(); };
-  const nx=$('#next'); if(nx) nx.onclick=onNext;
+  const nx=$('#next'); if(nx && onNext) nx.onclick=onNext;
 }
-
-/* ---------- practice turn ---------- */
-SCREENS.practice = ()=>{
-  const P=S.prac;
-  return stratTurnHTML(P, PRACTICE,
-    `<span class="tag">🧪 Practice turn 練習回合 · not scored 不計分</span>
-     <div class="small">Try the five steps once before the clock starts. Experts: get your sheets ready. 計時前先練習一次五步驟；專家請拿好卡片。</div>`,
-    'Start Round 1 開始第一回合 →', false)
-    + (P.done?'':`<div class="center"><button class="linkbtn" id="pSkip">Skip practice 略過練習</button></div>`);
-};
-bind.practice = ()=>{
-  const P=S.prac;
-  bindStratTurn(P, PRACTICE, ok=>{ ok?sOk():sBad(); }, ()=>go('r1intro'));
-  const ps=$('#pSkip'); if(ps) ps.onclick=()=>go('r1intro');
-};
 
 /* ---------- Round 1 ---------- */
 SCREENS.r1 = ()=>{
@@ -534,8 +587,9 @@ function nextLabel2(){
 }
 bind.r2 = ()=>{
   const R=S.r2, q=CASES[R.order[R.ci]].qs[R.qi];
-  if(!R.done && R.step>=3) app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.o; R.step=4; save(); render(); });
+  if(!R.done && R.step>=3) app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.o; save(); render(); });
   const sn=$('#stepNext'); if(sn) sn.onclick=()=>{ R.step++; save(); render(); };
+  const sb=$('#stepBack'); if(sb) sb.onclick=()=>{ R.step--; save(); render(); };
   const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; R.n++; if(R.pick===q.a){R.score+=100;R.right++;sOk();} else sBad(); save(); render(); };
   const nx=$('#next'); if(nx) nx.onclick=()=>{
     if(R.qi<2){ R.qi++; }
