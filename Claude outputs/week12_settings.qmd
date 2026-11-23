@@ -1,0 +1,412 @@
+# Week 12: Family, Medical, and School Social Work
+
+## Check-In
+
+Scan QR code for attendance:
+
+![](imgs/attendance.png){fig-align="center"}
+
+- The final exam (12/22) will cover chapters 8-16
+- Grab your journal
+
+## One Social Worker, Three Doors 一位社工，三扇門
+
+- Family 家庭
+- Hospital 醫院
+- School 學校
+- **Pair talk:** Which door would you open first? Why? 你會先打開哪一扇門？為什麼？
+
+```{r}
+countdown(minutes = 2, seconds = 0)
+```
+
+## Door 1: Family 家庭
+
+## Family Social Work 家庭社會工作
+
+- The family is the client 以「家庭」為服務單位
+- Not one person, but the whole system 不只是個人，而是整個家庭系統
+
+::: {.notes}
+Mary Richmond (1917) already said casework cannot be separated from the family. Family social work as a field grew from the 1960s.
+:::
+
+## Cover Story 封面故事
+
+- Five people, one income 一家五口，一份收入
+- Dad lost his job 父親長期失業
+- The kids are full, but not healthy 孩子吃得飽，卻不健康
+- **Pair talk:** What is the real problem? 真正的問題是什麼？
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+::: {.notes}
+Xiao Ling (小玲), community welfare center social worker. Mother works long hours as a cleaner; father unemployed. Kids are overweight from cheap, unbalanced food. Xiao Ling designs parent health education, links the local health station (衛生所) for free nutrition counseling, and checks in regularly over several months.
+:::
+
+## Five Family Types 五種家庭類型
+
+- Nuclear family 核心家庭
+- Multigenerational family 多代同堂家庭
+- Single-parent family 單親家庭
+- Grandparent-headed family 隔代教養家庭
+- Blended family 混合家庭 (step-family 繼親家庭)
+
+::: {.notes}
+Textbook examples: "sandwich generation" (三明治世代) in multigenerational families; "pseudo single-parent" (泛單親) families when one parent works away; "weekend parents" (假日父母). Grandparent-headed: parents work away, or child protection removed the child.
+:::
+
+## Family Life Cycle 家庭生命週期
+
+- Newlywed 新婚期
+- Marriage adjustment 婚姻調整期
+- New parents 初為父母期
+- School-age children 子女學齡期
+- Teen children 子女青少年期
+- Launching 子女準備離家期
+- Empty nest 空巢期
+- Later life 孤寂期
+
+::: {.notes}
+Carter & McGoldrick (1999); 黃馨慧 (1996). Each stage has family tasks (家庭任務) and potential crises (潛在危機).
+:::
+
+## Tasks and Crises 任務與危機
+
+- Every stage has a task 每個階段都有任務
+- Every stage has a possible crisis 每個階段都有潛在危機
+- Teens: adjust boundaries → parent-child conflict 青少年期：調整界線 → 親子衝突
+- Empty nest: new roles → separation anxiety 空巢期：新角色 → 分離焦慮
+- **Pair talk:** Which stage is your family in now? 你的家現在在哪個階段？
+
+```{r}
+countdown(minutes = 2, seconds = 0)
+```
+
+## Life Cycle → Life Course 生命週期 → 生命歷程
+
+- Life is not a straight line 人生不是一條直線
+- Divorce, remarriage, late children 離婚、再婚、晚年得子
+- Stages can be skipped or repeated 階段可能跳過或重來
+- De-standardization 去標準化
+
+::: {.notes}
+Life course concepts: transitions and trajectories (家庭階段變遷與家庭軌跡); family position, norms and roles (家庭位置、規範與角色); standardization vs. de-standardization or de-institutionalization (標準化、去標準化或去制度化). 劉香蘭 (2019).
+:::
+
+## New Family Shapes 新的家庭樣貌
+
+- Boomerang generation 回巢世代
+- Childfree families 無子女家庭
+- Digital families 遠距家庭
+- Multi-local families 多地居住家庭
+
+::: {.notes}
+Social work response: cultural humility (文化謙遜) and a family resilience framework (家庭彈性框架).
+:::
+
+## Four Principles 四個實務原則
+
+- The best place to help is at home 協助家庭最好的地方是他們的家
+- Empower families to solve their own problems 賦權家庭解決自己的問題
+- Make help individual 介入應該個別化
+- Urgent needs first, long-term goals later 先回應立即需求，再談長期目標
+
+::: {.notes}
+謝秀芬 (2018); Collins, Jordan, & Coleman (2012). Back to Xiao Ling: which principles did she use?
+:::
+
+## Three Levels of Service 三種服務
+
+- Family support services 家庭支持服務: any family, prevention 一般家庭、預防
+- Family-centred services 以家庭為中心的服務: family has a problem 家庭有問題
+- Intensive crisis services 危機介入服務: high crisis 高度危機
+
+::: {.notes}
+Strydom (2014). This shape comes back in the school section (three-tier guidance).
+:::
+
+## Family Assessment 家庭評估
+
+- Problem 問題
+- Family system 家庭系統
+- Family and environment 家庭與環境
+- Life cycle stage 家庭生命週期
+- Family function 家庭功能
+- Tools: genogram, ecomap 工具：家系圖、生態圖
+
+::: {.notes}
+謝秀芬等 (2012); Holman & Birch (2001).
+:::
+
+## Taiwan's Social Safety Net 社會安全網
+
+- Phase 1 第一期 (2018-2020) → Phase 2 第二期 (2021-2025)
+- Now: Social Safety Net 2.0 社安網2.0 (2026-2030)
+- Catch families early, before a crisis 在危機發生前及早接住家庭
+- Links welfare, health, mental health, jobs, police, schools 整合社福、衛生、心理健康、就業、治安、教育
+
+::: {.notes}
+The textbook stops at Phase 2 (110-114). The Executive Yuan approved "強化社會安全網計畫2.0 (115-119年)" on 2025-11-21. It runs 2026-2030 with about NT$81.9 billion over five years, almost double Phase 2, and adds new parents, older adults living alone, and near-poor people to front-end prevention. For the exam, the textbook's two phases are enough.
+:::
+
+## Activity A 活動 A
+
+- Placeholder: family group activity (to be decided) 待定
+
+```{r}
+countdown(minutes = 25, seconds = 0)
+```
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## Door 2: Hospital 醫院
+
+## Cover Story 封面故事
+
+- Mr. Chen, 43, late-stage liver cancer 陳先生，43 歲，肝癌末期
+- Wife is 7 months pregnant 妻子懷孕七個月
+- "I want to hold my baby." 「我想抱抱我的孩子」
+- **Pair talk:** What does he need? What does his family need? 他需要什麼？他的家人需要什麼？
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+::: {.notes}
+Technical manager, overworked, hepatitis B history, skipped follow-ups. Two children (3 and 1) plus the baby due in three months; he is the only income. Wife wants every treatment; his parents want to reduce his pain. Doctors say a few months at most.
+:::
+
+## Medical Social Work 醫務社會工作
+
+- Not only the body 不只是身體
+- Biological, psychological, social 生理、心理、社會
+- Holistic view 全人觀點
+- Medical SW (hospital) vs. health care SW (broader) 醫務社工 vs. 健康照顧社工
+
+## What Do Medical Social Workers Do? 醫務社工做什麼？
+
+- Assess psychosocial needs 評估心理暨社會需求
+- Crisis and emotional support 危機介入與情緒支持
+- Handle abuse cases 處理虐待事件
+- Link resources 轉介資源
+- Resolve patient-doctor conflict 處理醫病衝突
+- Run patient groups 經營病友團體
+
+::: {.notes}
+The textbook lists ten duties. Also: remove barriers to treatment, consult the medical team, design community programs, teaching and research.
+:::
+
+## Three Levels 三個層次
+
+- Macro: health policy, NHI 鉅視面：衛生政策、全民健保
+- Mezzo: hospital SW department 中介面：醫院社工部門
+- Micro: medical team 微視面：醫療團隊
+- Hospitals have dual authority 醫院有雙重權威
+
+## Three Kinds of Teams 三種團隊
+
+- Multi-professional: meet only when needed 多專業團隊：必要時才聚在一起
+- Inter-professional: work closely together 專業間團隊：互動密切、角色互補
+- Trans-professional: cross the lines 跨專業團隊：跨越專業界線
+
+## SOAP Notes 問題取向記錄
+
+- S: Subjective, what the patient says 主觀：病人說的話
+- O: Objective, what we observe 客觀：我們觀察到的
+- A: Assessment, what it means 評量：代表什麼
+- P: Plan, what we will do 計畫：接下來要做什麼
+
+::: {.notes}
+Also the 4Rs social system record (社會系統記錄法): role, relationship, reaction, resource. Quick check: "I'm scared. How will I pay for the baby?" → S.
+:::
+
+## Groups in the Hospital 醫院裡的團體
+
+- Education groups 教育性團體
+- Support groups 支持性團體
+- Growth, socialization, therapy groups 成長性、社會化、治療性團體
+- Self-help groups 自助性團體 (e.g., breast cancer clubs 乳癌病友)
+
+::: {.notes}
+莫藜藜譯 (2023). Hospitals use education and support groups most because stays are short.
+:::
+
+## Special Services 特殊性服務
+
+- Cancer and hospice care 腫瘤與安寧療護
+- Organ donation 器官移植與捐贈
+- Medical disputes 醫療爭議
+- Protective services 保護性服務
+- Advance care planning 預立醫療照護諮商 (ACP)
+- Discharge planning and long-term care 出院準備暨長期照顧
+
+::: {.notes}
+ACP: Patient Right to Autonomy Act (病人自主權利法), in force early 2019. Discharge planning links to Long-Term Care 2.0 (長照2.0).
+:::
+
+## Challenges 挑戰
+
+- Heavy workload 工作負荷與壓力
+- Salary competition 薪資競爭與人力流動
+- Caught between health and welfare 夾在醫療與社福之間
+- "Dad doesn't love me, Mom doesn't want me" 「爹不疼、娘不愛」
+
+::: {.notes}
+Licensing: Social Worker Act (社會工作師法) 1997; specialist social workers (專科社工師) from 2008.
+:::
+
+## Back to Mr. Chen 回到陳先生
+
+- Pick three services for the Chen family 為陳家挑三個服務
+- Who on the team do you call first? 你會先找團隊中的哪一位？
+
+```{r}
+countdown(minutes = 4, seconds = 0)
+```
+
+## Activity B 活動 B
+
+- Placeholder: second group activity or game (to be decided) 待定
+
+```{r}
+countdown(minutes = 30, seconds = 0)
+```
+
+## Break
+
+![](imgs/break_time.gif){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+## Door 3: School 學校
+
+## Cover Story 封面故事
+
+- Xiao-Da, 2nd grade 小達，國小二年級
+- Red marks on his face 臉頰紅腫
+- Many absences 常常缺課
+- "My head hurts. My stomach hurts." 「頭痛、肚子痛」
+- **Pair talk:** Is it really his body? 真的只是身體不舒服嗎？
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+::: {.notes}
+Mother hit him; a child protection report was made and the family was listed as a crisis family. The "pain" had no clear medical cause. The textbook also notes self-injury; decide whether to raise that with the class.
+:::
+
+## School Social Work 學校社會工作
+
+- Links school, family, community 連結學校、家庭、社區
+- Helps every child learn 協助每個孩子學習
+- Works with teachers and parents 與教師、家長合作
+
+## History 發展歷程
+
+- 1906 USA: visiting teachers 美國：訪問教師
+- 1940-1970: clinical casework 臨床個案工作
+- 1990-now: prevention and systems 預防介入與系統觀
+- 1977 Taiwan: first pilot 臺灣：家扶基金會試辦
+- 2014: Student Counseling Act 《學生輔導法》
+
+::: {.notes}
+Taiwan: Ministry of Education pilots 1996-1998; local government pilots 1998-2010; National Education Act (國民教育法) amended 2011-01-12; Social Safety Net from 2018.
+:::
+
+## Three-Tier Guidance 學校三級輔導
+
+- Tier 1: development, all teachers 發展性輔導：全體教師
+- Tier 2: intervention, counseling teachers 介入性輔導：輔導教師
+- Tier 3: treatment, social workers and psychologists 處遇性輔導：社工師、心理師
+
+::: {.notes}
+Same shape as the three levels of family services. In Taiwan, school social workers mostly handle tier 3.
+:::
+
+## WISER
+
+- W: whole school, working smart, win-win 全校做、聰明做、雙贏做
+- I: individual intervention 個別化介入
+- S: system collaboration 系統合作
+- E: ongoing evaluation 持續評估
+- R: resource integration 資源整合
+
+::: {.notes}
+Ministry of Education (2020). W = tier 1; I, S, E = tier 2; R = tier 3.
+:::
+
+## Three Lenses 三個理論觀點
+
+- Ecological theory 生態理論
+- Strengths perspective 優勢觀點
+- Trauma-informed care 創傷知情照顧
+
+## Trauma-Informed Care 創傷知情照顧
+
+- Not "What's wrong with you?" 不是「你有什麼問題？」
+- But "What happened to you?" 而是「你經歷了什麼？」
+- **Pair talk:** Rewrite: "Xiao-Da is lazy and always fakes being sick." 改寫：「小達很懶，老是裝病。」
+
+```{r}
+countdown(minutes = 3, seconds = 0)
+```
+
+## Strategies 介入策略
+
+- Direct: education, intervention, mediation 直接：教育、介入、調解
+- Indirect: consultation, collaboration, advocacy 間接：諮詢、合作、倡導
+
+::: {.notes}
+Also Alderson's four models (Constable, 2009): clinical, school change, community school, social interaction.
+:::
+
+## The Future 未來
+
+- Show the results 展現服務成效
+- Dream: prevention. Reality: crisis 理想是預防，現實是危機
+- Respond to AI and digital life 因應人工智慧與數位生活
+
+## Closing 結語
+
+## Three Doors, One Pattern 三扇門，同一個模式
+
+- Family: support → crisis 家庭：支持 → 危機介入
+- Hospital: body, mind, and social world 醫院：生理、心理、社會
+- School: tier 1 → 3 學校：三級輔導
+- Prevention first, crisis when needed 預防優先，必要時危機介入
+
+## Journal
+
+::: {style="font-size: 100%;"}
+::: {.callout-note title="Journal Prompt"}
+Week 12 Prompt: Family, hospital, or school: which door could you see yourself opening as a social worker? What would be the hardest part for you there, and why? 家庭、醫院、學校：身為社工，你比較能想像自己打開哪一扇門？在那裡，你覺得最困難的部分是什麼？為什麼？
+:::
+:::
+
+![](imgs/no_phone.svg){fig-align="center"}
+
+```{r}
+countdown(minutes = 10, seconds = 0)
+```
+
+<audio class="slide-audio" loop controls>
+  <source src="audio/journaling2.mp3" type="audio/mpeg">
+</audio>
+
+## Next Week
+
+- Please return your journals before you leave
+- Read the textbook section on emerging issues (justice, Indigenous, new immigrant, and disaster social work) before class
+- See you next week

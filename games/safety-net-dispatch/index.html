@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16233b">
+<title>Safety Net Dispatch 社安網派案中心</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16233b; --navy2:#22345a; --ink:#1d2333; --muted:#677087; --bg:#f4f1ea; --card:#fff; --line:#e3dccd;
+  --ok:#239a5b; --bad:#d64545; --gold:#f4b400; --sky:#dbe9ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Noto Sans TC',system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg);touch-action:manipulation;
+  background-image:linear-gradient(rgba(22,35,59,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(22,35,59,.045) 1px,transparent 1px);
+  background-size:28px 28px}
+#bar{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff;display:flex;align-items:center;gap:10px;padding:max(8px,env(safe-area-inset-top)) 14px 8px;min-height:52px}
+#bar .brand{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:19px;letter-spacing:.3px;white-space:nowrap}
+#bar .brand b{color:var(--gold)}
+#bar .sp{flex:1}
+.pill{background:var(--navy2);border-radius:999px;padding:5px 12px;font-weight:700;font-size:15px;white-space:nowrap}
+.pill.warn{background:var(--bad)}
+#bar button{background:var(--navy2);color:#fff;border:0;border-radius:10px;height:36px;min-width:36px;font-size:17px;cursor:pointer}
+@media (max-width:600px){#bar .bz{display:none}#bar .brand{font-size:16px}.pill{font-size:13px;padding:4px 9px}}
+#app{max-width:1000px;margin:0 auto;padding:16px 16px max(28px,env(safe-area-inset-bottom))}
+.screen{display:flex;flex-direction:column;gap:14px;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(36px,7vw,62px);line-height:1.05;text-align:center;color:var(--navy)}
+h2{font-family:'Baloo 2','Noto Sans TC',sans-serif;font-weight:800;font-size:clamp(24px,4.4vw,34px);line-height:1.15;color:var(--navy)}
+h3{font-size:18px;color:var(--navy)}
+.zh{color:var(--muted);font-weight:700}
+.center{text-align:center}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:0 3px 0 rgba(22,35,59,.06)}
+.lead{font-size:clamp(16px,2.6vw,20px);line-height:1.5}
+.small{font-size:14px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:14px 22px;font:800 18px 'Noto Sans TC',sans-serif;cursor:pointer;background:var(--navy);color:#fff;box-shadow:0 4px 0 #0b1426;min-height:56px}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #0b1426}
+.btn.gold{background:var(--gold);color:var(--navy);box-shadow:0 4px 0 #b88700}
+.btn.ghost{background:#fff;color:var(--navy);border:2px solid var(--line);box-shadow:0 3px 0 var(--line)}
+.btn.ok{background:var(--ok);box-shadow:0 4px 0 #15683c}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:640px){.grid3{grid-template-columns:repeat(2,1fr)}}
+.net{display:block;margin:0 auto;width:min(340px,70vw)}
+/* strategies */
+.sbtn{border:3px solid var(--c);background:#fff;border-radius:16px;padding:12px 10px;cursor:pointer;text-align:left;display:flex;gap:10px;align-items:center;min-height:78px;font-family:inherit;color:var(--ink)}
+.sbtn .num{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--c);color:#fff;font:800 22px 'Baloo 2',sans-serif;display:flex;align-items:center;justify-content:center}
+.sbtn .t1{font-weight:900;font-size:19px}
+.sbtn .t2{font-size:13.5px;color:var(--muted);line-height:1.25}
+.sbtn.sel{background:var(--c);color:#fff}
+.sbtn.sel .num{background:#fff;color:var(--c)}
+.sbtn.sel .t2{color:#fff}
+.sbtn.right{outline:5px solid var(--ok);outline-offset:2px}
+.sbtn.wrong{opacity:.45}
+/* options */
+.opt{border:2px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px;text-align:left;cursor:pointer;font-family:inherit;color:var(--ink);display:flex;gap:12px;align-items:flex-start;min-height:60px}
+.opt .k{flex:0 0 30px;height:30px;border-radius:9px;background:var(--sky);color:var(--navy);font:800 17px 'Baloo 2',sans-serif;display:flex;align-items:center;justify-content:center}
+.opt .e{font-weight:700;font-size:17px;line-height:1.3}
+.opt .c{font-size:15px;color:var(--muted);font-weight:700}
+.opt.sel{border-color:var(--navy);background:#eef3ff}
+.opt.sel .k{background:var(--navy);color:#fff}
+.opt.right{border-color:var(--ok);background:#e7f6ed}
+.opt.right .k{background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:#fdeaea}
+.opt.dim{opacity:.5}
+.clue{font-size:clamp(21px,3.4vw,28px);font-weight:900;line-height:1.35}
+.clue .zh{display:block;font-size:.78em;margin-top:6px}
+.tag{display:inline-block;background:var(--sky);color:var(--navy);border-radius:999px;padding:3px 10px;font-weight:800;font-size:13px}
+.prompt{background:#fff8e1;border:2px dashed #e0b84a;border-radius:14px;padding:10px 14px;font-weight:700}
+.fb{border-radius:16px;padding:14px 16px;font-size:17px;line-height:1.5}
+.fb.ok{background:#e7f6ed;border:2px solid var(--ok)}
+.fb.bad{background:#fdeaea;border:2px solid var(--bad)}
+.fb b.big{font-size:22px}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.role{border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;display:flex;gap:10px;align-items:center}
+.role .ic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-weight:800;flex:0 0 auto}
+.role .nm{font-weight:900;font-size:18px}
+.swap{background:#fff3cd;border:2px solid #e0b84a;border-radius:14px;padding:10px 14px;font-weight:700}
+input[type=text]{font:700 18px 'Noto Sans TC',sans-serif;border:2px solid var(--line);border-radius:12px;padding:10px 12px;width:100%;background:#fff;color:var(--ink)}
+.gbtn{width:56px;height:56px;border-radius:14px;border:2px solid var(--line);background:#fff;font:800 24px 'Baloo 2',sans-serif;cursor:pointer;color:var(--navy)}
+.gbtn.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.prog{height:10px;border-radius:999px;background:#e6e0d2;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--gold);transition:width .3s}
+.ring{font:800 44px 'Baloo 2',sans-serif;color:var(--navy);text-align:center}
+.ring.low{color:var(--bad)}
+/* essay */
+.secs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (max-width:640px){.secs{grid-template-columns:1fr}}
+.sec{border:3px dashed #b9c4d8;border-radius:14px;min-height:96px;padding:8px;background:#fff;cursor:pointer}
+.sec.armed{border-color:var(--navy);background:#eef3ff}
+.sec h4{font-size:14px;color:var(--navy);margin-bottom:6px}
+.tiles{display:flex;flex-wrap:wrap;gap:8px}
+.tile{border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:10px;padding:8px 10px;font:700 15px 'Noto Sans TC',sans-serif;cursor:pointer}
+.tile.sel{background:var(--navy);color:#fff}
+.tile.g{border-color:var(--ok);background:#e7f6ed;color:#15683c}
+.tile.h{border-color:#d69a00;background:#fff5d6;color:#7a5800}
+.tile.x{border-color:var(--bad);background:#fdeaea;color:#a12d2d;text-decoration:line-through}
+.tile.m{border-style:dashed;opacity:.7}
+.model{background:#fff;border-left:6px solid var(--navy);padding:12px 14px;border-radius:10px;line-height:1.6}
+.score-big{font:800 clamp(64px,14vw,120px) 'Baloo 2',sans-serif;color:var(--navy);text-align:center;line-height:1}
+table.bd{width:100%;border-collapse:collapse;font-size:17px}
+table.bd td{padding:8px 10px;border-bottom:1px solid var(--line)}
+table.bd td:last-child{text-align:right;font-weight:800}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--bad);color:#fff;padding:10px 18px;border-radius:12px;font-weight:800;z-index:30;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#gate{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
+#gate.hide{display:none}
+#gate .card{max-width:440px;width:100%;display:flex;flex-direction:column;gap:12px;text-align:center}
+#gate input{text-transform:uppercase;text-align:center;letter-spacing:2px}
+#gateFb{min-height:22px;color:var(--bad);font-weight:800}
+#menu{position:fixed;inset:0;background:rgba(10,18,32,.55);display:none;align-items:center;justify-content:center;z-index:40;padding:16px}
+#menu .card{max-width:420px;width:100%;display:flex;flex-direction:column;gap:10px}
+</style>
+</head>
+<body>
+<div id="bar">
+  <div class="brand">Safety Net <b>Dispatch</b><span class="bz"> · 社安網派案中心</span></div>
+  <div class="sp"></div>
+  <div id="timer" class="pill" style="display:none"></div>
+  <div id="scorePill" class="pill" style="display:none"></div>
+  <button id="menuBtn" aria-label="Menu">☰</button>
+</div>
+<div id="app"></div>
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gateHead"><div class="card">
+  <h2 id="gateHead">Safety Net Dispatch<br><span class="zh">社安網派案中心</span></h2>
+  <p class="small">Ask your teacher for the password. 請向老師索取密碼。</p>
+  <input type="text" id="gateInput" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="密碼 Password" aria-label="密碼 Password">
+  <button class="btn gold" id="gateOk" type="button">Enter 進入</button>
+  <div id="gateFb" aria-live="polite"></div>
+</div></div>
+<div id="menu"><div class="card">
+  <h3>Menu 選單</h3>
+  <button class="btn ghost" id="mSound">🔊 Sound on 音效開</button>
+  <button class="btn ghost" id="mSkip">⏭ End this round now 立即結束本回合</button>
+  <button class="btn ghost" id="mFacts">📋 Quick facts 計畫重點</button>
+  <button class="btn ghost" id="mRestart">↺ New game 重新開始</button>
+  <button class="btn" id="mClose">Close 關閉</button>
+</div></div>
+
+<script src="data.js"></script>
+<script>
+'use strict';
+/* ---------- config ---------- */
+const ROUND_MIN = {r1:7, r2:10, r3b:7};   // minutes per timed round
+const MCQ_SEC = 20, MCQ_COUNT = 6;
+const SAVE_KEY = 'snd-save-v1';
+const ROUNDS = [
+  {key:'r1', en:'Round 1 · Who handles this?', zh:'第一回合 · 這是誰的業務？'},
+  {key:'r2', en:'Round 2 · Dispatch', zh:'第二回合 · 派案'},
+  {key:'r3', en:'Round 3 · Exam desk', zh:'第三回合 · 考場'},
+];
+const ICON = {disp:'📟', sup:'🧐'};
+
+/* ---------- state ---------- */
+let S = null;
+let sound = true;
+let tick = null;
+const app = document.getElementById('app');
+const $ = (s,el=document)=>el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+function fresh(){
+  return { screen:'setup', group:null, team:'', names:Array.from({length:8},(_,i)=>`Player ${i+1}`),
+    round:0, endAt:null, timeUp:false,
+    r1:{order:shuffle(CLUES.map((_,i)=>i)), i:0, pick:null, done:false, score:0, right:0, n:0},
+    r2:{ci:0, qi:0, pick:null, done:false, score:0, right:0, n:0, order:shuffle([0,1,2,3,4,5,6].slice(0,2)).concat(shuffle([2,3,4,5,6]))},
+    r3a:{order:shuffle(MCQ.map((_,i)=>i)).slice(0,MCQ_COUNT), i:0, pick:null, done:false, score:0, right:0, left:MCQ_SEC},
+    r3b:{essay:null, place:{}, armed:null, done:false, score:0, said:null},
+  };
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)); return s && s.screen ? s : null; }catch(e){ return null; } }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+
+/* ---------- roles ---------- */
+// Round r (0-2): dispatcher = player 2r, supervisor = player 2r+1. Sheets pass to the previous holders.
+function holders(r){
+  const h = {1:2,2:3,3:4,4:5,5:6,6:7};       // round 0: players 3-8 hold sheets 1-6 (0-based index)
+  for(let k=1;k<=r;k++){
+    const d=2*k, s=2*k+1;                      // new dispatcher & supervisor
+    const pd=2*(k-1), ps=2*(k-1)+1;            // previous dispatcher & supervisor
+    for(const n in h){ if(h[n]===d) h[n]=pd; else if(h[n]===s) h[n]=ps; }
+  }
+  return h;
+}
+function swaps(r){
+  if(r===0) return [];
+  const before=holders(r-1), after=holders(r), out=[];
+  for(const n in after) if(before[n]!==after[n]) out.push([+n, before[n], after[n]]);
+  return out;
+}
+const nm = i => esc(S.names[i] || `Player ${i+1}`);
+
+/* ---------- sound ---------- */
+let actx=null;
+function beep(f=660,d=.12,type='sine',v=.15){
+  if(!sound) return;
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(), g=actx.createGain(); o.type=type; o.frequency.value=f;
+    g.gain.setValueAtTime(v,actx.currentTime); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+d);
+  }catch(e){}
+}
+const sOk = ()=>{beep(660,.1);setTimeout(()=>beep(990,.16),100);};
+const sBad = ()=>{beep(220,.25,'square',.08);};
+const sTick = ()=>beep(880,.05,'sine',.08);
+
+/* ---------- wake lock ---------- */
+let lock=null;
+async function wake(){ try{ if('wakeLock' in navigator && !lock){ lock=await navigator.wakeLock.request('screen'); lock.addEventListener('release',()=>lock=null);} }catch(e){} }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && S && S.endAt) wake(); });
+
+/* ---------- top bar ---------- */
+function totalScore(){ return S.r1.score+S.r2.score+S.r3a.score+S.r3b.score; }
+function bar(){
+  const sp=$('#scorePill'), tp=$('#timer');
+  if(!S || S.screen==='title' || S.screen==='setup'){ sp.style.display='none'; tp.style.display='none'; return; }
+  sp.style.display=''; sp.textContent=`${S.group?('Group '+S.group+' · '):''}${totalScore()} pts`;
+  if(S.endAt){
+    const left=Math.max(0,Math.round((S.endAt-Date.now())/1000));
+    tp.style.display=''; tp.textContent=`⏱ ${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;
+    tp.classList.toggle('warn', left<=60);
+    if(left===0 && !S.timeUp){ S.timeUp=true; save(); toast("Time's up! Finish this one, then move on. 時間到！完成這題就進入下一關。"); sBad(); render(); }
+  } else tp.style.display='none';
+}
+function startClock(min){ S.endAt=Date.now()+min*60000; S.timeUp=false; wake(); save(); }
+function stopClock(){ S.endAt=null; S.timeUp=false; }
+setInterval(()=>{ if(S) bar(); },1000);
+
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
+
+/* ---------- render ---------- */
+function go(screen){ S.screen=screen; save(); render(); window.scrollTo(0,0); }
+function render(){
+  clearInterval(tick); tick=null;
+  const f = SCREENS[S ? S.screen : 'title'] || SCREENS.title;
+  app.innerHTML = '<div class="screen">'+f()+'</div>';
+  bind[S ? S.screen : 'title'] && bind[S ? S.screen : 'title']();
+  bar();
+}
+const bind = {};
+const SCREENS = {};
+
+/* ---------- title ---------- */
+const NET_SVG = `<svg class="net" viewBox="0 0 340 150" aria-hidden="true">
+  <g stroke="#16233b" stroke-width="2.5" fill="none" stroke-linecap="round">
+  <path d="M10 20 Q170 150 330 20"/><path d="M10 20 Q170 110 330 20"/><path d="M10 20 Q170 70 330 20"/>
+  ${[50,90,130,170,210,250,290].map(x=>`<path d="M${x} ${20+ (1-Math.pow((x-170)/160,2))*0} L${x} ${20+(1-Math.pow((x-170)/160,2))*65}"/>`).join('')}
+  </g>
+  ${STRATS.map((s,i)=>`<circle cx="${60+i*44}" cy="${70+Math.sin(i)*6}" r="13" fill="${s.color}"/><text x="${60+i*44}" y="${75+Math.sin(i)*6}" text-anchor="middle" font-family="Baloo 2" font-weight="800" font-size="15" fill="#fff">${s.n}</text>`).join('')}
+</svg>`;
+SCREENS.title = ()=>{
+  const saved = load();
+  return `
+  <div class="card center" style="padding:26px 18px">
+    ${NET_SVG}
+    <h1>Safety Net Dispatch</h1>
+    <h2 class="zh" style="text-align:center">社安網派案中心</h2>
+    <p class="lead" style="margin-top:10px">Your group runs a city's safety-net dispatch center. Six experts, one dispatcher, one supervisor, three rounds, about 30 minutes.<br>
+    <span class="zh">你們這組負責一座城市的社安網派案中心：六位專家、一位派案員、一位督導，三個回合，約30分鐘。</span></p>
+  </div>
+  <div class="row">
+    <button class="btn gold" id="newG">▶ New game 開始新遊戲</button>
+    ${saved && saved.screen!=='final' ? `<button class="btn ghost" id="contG">⟳ Continue 繼續（Group ${saved.group||'?'}）</button>`:''}
+  </div>
+  <div class="card small">You need: one tablet per group of 8, and a set of printed Expert Sheets 1–6 plus one Supervisor Card from your teacher.
+  <br>需要：每8人一台平板，以及老師發的專家卡1–6與督導卡各一張。</div>`;
+};
+bind.title = ()=>{
+  $('#newG').onclick=()=>{ S=fresh(); go('setup'); };
+  const c=$('#contG'); if(c) c.onclick=()=>{ S=load(); render(); };
+};
+
+/* ---------- setup ---------- */
+SCREENS.setup = ()=>`
+  <h2>Set up your center 設定派案中心</h2>
+  <div class="card">
+    <h3>Group number 組別</h3>
+    <div class="row" style="justify-content:flex-start;margin-top:8px">${[1,2,3,4,5,6,7,8].map(g=>`<button class="gbtn ${S.group===g?'sel':''}" data-g="${g}">${g}</button>`).join('')}</div>
+    <h3 style="margin-top:14px">Team name (optional) 隊名（可不填）</h3>
+    <input type="text" id="team" maxlength="24" value="${esc(S.team)}" placeholder="e.g. Puli Net 埔里網">
+  </div>
+  <div class="card">
+    <h3>Your 8 names 八位成員</h3>
+    <p class="small">Sit in this order. Roles rotate each round, so everyone holds the tablet once. 照這個順序坐；每回合輪換角色。</p>
+    <div class="grid2" style="margin-top:8px">${S.names.map((n,i)=>`<label><span class="small">${i+1}.</span> <input type="text" data-n="${i}" maxlength="16" value="${esc(n)}"></label>`).join('')}</div>
+  </div>
+  <div class="row"><button class="btn gold" id="go" ${S.group?'':'disabled'}>Next: roles 下一步：分配角色</button></div>`;
+bind.setup = ()=>{
+  app.querySelectorAll('.gbtn').forEach(b=>b.onclick=()=>{ S.group=+b.dataset.g; save(); render(); });
+  $('#team').oninput=e=>{ S.team=e.target.value; save(); };
+  app.querySelectorAll('[data-n]').forEach(inp=>inp.oninput=e=>{ S.names[+inp.dataset.n]=e.target.value.trim()||`Player ${+inp.dataset.n+1}`; save(); });
+  $('#go').onclick=()=>{ S.round=0; go('roles'); };
+};
+
+/* ---------- roles ---------- */
+SCREENS.roles = ()=>{
+  const r=S.round, h=holders(r), sw=swaps(r);
+  return `
+  <span class="tag">${ROUNDS[r].en} · ${ROUNDS[r].zh}</span>
+  <h2>${r===0?'Your roles 你們的角色':'New roles 換角色'}</h2>
+  ${sw.length?`<div class="swap">🔄 Pass the sheets 交換卡片：${sw.map(([n,from,to])=>`<br>• ${nm(from)} gives <b>Expert Sheet ${n}</b> to ${nm(to)} ${nm(from)} 把專家卡${n}交給 ${nm(to)}`).join('')}
+    <br>• Pass the tablet to ${nm(2*r)}. 平板交給 ${nm(2*r)}。</div>`:''}
+  <div class="roles">
+    <div class="role"><div class="ic" style="background:var(--navy)">${ICON.disp}</div><div><div class="nm">${nm(2*r)}</div><div><b>Dispatcher 派案員</b></div><div class="small">Holds the tablet, reads aloud, taps. 拿平板、唸題目、按答案。</div></div></div>
+    <div class="role"><div class="ic" style="background:#555">${ICON.sup}</div><div><div class="nm">${nm(2*r+1)}</div><div><b>Supervisor 督導</b></div><div class="small">Holds the Supervisor Card. Asks "Why? Show me." before approving. 拿督導卡；按核可前先問「為什麼？證據在哪？」</div></div></div>
+    ${STRATS.map(s=>`<div class="role"><div class="ic" style="background:${s.color}">${s.n}</div><div><div class="nm">${nm(h[s.n])}</div><div><b>Expert ${s.n} 專家：${s.zh}</b></div><div class="small">${esc(s.en)}</div></div></div>`).join('')}
+  </div>
+  <div class="row"><button class="btn gold" id="go">Ready 準備好了</button></div>`;
+};
+bind.roles = ()=>{ $('#go').onclick=()=>go(['r1intro','r2intro','r3intro'][S.round]); };
+
+/* ---------- round intros ---------- */
+function introCard(r, en, zh, how, mins, btn){
+  return `
+  <span class="tag">${ROUNDS[r].en} · ${ROUNDS[r].zh}</span>
+  <h2>${en}<br><span class="zh">${zh}</span></h2>
+  <div class="card lead">${how}</div>
+  <p class="center small">⏱ ${mins}</p>
+  <div class="row"><button class="btn gold" id="go">${btn}</button></div>`;
+}
+SCREENS.r1intro = ()=>introCard(0,'Who handles this?','這是誰的業務？',
+  `Each card is one real item from Social Safety Net 2.0. The dispatcher reads it aloud.<br><span class="zh">每張卡都是社安網2.0裡的真實措施，派案員唸出來。</span><br><br>
+   1. The expert who thinks it is theirs says "Mine!" and <b>reads the proof line from their sheet</b>. <span class="zh">認為是自己的專家喊「我的！」並唸出卡上的證據。</span><br>
+   2. The supervisor checks, then approves. <span class="zh">督導確認後按核可。</span><br>
+   3. +100 for each correct card. One try only. <span class="zh">每答對一張+100，只有一次機會。</span>`,
+  `${ROUND_MIN.r1} minutes · 7分鐘`, '▶ Start the clock 開始計時');
+SCREENS.r2intro = ()=>introCard(1,'Dispatch','派案',
+  `Reports arrive at your center. For each one, answer three questions: what kind of family, which unit, which strategy or service.<br><span class="zh">通報進來了。每案回答三題：哪一類家庭、派給哪個單位、對應哪個策略或服務。</span><br><br>
+   Experts: if the answer is on your sheet, speak up. Supervisor: ask "Why?" before you approve.<br><span class="zh">專家：答案在你的卡上就發言。督導：按核可前先問「為什麼？」</span><br><br>
+   Three family types 三類家庭：<b>General 一般</b> (no risk) · <b>Vulnerable 脆弱</b> (many stresses, no violence) · <b>Crisis 危機</b> (violence or abuse = protective case 保護性案件).<br>+100 per correct answer.`,
+  `${ROUND_MIN.r2} minutes · 10分鐘`, '▶ Start the clock 開始計時');
+SCREENS.r3intro = ()=>introCard(2,'Exam desk','考場',
+  `Now answer like the licensing exam.<br><span class="zh">現在用國考的方式作答。</span><br><br>
+   <b>Part A · Lightning 快問快答</b>: ${MCQ_COUNT} multiple-choice questions, ${MCQ_SEC} seconds each. Faster = more points. No supervisor check. <span class="zh">${MCQ_COUNT}題選擇題，每題${MCQ_SEC}秒，越快分數越高。</span><br><br>
+   <b>Part B · Essay builder 申論組裝</b>: pick an essay question and build the answer outline from keyword tiles. Watch out for trap tiles. <span class="zh">選一題申論題，用關鍵字卡組出答題架構；小心陷阱卡。</span>`,
+  `about ${ROUND_MIN.r3b+3} minutes · 約10分鐘`, '▶ Start Part A 開始快問快答');
+bind.r1intro = ()=>{ $('#go').onclick=()=>{ startClock(ROUND_MIN.r1); go('r1'); }; };
+bind.r2intro = ()=>{ $('#go').onclick=()=>{ startClock(ROUND_MIN.r2); go('r2'); }; };
+bind.r3intro = ()=>{ $('#go').onclick=()=>{ stopClock(); S.r3a.left=MCQ_SEC; go('r3a'); }; };
+
+/* ---------- Round 1 ---------- */
+function sButtons(pick, done, ans){
+  return `<div class="grid3">${STRATS.map(s=>{
+    let cls='';
+    if(done){ if(s.n===ans) cls='right'; else if(s.n===pick) cls='sel wrong'; else cls='wrong'; }
+    else if(s.n===pick) cls='sel';
+    return `<button class="sbtn ${cls}" style="--c:${s.color}" data-s="${s.n}"><span class="num">${s.n}</span><span><span class="t1">${s.zh}</span><br><span class="t2">${esc(s.en)}</span></span></button>`;
+  }).join('')}</div>`;
+}
+SCREENS.r1 = ()=>{
+  const R=S.r1, c=CLUES[R.order[R.i]], st=STRATS[c.s-1];
+  const pct=Math.round(R.i/R.order.length*100);
+  return `
+  <div class="prog"><i style="width:${pct}%"></i></div>
+  <div class="small">${ROUNDS[0].en} · Card ${R.i+1} / ${R.order.length} · ✔ ${R.right}</div>
+  <div class="card"><div class="clue">${esc(c.en)}<span class="zh">${esc(c.zh)}</span></div></div>
+  ${sButtons(R.pick, R.done, c.s)}
+  ${!R.done ? `
+    <div class="prompt">${R.pick?`🗣 Expert ${R.pick}, read your proof line aloud. Supervisor, do you agree? 專家${R.pick}請唸出證據；督導同意嗎？`:`📟 Dispatcher: read the card aloud. Experts: whose is it? 派案員唸卡；專家們：這是誰的？`}</div>
+    <div class="row"><button class="btn ok" id="ok" ${R.pick?'':'disabled'}>🧐 Supervisor approves 督導核可</button></div>`
+  : `
+    <div class="fb ${R.pick===c.s?'ok':'bad'}"><b class="big">${R.pick===c.s?'✔ Correct! 答對了！ +100':'✘ Not this time 這次沒答對'}</b><br>
+      This is <b>Strategy ${st.n} · ${st.zh}</b> (${esc(st.en)}).<br><span class="zh">${st.fullZh}</span></div>
+    <div class="row"><button class="btn gold" id="next">${(R.i+1>=R.order.length||S.timeUp)?'Finish round 結束本回合':'Next card 下一張 →'}</button></div>`}`;
+};
+bind.r1 = ()=>{
+  const R=S.r1, c=CLUES[R.order[R.i]];
+  if(!R.done) app.querySelectorAll('.sbtn').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.s; save(); render(); });
+  const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; R.n++; if(R.pick===c.s){R.score+=100;R.right++;sOk();} else sBad(); save(); render(); };
+  const nx=$('#next'); if(nx) nx.onclick=()=>{ if(R.i+1>=R.order.length||S.timeUp){ endRound(); } else { R.i++; R.pick=null; R.done=false; save(); render(); window.scrollTo(0,0);} };
+};
+
+/* ---------- Round 2 ---------- */
+function opts(o, pick, done, ans, shuffleMap){
+  const L='ABCD';
+  return `<div class="grid2">${shuffleMap.map((oi,pos)=>{
+    let cls='';
+    if(done){ if(oi===ans) cls='right'; else if(oi===pick) cls='wrong'; else cls='dim'; }
+    else if(oi===pick) cls='sel';
+    return `<button class="opt ${cls}" data-o="${oi}"><span class="k">${L[pos]}</span><span><span class="e">${esc(o[oi][0])}</span>${o[oi][1]!==o[oi][0]?`<br><span class="c">${esc(o[oi][1])}</span>`:''}</span></button>`;
+  }).join('')}</div>`;
+}
+function optOrder(key, n){ // stable shuffled order per question, kept in state
+  S.ord = S.ord || {};
+  if(!S.ord[key]){ S.ord[key]=shuffle([...Array(n).keys()]); save(); }
+  return S.ord[key];
+}
+SCREENS.r2 = ()=>{
+  const R=S.r2, ca=CASES[R.order[R.ci]], q=ca.qs[R.qi];
+  const isType = q.o.length===3 && q.o[0][1]==='一般家庭';
+  const ord = isType ? [0,1,2] : optOrder(`c${ca.id}${R.qi}`, q.o.length);
+  const pct=Math.round((R.ci*3+R.qi)/(R.order.length*3)*100);
+  return `
+  <div class="prog"><i style="width:${pct}%"></i></div>
+  <div class="small">${ROUNDS[1].en} · Report ${R.ci+1} / ${R.order.length} · Question ${R.qi+1} / 3 · ✔ ${R.right}</div>
+  <div class="card">
+    <span class="tag">📨 New report 新通報 · ${esc(ca.title[0])} ${esc(ca.title[1])}</span>
+    <p class="lead" style="margin-top:8px">${esc(ca.text[0])}</p>
+    <p class="lead zh" style="margin-top:6px">${esc(ca.text[1])}</p>
+  </div>
+  <h3>Q${R.qi+1}. ${esc(q.q[0])} <span class="zh">${esc(q.q[1])}</span></h3>
+  ${opts(q.o, R.pick, R.done, q.a, ord)}
+  ${!R.done ? `
+    <div class="prompt">🧐 Supervisor: ask "Why?" Which expert's sheet backs this up? 督導：問「為什麼？」哪位專家的卡可以證明？</div>
+    <div class="row"><button class="btn ok" id="ok" ${R.pick!==null?'':'disabled'}>🧐 Supervisor approves 督導核可</button></div>`
+  : `
+    <div class="fb ${R.pick===q.a?'ok':'bad'}"><b class="big">${R.pick===q.a?'✔ Correct! 答對了！ +100':'✘ Not quite 差一點'}</b><br>${esc(q.why[0])}<br><span class="zh">${esc(q.why[1])}</span></div>
+    <div class="row"><button class="btn gold" id="next">${nextLabel2()}</button></div>`}`;
+};
+function nextLabel2(){
+  const R=S.r2; const lastQ=R.qi>=2; const lastC=R.ci+1>=R.order.length;
+  if(lastQ && (lastC||S.timeUp)) return 'Finish round 結束本回合';
+  return lastQ ? 'Next report 下一個通報 →' : 'Next question 下一題 →';
+}
+bind.r2 = ()=>{
+  const R=S.r2, q=CASES[R.order[R.ci]].qs[R.qi];
+  if(!R.done) app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ R.pick=+b.dataset.o; save(); render(); });
+  const ok=$('#ok'); if(ok) ok.onclick=()=>{ R.done=true; R.n++; if(R.pick===q.a){R.score+=100;R.right++;sOk();} else sBad(); save(); render(); };
+  const nx=$('#next'); if(nx) nx.onclick=()=>{
+    if(R.qi<2){ R.qi++; }
+    else if(R.ci+1>=R.order.length || S.timeUp){ endRound(); return; }
+    else { R.ci++; R.qi=0; window.scrollTo(0,0); }
+    R.pick=null; R.done=false; save(); render();
+  };
+};
+
+/* ---------- Round 3A: lightning ---------- */
+SCREENS.r3a = ()=>{
+  const R=S.r3a, q=MCQ[R.order[R.i]], ord=optOrder(`m${R.order[R.i]}`, q.o.length);
+  return `
+  <div class="small">Part A · Lightning 快問快答 · ${R.i+1} / ${R.order.length} · ✔ ${R.right}</div>
+  <div class="ring ${R.left<=5?'low':''}" id="ring">${R.done?'':R.left}</div>
+  <div class="card"><div class="clue">${esc(q.q[0])}<span class="zh">${esc(q.q[1])}</span></div></div>
+  ${opts(q.o, R.pick, R.done, q.a, ord)}
+  ${R.done?`<div class="fb ${R.pick===q.a?'ok':'bad'}"><b class="big">${R.pick===q.a?`✔ +${R.last}`:(R.pick===null?'⏰ Time! 時間到':'✘ Not quite 差一點')}</b> Answer 答案：${esc(q.o[q.a][0])}${q.o[q.a][1]!==q.o[q.a][0]?' · '+esc(q.o[q.a][1]):''}</div>
+    <div class="row"><button class="btn gold" id="next">${R.i+1>=R.order.length?'Part B: Essay builder 申論組裝 →':'Next 下一題 →'}</button></div>`:''}`;
+};
+bind.r3a = ()=>{
+  const R=S.r3a, q=MCQ[R.order[R.i]];
+  const finish = pick=>{ clearInterval(tick); R.done=true; R.pick=pick; R.last=0;
+    if(pick===q.a){ R.last=100+R.left*5; R.score+=R.last; R.right++; sOk(); } else sBad(); save(); render(); };
+  if(!R.done){
+    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>finish(+b.dataset.o));
+    tick=setInterval(()=>{ R.left--; const ring=$('#ring'); if(ring){ ring.textContent=R.left; ring.classList.toggle('low',R.left<=5);} if(R.left<=5&&R.left>0) sTick(); if(R.left<=0) finish(null); },1000);
+  }
+  const nx=$('#next'); if(nx) nx.onclick=()=>{
+    if(R.i+1>=R.order.length){ go('r3pick'); return; }
+    R.i++; R.pick=null; R.done=false; R.left=MCQ_SEC; save(); render(); };
+};
+
+/* ---------- Round 3B: essay builder ---------- */
+SCREENS.r3pick = ()=>`
+  <span class="tag">Part B · Essay builder 申論組裝</span>
+  <h2>Pick one essay question 選一題申論題</h2>
+  <div class="grid2">${ESSAYS.map((e,i)=>`<button class="opt" data-e="${i}" style="min-height:120px"><span class="k">${i+1}</span><span><span class="e">${esc(e.q[0])}</span><br><span class="c">${esc(e.q[1])}</span></span></button>`).join('')}</div>
+  <div class="card small">How it works: tap a keyword tile, then tap the part of the answer where it belongs. Tap a placed tile to send it back. Leave trap tiles out! +40 right place · +15 right tile, wrong place · −40 trap tile.<br>
+  玩法：先點關鍵字卡，再點它該放的段落；點已放的卡可收回。陷阱卡不要放！放對+40、卡對位置錯+15、放陷阱卡−40。</div>`;
+bind.r3pick = ()=>{ app.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{
+  S.r3b.essay=+b.dataset.e; S.r3b.place={}; S.r3b.armed=null; S.r3b.done=false;
+  S.r3b.tileOrder=shuffle(ESSAYS[S.r3b.essay].tiles.map((_,i)=>i));
+  startClock(ROUND_MIN.r3b); go('r3b'); }); };
+
+function tileCls(i, sec){
+  const t=ESSAYS[S.r3b.essay].tiles[i];
+  if(t[1]===-1) return 'x';
+  return t[1]===sec ? 'g' : 'h';
+}
+SCREENS.r3b = ()=>{
+  const R=S.r3b, E=ESSAYS[R.essay];
+  const pool=R.tileOrder.filter(i=>R.place[i]===undefined);
+  return `
+  <span class="tag">Part B · Essay builder 申論組裝</span>
+  <div class="prompt">📝 ${esc(E.q[0])}<br><span class="zh">${esc(E.q[1])}</span></div>
+  ${!R.done?`<div class="prompt" style="background:#eef3ff;border-color:#9fb4dd">🗣 Discuss each tile out loud before placing it. Supervisor: no tile goes in until someone says why. 每張卡放之前先討論；督導：沒說出理由就不能放。</div>`:''}
+  <div class="secs">${SECTIONS.map((s,si)=>`<div class="sec ${R.armed!==null&&!R.done?'armed':''}" data-sec="${si}"><h4>${si+1}. ${s[0]} · ${s[1]}</h4><div class="tiles">${
+      R.tileOrder.filter(i=>R.place[i]===si).map(i=>`<button class="tile ${R.done?tileCls(i,si):''}" data-t="${i}">${esc(E.tiles[i][0])}</button>`).join('')
+    }</div></div>`).join('')}</div>
+  <div class="card"><h4 class="small" style="margin-bottom:6px">${R.done?'Left out 未放入':'Keyword tiles 關鍵字卡'}</h4><div class="tiles">${
+    pool.map(i=>`<button class="tile ${R.armed===i?'sel':''} ${R.done?(E.tiles[i][1]===-1?'g':'m'):''}" data-t="${i}">${esc(E.tiles[i][0])}</button>`).join('')
+  }</div></div>
+  ${!R.done?`<div class="row"><button class="btn ok" id="ok">🧐 Supervisor approves: hand in 督導核可：交卷</button></div>`:`
+    <div class="fb ok"><b class="big">Essay score 申論得分：${R.score}</b><br>
+      <span class="small">Green = right place · Yellow = right tile, other part · Red = trap · Dashed = good tile you left out (traps left out turn green).<br>綠＝位置正確；黃＝卡對但段落不同；紅＝陷阱卡；虛線＝漏放的好卡（沒放的陷阱卡變綠）。</span></div>
+    <h3>Model answer 參考答案</h3>
+    <div class="model">${esc(E.model[0])}</div>
+    <div class="model zh">${esc(E.model[1])}</div>
+    ${R.said===null?`<div class="card">
+      <h3>🎤 Say it! 說出來！ (+100)</h3>
+      <p class="lead">Go around the group. Each person says <b>one sentence</b> of the answer out loud, using at least one keyword. 每人用至少一個關鍵字說出答案中的一句話。</p>
+      <p class="small">Supervisor: did all 8 people speak? 督導：八個人都說了嗎？</p>
+      <div class="row"><button class="btn ok" id="sayY">✔ Yes, all 8 是</button><button class="btn ghost" id="sayN">Not yet / skip 略過</button></div></div>`
+    :`<div class="row"><button class="btn gold" id="fin">See our score 看總分 →</button></div>`}`}`;
+};
+bind.r3b = ()=>{
+  const R=S.r3b, E=ESSAYS[R.essay];
+  if(!R.done){
+    app.querySelectorAll('.tile').forEach(b=>b.onclick=ev=>{ ev.stopPropagation(); const i=+b.dataset.t;
+      if(R.place[i]!==undefined){
+        if(R.armed!==null && R.armed!==i){ R.place[R.armed]=R.place[i]; R.armed=null; }  // tapped inside a section while holding a tile
+        else { delete R.place[i]; R.armed=null; }
+      } else R.armed=(R.armed===i?null:i);
+      save(); render(); });
+    app.querySelectorAll('.sec').forEach(d=>d.onclick=()=>{ if(R.armed===null) return; R.place[R.armed]=+d.dataset.sec; R.armed=null; save(); render(); });
+    $('#ok').onclick=()=>{
+      let sc=0; for(const k in R.place){ const t=E.tiles[k]; if(t[1]===-1) sc-=40; else sc+= (t[1]===R.place[k]?40:15); }
+      R.score=sc; R.done=true; stopClock(); sOk(); save(); render(); window.scrollTo(0,0);
+    };
+  } else {
+    const y=$('#sayY'), n=$('#sayN'), f=$('#fin');
+    if(y) y.onclick=()=>{ R.said=true; R.score+=100; sOk(); save(); render(); };
+    if(n) n.onclick=()=>{ R.said=false; save(); render(); };
+    if(f) f.onclick=()=>{ stopClock(); go('final'); };
+  }
+};
+
+/* ---------- round flow ---------- */
+function endRound(){
+  stopClock();
+  if(S.round<2){ S.round++; go('roles'); }
+  else go('final');
+}
+
+/* ---------- final ---------- */
+SCREENS.final = ()=>`
+  <span class="tag">Group ${S.group}${S.team?' · '+esc(S.team):''}</span>
+  <h2 class="center">Shift complete! 下班囉！</h2>
+  <div class="score-big">${totalScore()}</div>
+  <p class="center lead"><b>Tell your teacher: Group ${S.group} – ${totalScore()} points</b><br><span class="zh">向老師回報：第${S.group}組 ${totalScore()}分</span></p>
+  <div class="card"><table class="bd">
+    <tr><td>Round 1 · Who handles this? 這是誰的業務？ (${S.r1.right}/${S.r1.n})</td><td>${S.r1.score}</td></tr>
+    <tr><td>Round 2 · Dispatch 派案 (${S.r2.right}/${S.r2.n})</td><td>${S.r2.score}</td></tr>
+    <tr><td>Round 3A · Lightning 快問快答 (${S.r3a.right}/${S.r3a.order.length})</td><td>${S.r3a.score}</td></tr>
+    <tr><td>Round 3B · Essay builder 申論組裝</td><td>${S.r3b.score}</td></tr>
+  </table></div>
+  <div class="card lead"><h3>Talk about it 討論</h3>
+    1. Which strategy did your group mix up most? Why? <span class="zh">你們最常搞混哪一個策略？為什麼？</span><br>
+    2. Which new 2.0 group matters most in Nantou? <span class="zh">在南投，哪一個2.0新增族群最需要被接住？</span><br>
+    3. Where could a family still fall through the net? <span class="zh">家庭還可能從網子的哪裡漏掉？</span></div>
+  <div class="row"><button class="btn ghost" id="again">↺ New game 新遊戲</button></div>`;
+bind.final = ()=>{ $('#again').onclick=()=>{ if(confirm('Start a new game? 要開始新遊戲嗎？')){ clearSave(); S=fresh(); go('setup'); } }; };
+
+/* ---------- facts ---------- */
+SCREENS.facts = ()=>`
+  <h2>Quick facts 計畫重點</h2>
+  <div class="card"><table class="bd">${FACTS.map(f=>`<tr><td><b>${f[0]}</b></td><td style="text-align:left;font-weight:400">${esc(f[1])}<br><span class="small">${esc(f[2])}</span></td></tr>`).join('')}</table></div>
+  <div class="row"><button class="btn gold" id="back">Back 返回</button></div>`;
+bind.facts = ()=>{ $('#back').onclick=()=>go(S.prev||'title'); };
+
+/* ---------- menu ---------- */
+const menu=$('#menu');
+$('#menuBtn').onclick=()=>{ menu.style.display='flex'; $('#mSound').textContent = sound?'🔊 Sound on 音效開':'🔇 Sound off 音效關';
+  $('#mSkip').style.display = (S && ['r1','r2','r3a','r3b','r3pick'].includes(S.screen)) ? '' : 'none'; };
+$('#mClose').onclick=()=>menu.style.display='none';
+$('#mSound').onclick=()=>{ sound=!sound; $('#mSound').textContent = sound?'🔊 Sound on 音效開':'🔇 Sound off 音效關'; };
+$('#mFacts').onclick=()=>{ menu.style.display='none'; if(!S){S=fresh();S.screen='title';} if(S.screen!=='facts') S.prev=S.screen; go('facts'); };
+$('#mSkip').onclick=()=>{ menu.style.display='none'; if(!S) return;
+  if(S.screen==='r3a'||S.screen==='r3pick'||S.screen==='r3b'){ clearInterval(tick); stopClock(); go('final'); } else endRound(); };
+$('#mRestart').onclick=()=>{ menu.style.display='none'; if(confirm('Start over? Your score will be lost. 確定重來？分數會清除。')){ clearSave(); S=fresh(); go('setup'); } };
+
+
+/* ---------- opening password ----------
+   Change GATE_PASSWORD before class. It is a simple check, not encryption:
+   anyone who reads this file can find it. A device remembers it once entered. */
+(function(){
+  const GATE_PASSWORD = 'SPIDERMAN';
+  const KEY = 'snd-gate';
+  const gate=$('#gate'), inp=$('#gateInput'), fb=$('#gateFb');
+  let ok=false; try{ ok = localStorage.getItem(KEY)===GATE_PASSWORD; }catch(e){}
+  if(ok){ gate.classList.add('hide'); return; }
+  const check=()=>{
+    if(inp.value.trim().toUpperCase()===GATE_PASSWORD){ try{ localStorage.setItem(KEY,GATE_PASSWORD); }catch(e){} gate.classList.add('hide'); }
+    else { fb.textContent='Wrong password. 密碼錯誤。'; inp.select(); sBad(); }
+  };
+  $('#gateOk').onclick=check;
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+  setTimeout(()=>inp.focus(),100);
+})();
+
+/* ---------- boot ---------- */
+S = null; render();
+window.__snd = { get S(){return S;}, set S(v){S=v;}, render, go, holders, swaps };
+</script>
+</body>
+</html>

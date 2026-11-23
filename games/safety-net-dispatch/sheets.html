@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safety Net Dispatch · Printable sheets 列印用卡片</title>
+<style>
+@page{size:A4 portrait;margin:8mm}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC','Noto Sans CJK TC','Microsoft JhengHei','PingFang TC',system-ui,sans-serif;color:#000;background:#ddd}
+.bar{background:#16233b;color:#fff;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar button{font:700 16px inherit;padding:8px 14px;border-radius:8px;border:0;cursor:pointer}
+.page{width:194mm;height:281mm;margin:10px auto;background:#fff;display:flex;flex-direction:column;page-break-after:always;break-after:page}
+.page:last-child{page-break-after:auto;break-after:auto}
+.card{flex:1;height:100%;padding:10mm 11mm;border:1.6pt solid #000;display:flex;flex-direction:column;gap:4mm;overflow:hidden;position:relative}
+.cut{height:0;border-top:1pt dashed #000;position:relative;margin:0}
+.cut span{position:absolute;left:50%;top:-7pt;transform:translateX(-50%);background:#fff;font-size:8pt;padding:0 4pt}
+.head{display:flex;gap:4mm;align-items:center}
+.num{width:24mm;height:24mm;border:3pt solid #000;border-radius:50%;display:flex;align-items:center;justify-content:center;font:900 42pt/1 'Noto Sans TC','Noto Sans CJK TC',sans-serif;flex:0 0 auto}
+.num.inv{background:#000;color:#fff}
+.t1{font-size:28pt;font-weight:900;line-height:1.1}
+.t2{font-size:14pt;font-weight:700}
+.full{font-size:13.5pt;border-left:3pt solid #000;padding-left:3mm;line-height:1.35}
+.lab{font-size:11pt;font-weight:900;letter-spacing:.5pt;text-transform:uppercase;border-bottom:.8pt solid #000;padding-bottom:.6mm}
+ol{padding-left:7mm;font-size:12.5pt;line-height:1.32}
+ol li{margin-bottom:2mm}
+ol li .zh{display:block;font-size:12pt;font-weight:700}
+.who{font-size:12.5pt;line-height:1.35}
+.keys{display:flex;flex-wrap:wrap;gap:1.6mm}
+.keys span{border:1.2pt solid #000;border-radius:2mm;padding:1mm 2.6mm;font-size:12pt;font-weight:700}
+.foot{position:absolute;right:8mm;bottom:5mm;font-size:9pt}
+table{border-collapse:collapse;width:100%;font-size:12pt;line-height:1.35}
+td{border:.8pt solid #000;padding:1.6mm 2.4mm;vertical-align:top}
+td:first-child{font-weight:900;width:28mm}
+.script{font-size:13pt;line-height:1.4}
+.script b{font-weight:900}
+  .sup table{font-size:10.5pt;line-height:1.28} .sup td{padding:1.1mm 2mm} .sup .script,.sup .who{font-size:11.5pt}
+@media print{body{background:#fff}.bar{display:none}.page{margin:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <b>Printable sheets 列印用卡片</b>
+  <span>Each group of 8 needs one set: Expert Sheets 1–6 and one Supervisor Card (7 A4 pages). Black and white.
+  每組一套：專家卡1–6與督導卡（7張A4），黑白列印即可。</span>
+  <label>Sets 份數 <input id="sets" type="number" min="1" max="12" value="1" style="width:56px;font-size:16px"></label>
+  <button onclick="print()">🖨 Print 列印</button>
+</div>
+<div id="out"></div>
+<script src="data.js"></script>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function expert(s){
+  return `<div class="card">
+    <div class="head"><div class="num">${s.n}</div>
+      <div><div class="t1">Expert ${s.n} 專家卡 · ${s.zh}</div><div class="t2">Strategy ${s.n}: ${esc(s.en)}</div></div></div>
+    <div class="full">${esc(s.fullEn)}<br><b>${esc(s.fullZh)}</b></div>
+    <div class="lab">Who it helps 服務對象</div>
+    <div class="who">${esc(s.who)}</div>
+    <div class="lab">On my sheet: read the line aloud as proof 我的證據：答題時唸出這一行</div>
+    <ol>${s.items.map(it=>`<li>${esc(it[0])}<span class="zh">${esc(it[1])}</span></li>`).join('')}</ol>
+    <div class="lab">Exam keywords 考試關鍵字</div>
+    <div class="keys">${s.keys.map(k=>`<span>${esc(k)}</span>`).join('')}</div>
+    <div class="foot">Safety Net Dispatch 社安網派案中心 · Source: 強化社會安全網計畫2.0（115–119年）</div>
+  </div>`;
+}
+function supervisor(){
+  return `<div class="card sup">
+    <div class="head"><div class="num inv">?</div>
+      <div><div class="t1">Supervisor Card 督導卡</div><div class="t2">You approve every answer. Your job is to ask "Why?" 每題都由你核可；你的工作是問「為什麼？」</div></div></div>
+    <div class="script">
+      <b>Before you approve 核可前：</b> "Which expert's sheet proves it? Read the line." 「哪位專家的卡可以證明？請唸出來。」<br>
+      <b>If two experts disagree 兩位專家意見不同：</b> each reads their line; the group votes. 各自唸證據，全組表決。<br>
+      <b>Essay round 申論回合：</b> no tile goes in until someone says why. 沒說出理由的卡不能放。
+    </div>
+    <div class="lab">Quick facts 計畫重點</div>
+    <table>${FACTS.map(f=>`<tr><td>${esc(f[0])}</td><td><b>${esc(f[1])}</b><br>${esc(f[2])}</td></tr>`).join('')}</table>
+    <div class="lab">Three family types 三類家庭</div>
+    <div class="who"><b>General 一般家庭</b>: no risk factors 無風險因子 · <b>Vulnerable 脆弱家庭</b>: many stresses, no violence → Social Welfare Service Center 社福中心 ·
+      <b>Crisis 危機家庭</b>: violence or abuse = protective case 保護性案件 → 家防中心</div>
+    <div class="lab">Clocks 時限</div>
+    <div class="who">Report sorted 通報分流: <b>24 hours</b> (under 18 or high-risk adult 未滿18歲、高危成人) · <b>3 days</b> (other adults 非高危成人) ·
+      Social Welfare Service Center 社福中心: visit within <b>10 days</b>, assessment within <b>30 days</b> 10日內訪視、30日內評估</div>
+    <div class="foot">Safety Net Dispatch 社安網派案中心</div>
+  </div>`;
+}
+function build(){
+  const n=Math.max(1,Math.min(12,+document.getElementById('sets').value||1));
+  const cards=[...STRATS.map(expert), supervisor()];
+  let html='';
+  for(let k=0;k<n;k++){
+    for(const c of cards) html+=`<div class="page">${c}</div>`;
+  }
+  document.getElementById('out').innerHTML=html;
+}
+document.getElementById('sets').oninput=build;
+build();
+</script>
+</body>
+</html>

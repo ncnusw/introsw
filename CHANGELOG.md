@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-11-23 (Safety Net Dispatch)
+- New game: **Safety Net Dispatch 社安網派案中心** (`games/safety-net-dispatch/`), on Social Safety Net 2.0 (強化社會安全網計畫2.0, 2026–2030). Groups of 8, one tablet per group, bilingual, about 30 minutes.
+- Roles: a dispatcher (tablet), a supervisor (approves every answer after asking "why?") and six experts, each holding a printed sheet for one strategy. Dispatcher and supervisor rotate each round and the screen says which sheets change hands.
+- Round 1, Who handles this? (7 min): 14 real plan items, match each to one of the six strategies. Round 2, Dispatch (10 min): seven case reports (Chen family and Xiao-Da first), three questions each on family type, unit, and strategy or service, with explanations. Round 3: six lightning multiple-choice questions from a bank of 15 (20 s, speed bonus), then an essay builder: place keyword tiles in a four-part outline, avoid trap tiles, see a bilingual model answer, and a "Say it!" bonus.
+- All content is in `data.js`, taken from the plan itself. `sheets.html` prints the six Expert Sheets and the Supervisor Card (one A4 page each, black and white) from the same file.
+- Opening password screen like Storm Creek: `GATE_PASSWORD` in `index.html` (a simple check, not encryption). Once entered, a device remembers it. The printable sheets page has no password.
+- Progress is saved on the device (Continue after a reload); the screen stays awake during timed rounds; the menu can end a round early.
+
 ## 2026-11-16 (The Family Next Door, licensing exam side quest)
 - Optional side quest in the 30 days: the social work licensing exam (社會工作師國家考試) at Hillside University. Each try costs one day.
 - New `license` mini-game: 10 multiple-choice questions drawn from a bank of 26 in the style of the national exam (causation, ecological fallacy, rates vs. counts, control groups, selection and sampling bias, variables and hypotheses, research purposes and logic, qualitative vs. quantitative, consent and confidentiality, EBP, Hawthorne, social desirability, confirmation bias, mixed methods, outputs vs. outcomes). Options are shuffled; 60 points to pass; afterwards a review explains every miss.

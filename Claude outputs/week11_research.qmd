@@ -167,6 +167,18 @@ Answer: 2 Explain. "How many days did he miss?" would be describe.
 
 ![](imgs/11_08_question.svg){fig-align="center"}
 
+## {.big-svg}
+
+![](imgs/11_08b_variables.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_08c_null.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_08d_sample.svg){fig-align="center"}
+
 ## Break
 
 ![](imgs/break_time.gif){fig-align="center"}
@@ -296,10 +308,34 @@ Answer: 1 Informed consent. Confidentiality = not showing who said what.
 
 ## {.big-svg}
 
+![](imgs/11_14b_correlation.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_14c_cause.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_14d_numbers.svg){fig-align="center"}
+
+## {.big-svg}
+
 ![](imgs/11_15_compare.svg){fig-align="center"}
 
 ::: {.notes}
 Link to last class: output vs. outcome, and "Did our program work?" (falls dropped from 20 to 12). The comparison lane answers the "warm winter?" question.
+:::
+
+## {.big-svg}
+
+![](imgs/11_15a_traps.svg){fig-align="center"}
+
+## {.big-svg}
+
+![](imgs/11_15d_bias.svg){fig-align="center"}
+
+::: {.notes}
+These three are also cards in the "Fool the Class" activity, if you run it.
 :::
 
 ## {.big-svg}
@@ -326,6 +362,53 @@ countdown(minutes = 3, seconds = 0)
 
 ```{r}
 countdown(minutes = 10, seconds = 0)
+```
+
+## {.effect-picker}
+
+```{=html}
+<style>
+.reveal .effect-picker .ep-row { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-top: 40px; }
+.reveal .effect-picker .ep-box { min-width: 0; height: 430px; border: 4px solid #2c5f6f; border-radius: 16px; background: #fff; text-align: center;
+  display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 6px 4px; transition: .3s; }
+.reveal .effect-picker .ep-box .n { font-size: 1.4em; font-weight: 700; color: #2c5f6f; }
+.reveal .effect-picker .ep-box .en { font-size: .42em; font-weight: 700; line-height: 1.2; margin: 10px 0 6px; }
+.reveal .effect-picker .ep-box .zh { font-size: .4em; color: #6b7a8c; }
+.reveal .effect-picker .ep-box .g { font-size: .6em; font-weight: 700; color: #fff; margin-top: 18px; min-height: 1.3em; }
+.reveal .effect-picker .ep-box.taken { background: #2c5f6f; }
+.reveal .effect-picker .ep-box.taken .n, .reveal .effect-picker .ep-box.taken .en, .reveal .effect-picker .ep-box.taken .zh { color: #fff; }
+.reveal .effect-picker .ep-box.new { background: #d98e3a; border-color: #d98e3a; transform: scale(1.06); }
+.reveal .effect-picker .ep-btns { display: flex; justify-content: center; gap: 30px; margin-top: 40px; }
+.reveal .effect-picker .ep-btns button { font-size: .8em; padding: 10px 50px; border-radius: 40px; border: 0; cursor: pointer; font-weight: 700; }
+</style>
+<div class="ep-row" id="epRow"></div>
+<div class="ep-btns">
+  <button id="epPick" style="background:#d98e3a;color:#fff">Pick 抽</button>
+  <button id="epReset" style="background:#e8eef0;color:#2c5f6f">Reset 重來</button>
+</div>
+<script>
+(() => {
+  const E = [['Hawthorne effect', '霍桑效應'], ['Social desirability bias', '社會期許偏誤'], ['Authority bias', '權威偏誤'],
+    ['Confirmation bias', '確認偏誤'], ['Placebo effect', '安慰劑效應'], ['Survivorship bias', '倖存者偏誤'],
+    ['Selection bias', '選擇偏誤'], ['Correlation ≠ causation', '相關不等於因果']];
+  const row = document.getElementById('epRow');
+  row.innerHTML = E.map((e, i) => `<div class="ep-box"><div class="n">${i + 1}</div><div class="en">${e[0]}</div><div class="zh">${e[1]}</div><div class="g"></div></div>`).join('');
+  const boxes = [...row.children];
+  let group = 0;
+  document.getElementById('epPick').onclick = () => {
+    const free = boxes.filter(b => !b.classList.contains('taken'));
+    if (!free.length) return;
+    boxes.forEach(b => b.classList.remove('new'));
+    const b = free[Math.floor(Math.random() * free.length)];
+    b.classList.add('taken', 'new');
+    b.querySelector('.g').textContent = `第 ${++group} 組`;
+  };
+  document.getElementById('epReset').onclick = () => {
+    group = 0;
+    boxes.forEach(b => { b.classList.remove('taken', 'new'); b.querySelector('.g').textContent = ''; });
+  };
+})();
+</script>
 ```
 
 ## Game: The Family Next Door 隔壁那一家
